@@ -3,6 +3,7 @@ import os
 import sys
 
 IMAGE_SUFFIX = [".pdf", ".png", ".jpg", ".jpeg", ".eps", ".svg", ".pgf"]
+EXTERN_CODE_SUFFIX = [".py", ".cpp", ".c", ".java", ".js", ".sh", ".hs"]
 
 
 def flatten_latex(input_file, output_file):
@@ -16,9 +17,9 @@ def flatten_latex(input_file, output_file):
         # Matches \input{path} or \input{path.tex}
         def replace_input(match):
             included_path = match.group(1)
-            for suffix in IMAGE_SUFFIX:
+            for suffix in IMAGE_SUFFIX + EXTERN_CODE_SUFFIX:
                 if included_path.endswith(suffix):
-                    print(f"Skipping image file: {included_path}")
+                    print(f"Skipping file: {included_path}")
                     return match.group(0)  # Keep the original for images
             if not included_path.endswith(".tex"):
                 included_path += ".tex"

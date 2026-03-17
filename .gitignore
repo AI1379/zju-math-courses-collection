@@ -1,5 +1,6 @@
 # Editor Files
 .vscode/
+.claude/
 
 # LaTeX auxiliary files
 *.pdf
