@@ -1,0 +1,476 @@
+
+\documentclass{article}
+\usepackage{geometry}
+\geometry{margin=1.5cm, vmargin={0pt,1cm}}
+\setlength{\topmargin}{-1cm}
+\setlength{\headheight}{12.5pt}
+\setlength{\paperheight}{29.7cm}
+\setlength{\textheight}{25.3cm}
+
+% useful packages.
+% \usepackage[UTF8]{ctex}
+\usepackage{fancyhdr}
+\usepackage{layout}
+
+% import common macros
+\input{../../common/macros.tex}
+
+% Name and uID
+\newcommand{\name}{\getEnv{NAME}{NAME}}
+\newcommand{\uid}{\getEnv{UID}{UID}}
+\newcommand{\course}{Complex Analysis}
+\newcommand{\hwNum}{2}
+
+\begin{document}
+
+\pagestyle{fancy}
+\fancyhead{}
+\lhead{\zhstr{\name} (\uid)}
+\chead{\course\ \#\hwNum}
+\rhead{\today}
+
+\section{Exercise C.264}
+
+\begin{lemma}[Lemma C.263]
+  The signed volume $\delta$ is alternating, i.e.,
+  \[
+    \delta(v_1, \dots, v_i, \dots, v_j, \dots, v_n)
+    = -\delta(v_1, \dots, v_j, \dots, v_i, \dots, v_n).
+  \]
+\end{lemma}
+
+Prove Lemma C.263 using (SVP-2,3).
+
+\begin{proof}
+  We first prove the adjacent-swap case. Fix all slots except the
+  $i$-th and $(i+1)$-th, and set $u := v_i + v_{i+1}$. Consider
+  \[
+    \delta(\dots, u, u, \dots).
+  \]
+  By (SVP-2), this equals $0$ because two entries are equal.
+  By linearity (SVP-3) in each of the two slots, we expand:
+  \[
+    \begin{aligned}
+      0
+      &= \delta(\dots, v_i+v_{i+1}, v_i+v_{i+1}, \dots) \\
+      &= \delta(\dots, v_i, v_i, \dots)
+      + \delta(\dots, v_i, v_{i+1}, \dots) \\
+      &\quad + \delta(\dots, v_{i+1}, v_i, \dots)
+      + \delta(\dots, v_{i+1}, v_{i+1}, \dots).
+    \end{aligned}
+  \]
+  Again by (SVP-2), the first and last terms are $0$. Hence
+  \[
+    \delta(\dots, v_i, v_{i+1}, \dots)
+    = -\delta(\dots, v_{i+1}, v_i, \dots).
+  \]
+
+  Now let $i<j$. Swapping $v_i$ and $v_j$ can be done by adjacent
+  transpositions:
+  move $v_i$ right to position $j$ (total $j-i$ swaps), then move
+  $v_j$ left to position $i$ (total $j-i-1$ swaps). So the total number
+  of adjacent swaps is
+  \[
+    (j-i)+(j-i-1)=2(j-i)-1,
+  \]
+  which is odd. Each adjacent swap contributes a factor $-1$, therefore
+  \[
+    \delta(v_1,\dots,v_i,\dots,v_j,\dots,v_n)
+    = -\delta(v_1,\dots,v_j,\dots,v_i,\dots,v_n).
+  \]
+  Thus $\delta$ is alternating.
+\end{proof}
+
+\section{Exercise C.344}
+
+\begin{lemma}[Lemma C.343]
+  For $f : E \to \R$ with $E \subset \R$, $x_0 \in E$, and $L \in \R$,
+  the following two statements are equivalent:
+  \begin{enumerate}
+    \item $f$ is differentiable at $x_0$ and $f'(x_0)=L$;
+    \item
+      \[
+        \lim_{x\to x_0,\,x\in E\setminus\{x_0\}}
+        \frac{|f(x)-f(x_0)-L(x-x_0)|}{|x-x_0|}=0.
+      \]
+  \end{enumerate}
+\end{lemma}
+
+Prove Lemma C.343.
+
+\begin{proof}
+  (a) $\Rightarrow$ (b): If $f$ is differentiable at $x_0$ with derivative
+  $L$, then by definition there exists a function $r(x)$ such that
+  \[
+    f(x)-f(x_0)=L(x-x_0)+r(x)(x-x_0),
+    \qquad r(x)\to 0 \ (x\to x_0,\ x\in E\setminus\{x_0\}).
+  \]
+  Therefore, for $x\neq x_0$,
+  \[
+    \frac{|f(x)-f(x_0)-L(x-x_0)|}{|x-x_0|}=|r(x)|\to 0,
+  \]
+  which is exactly (b).
+
+  (b) $\Rightarrow$ (a): Assume
+  \[
+    \lim_{x\to x_0,\,x\in E\setminus\{x_0\}}
+    \frac{|f(x)-f(x_0)-L(x-x_0)|}{|x-x_0|}=0.
+  \]
+  Define for $x\neq x_0$,
+  \[
+    r(x):=\frac{f(x)-f(x_0)-L(x-x_0)}{x-x_0}.
+  \]
+  Then $|r(x)|\to 0$, hence $r(x)\to 0$, and we can rewrite
+  \[
+    f(x)-f(x_0)=L(x-x_0)+r(x)(x-x_0).
+  \]
+  This is exactly the differentiability condition at $x_0$ with
+  derivative $L$. So (a) holds.
+
+  Therefore (a) and (b) are equivalent.
+\end{proof}
+
+\section{Exercise C.353}
+
+\begin{lemma}[Lemma C.352]
+  Suppose a function $f : E \to \R^m$ with $E \subseteq \R^n$
+  is differentiable at an interior point $x_0$ of $E$ with derivative
+  $L_1$ and also differentiable at $x_0$ with derivative $L_2$.
+  Then $L_1=L_2$.
+\end{lemma}
+
+Prove Lemma C.352.
+
+\begin{proof}
+  Since $f$ is differentiable at $x_0$ with derivative $L_1$, we have
+  \[
+    f(x_0+h)-f(x_0)=L_1h+r_1(h),
+    \qquad \frac{|r_1(h)|}{|h|}\to 0 \ (h\to 0).
+  \]
+  Since $f$ is also differentiable at $x_0$ with derivative $L_2$, we have
+  \[
+    f(x_0+h)-f(x_0)=L_2h+r_2(h),
+    \qquad \frac{|r_2(h)|}{|h|}\to 0 \ (h\to 0).
+  \]
+  Subtracting gives
+  \[
+    (L_1-L_2)h=r_2(h)-r_1(h).
+  \]
+  Hence
+  \[
+    \frac{|(L_1-L_2)h|}{|h|}
+    \le
+    \frac{|r_1(h)|}{|h|}+\frac{|r_2(h)|}{|h|}
+    \to 0
+    \quad (h\to 0,\ h\neq 0).
+  \]
+
+  Let $e_k$ be the $k$-th standard basis vector in $\R^n$, and set
+  $h=t e_k$ with $t\neq 0$. Then
+  \[
+    \frac{|(L_1-L_2)(t e_k)|}{|t e_k|}
+    = \frac{|t|\,|(L_1-L_2)e_k|}{|t|}
+    = |(L_1-L_2)e_k|.
+  \]
+  Taking $t\to 0$ yields $|(L_1-L_2)e_k|=0$, so
+  $(L_1-L_2)e_k=0$ for every $k=1,\dots,n$.
+
+  Therefore $L_1-L_2$ vanishes on a basis of $\R^n$, hence
+  $L_1-L_2=0$, i.e. $L_1=L_2$.
+\end{proof}
+
+\section{Exercise C.361}
+
+Show that the existence of partial derivatives at $x_0$ does not imply
+that the function is differentiable at $x_0$ by considering the
+differentiability of the following function $f : \R^2 \to \R$ at
+$(0,0)$:
+\[
+  f(x,y)=
+  \begin{cases}
+    \dfrac{x^3}{x^2+y^2}, & (x,y)\neq(0,0), \\
+    0, & (x,y)=(0,0).
+  \end{cases}
+\]
+
+\begin{solution}
+  First compute the partial derivatives at $(0,0)$.
+  For $\partial_x f(0,0)$,
+  \[
+    \partial_x f(0,0)
+    = \lim_{h\to 0}\frac{f(h,0)-f(0,0)}{h}
+    = \lim_{h\to 0}\frac{h-0}{h}=1.
+  \]
+  For $\partial_y f(0,0)$,
+  \[
+    \partial_y f(0,0)
+    = \lim_{h\to 0}\frac{f(0,h)-f(0,0)}{h}
+    = \lim_{h\to 0}\frac{0-0}{h}=0.
+  \]
+  So both partial derivatives exist at $(0,0)$.
+
+  If $f$ were differentiable at $(0,0)$, the derivative would be
+  \[
+    L(x,y)=\partial_x f(0,0)x+\partial_y f(0,0)y=x.
+  \]
+  Now test the differentiability quotient along the path $y=x$:
+  \[
+    f(x,x)=\frac{x^3}{x^2+x^2}=\frac{x}{2},
+    \qquad
+    L(x,x)=x.
+  \]
+  Hence
+  \[
+    \frac{|f(x,x)-L(x,x)|}{\sqrt{x^2+x^2}}
+    = \frac{|x/2-x|}{\sqrt{2}|x|}
+    = \frac{1}{2\sqrt{2}}.
+  \]
+  This does not tend to $0$ as $x\to 0$. Therefore $f$ is not
+  differentiable at $(0,0)$.
+
+  We have shown that partial derivatives may exist at a point while
+  differentiability fails at that point.
+\end{solution}
+
+\section{Exercise C.385}
+
+Show that the unit sphere
+\[
+  S^2 := \{(x,y,z)\in\R^3 : x^2+y^2+z^2=1\}
+\]
+is a regular surface.
+
+\begin{solution}
+  Define
+  \[
+    F:\R^3\to\R, \qquad F(x,y,z):=x^2+y^2+z^2-1.
+  \]
+  Then
+  \[
+    S^2 = F^{-1}(0).
+  \]
+  Since $F$ is smooth, we compute
+  \[
+    \nabla F(x,y,z)=(2x,2y,2z).
+  \]
+  If $(x,y,z)\in S^2$, then $x^2+y^2+z^2=1$, so $(x,y,z)\neq(0,0,0)$, and
+  therefore
+  \[
+    \nabla F(x,y,z)\neq 0 \quad \text{for all } (x,y,z)\in S^2.
+  \]
+  Hence $0$ is a regular value of $F$. By the regular level-set theorem
+  (equivalently, the implicit function theorem), $F^{-1}(0)$ is a regular
+  surface of $\R^3$.
+
+  So $S^2$ is a regular surface.
+\end{solution}
+
+\section{Exercise C.388}
+
+\begin{lemma}[Lemma C.387]
+  Let $x : U\subset\R^2 \to S$ be a parametrization of a regular surface
+  $S$ and let $q\in U$. The vector space
+  \[
+    dx_q(\R^2)\subset\R^3
+  \]
+  coincides with the set of tangent vectors to $S$ at $x(q)$.
+\end{lemma}
+
+Prove Lemma C.387.
+
+\begin{proof}
+  Let $p:=x(q)$.
+
+  We first show that every tangent vector at $p$ belongs to $dx_q(\R^2)$.
+  Let $w$ be a tangent vector to $S$ at $p$. By definition, there exists
+  a differentiable curve $\alpha:(-\varepsilon,\varepsilon)\to S$ such that
+  \[
+    \alpha(0)=p, \qquad \alpha'(0)=w.
+  \]
+  Since $x:U\to V\cap S$ is a local parametrization and a homeomorphism,
+  for $t$ near $0$ we may write
+  \[
+    \alpha(t)=x(\beta(t)), \qquad
+    \beta(t):=x^{-1}(\alpha(t))\in U,
+  \]
+  with $\beta(0)=q$. By the chain rule,
+  \[
+    w=\alpha'(0)=d(x\circ\beta)_0=dx_q\big(\beta'(0)\big)\in dx_q(\R^2).
+  \]
+  Hence the set of tangent vectors is contained in $dx_q(\R^2)$.
+
+  Conversely, let $u\in dx_q(\R^2)$. Then there exists $v\in\R^2$ such that
+  $u=dx_q(v)$. Define
+  \[
+    \beta(t):=q+tv
+  \]
+  for $|t|$ small enough so that $\beta(t)\in U$, and set
+  \[
+    \alpha(t):=x(\beta(t))=x(q+tv)\in S.
+  \]
+  Then $\alpha$ is a differentiable curve in $S$ with $\alpha(0)=x(q)=p$, and
+  \[
+    \alpha'(0)=dx_q(v)=u.
+  \]
+  So $u$ is a tangent vector to $S$ at $p$.
+
+  Therefore $dx_q(\R^2)$ coincides with the set of tangent vectors to $S$
+  at $x(q)$.
+\end{proof}
+
+\section{Exercise D.6}
+
+Let $X$ be the set of all bounded and unbounded sequences of complex
+numbers. Show that the function $d$ given by
+\[
+  \forall x=(\xi_j),\ \forall y=(\eta_j),\
+  d(x,y)=\sum_{j=1}^{\infty}\frac{1}{2^j}\frac{|\xi_j-\eta_j|}{1+|\xi_j-\eta_j|}
+\]
+is a metric on $X$.
+
+\begin{solution}
+  Let
+  \[
+    \phi(t):=\frac{t}{1+t},\qquad t\ge 0.
+  \]
+  Then
+  \[
+    d(x,y)=\sum_{j=1}^{\infty}2^{-j}\phi\big(|\xi_j-\eta_j|\big).
+  \]
+  Since $0\le \phi(t)<1$, each term is between $0$ and $2^{-j}$, so the
+  series converges absolutely by comparison with $\sum 2^{-j}$.
+
+  \textbf{(1) Non-negativity.} Each summand is nonnegative, hence
+  $d(x,y)\ge 0$.
+
+  \textbf{(2) Identity of indiscernibles.}
+  If $x=y$, then every $|\xi_j-\eta_j|=0$, so $d(x,y)=0$.
+  Conversely, if $d(x,y)=0$, then a sum of nonnegative terms is zero, so each
+  term is zero. Thus
+  \[
+    \phi\big(|\xi_j-\eta_j|\big)=0 \Rightarrow |\xi_j-\eta_j|=0
+    \Rightarrow \xi_j=\eta_j
+  \]
+  for all $j$, hence $x=y$.
+
+  \textbf{(3) Symmetry.} Since $|\xi_j-\eta_j|=|\eta_j-\xi_j|$, we get
+  $d(x,y)=d(y,x)$.
+
+  \textbf{(4) Triangle inequality.}
+  For $x=(\xi_j), y=(\eta_j), z=(\zeta_j)$, by the usual triangle inequality,
+  \[
+    |\xi_j-\zeta_j|\le |\xi_j-\eta_j|+|\eta_j-\zeta_j|.
+  \]
+  We claim that for $a,b\ge 0$,
+  \[
+    \phi(a+b)\le \phi(a)+\phi(b).
+  \]
+  Indeed,
+  \[
+    \phi(a)+\phi(b)-\phi(a+b)
+    = \frac{a}{1+a}+\frac{b}{1+b}-\frac{a+b}{1+a+b}
+    = \frac{ab(a+b+2)}{(1+a)(1+b)(1+a+b)}\ge 0.
+  \]
+  Hence
+  \[
+    \phi(|\xi_j-\zeta_j|)
+    \le \phi(|\xi_j-\eta_j|+|\eta_j-\zeta_j|)
+    \le \phi(|\xi_j-\eta_j|)+\phi(|\eta_j-\zeta_j|).
+  \]
+  Multiply by $2^{-j}$ and sum over $j$:
+  \[
+    d(x,z)\le d(x,y)+d(y,z).
+  \]
+
+  Therefore $d$ satisfies all metric axioms, so $d$ is a metric on $X$.
+\end{solution}
+
+\section{Exercise D.18}
+
+The completeness depends on the metric. For the metric
+\[
+  d_1(x,y)=\int_a^b |x(t)-y(t)|\,dt,
+\]
+show that the metric space $(C[a,b], d_1)$ is not complete.
+
+\begin{solution}
+  Let
+  \[
+    c:=\frac{a+b}{2}, \qquad \varepsilon_n:=\frac{b-a}{4n}.
+  \]
+  Define $f_n\in C[a,b]$ by
+  \[
+    f_n(t):=
+    \begin{cases}
+      0, & a\le t\le c-\varepsilon_n, \\
+      \dfrac{t-(c-\varepsilon_n)}{2\varepsilon_n},
+      & c-\varepsilon_n\le t\le c+\varepsilon_n, \\
+      1, & c+\varepsilon_n\le t\le b.
+    \end{cases}
+  \]
+  This is a continuous piecewise linear function.
+
+  Define the step function
+  \[
+    H(t):=
+    \begin{cases}
+      0, & t<c, \\
+      1, & t\ge c.
+    \end{cases}
+  \]
+  Then $H$ is not continuous at $c$.
+
+  We estimate $d_1(f_n,H)$. Outside $[c-\varepsilon_n,c+\varepsilon_n]$,
+  we have $f_n=H$. So
+  \[
+    d_1(f_n,H)
+    =\int_{c-\varepsilon_n}^{c+\varepsilon_n}|f_n(t)-H(t)|\,dt
+    =\frac{\varepsilon_n}{2}
+    =\frac{b-a}{8n}\to 0.
+  \]
+  Hence for $m,n$,
+  \[
+    d_1(f_n,f_m)\le d_1(f_n,H)+d_1(f_m,H)\to 0,
+  \]
+  so $(f_n)$ is Cauchy in $(C[a,b],d_1)$.
+
+  We now show $(f_n)$ has no limit in $C[a,b]$. Assume by contradiction
+  that there exists $g\in C[a,b]$ with $d_1(f_n,g)\to 0$.
+
+  If $g(c)\le \tfrac12$, continuity gives some $\delta>0$ such that
+  $g(t)\le \tfrac34$ for $|t-c|<\delta$. For $n$ large enough,
+  $\varepsilon_n<\delta/2$, and on
+  \[
+    I:=[c+\delta/2,\,c+\delta]\subset[c+\varepsilon_n,b],
+  \]
+  we have $f_n=1$. Thus
+  \[
+    |f_n-g|=|1-g|\ge \tfrac14 \quad \text{on } I,
+  \]
+  so
+  \[
+    d_1(f_n,g)\ge \int_I |f_n-g|\,dt\ge \frac{\delta}{8},
+  \]
+  contradicting $d_1(f_n,g)\to 0$.
+
+  If $g(c)>\tfrac12$, continuity gives some $\delta>0$ such that
+  $g(t)\ge \tfrac14$ for $|t-c|<\delta$. For $n$ large enough,
+  $\varepsilon_n<\delta/2$, and on
+  \[
+    J:=[c-\delta,\,c-\delta/2]\subset[a,c-\varepsilon_n],
+  \]
+  we have $f_n=0$. Hence
+  \[
+    |f_n-g|=|g|\ge \tfrac14 \quad \text{on } J,
+  \]
+  and therefore
+  \[
+    d_1(f_n,g)\ge \int_J |f_n-g|\,dt\ge \frac{\delta}{8},
+  \]
+  again a contradiction.
+
+  So no continuous $g$ can be the $d_1$-limit of $(f_n)$. Therefore
+  $(C[a,b],d_1)$ is not complete.
+\end{solution}
+
+\end{document}

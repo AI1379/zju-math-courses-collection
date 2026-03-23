@@ -82,5 +82,6 @@
   \fi
 }
 
+\usepackage{luacode}
 % Utility to get environment variables (requires lualatex)
 \newcommand{\getEnv}[2]{\directlua{tex.print(os.getenv("#1") or "#2")}}
