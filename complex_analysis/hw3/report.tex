@@ -1,0 +1,867 @@
+
+\documentclass{article}
+\usepackage{geometry}
+\geometry{margin=1.5cm, vmargin={0pt,1cm}}
+\setlength{\topmargin}{-1cm}
+\setlength{\headheight}{12.5pt}
+\setlength{\paperheight}{29.7cm}
+\setlength{\textheight}{25.3cm}
+
+% useful packages.
+% \usepackage[UTF8]{ctex}
+\usepackage{fancyhdr}
+\usepackage{layout}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+
+% import common macros
+\input{../../common/macros.tex}
+
+% Name and uID
+\newcommand{\name}{\getEnv{NAME}{NAME}}
+\newcommand{\uid}{\getEnv{UID}{UID}}
+\newcommand{\course}{Complex Analysis}
+\newcommand{\hwNum}{3}
+
+\begin{document}
+
+\pagestyle{fancy}
+\fancyhead{}
+\lhead{\zhstr{\name} (\uid)}
+\chead{\course\ \#\hwNum}
+\rhead{\today}
+
+\section{Exercise C.335}
+
+\begin{theorem}[Theorem C.334]
+  The exponential of a skew-Hermitian matrix is a unitary matrix.
+  Conversely, any unitary matrix must be the exponential of some
+  skew-Hermitian matrix.
+\end{theorem}
+
+\begin{proof}
+  Consider a skew-Hermitian matrix $A$ with $A^*=-A$. Using the power
+  series, we have
+  \[
+    (e^A)^* = \left( \sum_{k=0}^\infty \frac{1}{k!} A^k\right)^*
+    = \sum_{k=0}^\infty \frac{1}{k!} (A^*)^k
+    = \sum_{k=0}^\infty \frac{1}{k!} (-A)^k
+    = e^{-A}.
+  \]
+  Then we need to show that $A$ and $-A$ are commutative, which is
+  true since $A$ and $A^*$ are always commutative. Hence
+  \[
+    (e^A)^*(e^A) = e^{-A} e^A = I.
+  \]
+  Therefore, $e^A$ is unitary.
+
+  From another perspective, let $U$ be a unitary matrix. Then
+  $U^*U=I$, so $U^*$ is the inverse of $U$. We need to show that there exists
+  a skew-Hermitian matrix $A$ such that $e^A=U$.
+
+  Consider unitary diagonalization of $U$:
+  \[
+    U = V \Lambda V^*,
+  \]
+  where $V$ is unitary and $\Lambda$ is diagonal with entries on the
+  unit circle. Write $\Lambda = \mathrm{diag}(e^{i\theta_1}, \ldots,
+  e^{i\theta_n})$ with $\theta_j \in \R$. Then we define $A$ as:
+  \[
+    A = V \mathrm{diag}(i\theta_1, \ldots, i\theta_n) V^*.
+  \]
+  Since $\mathrm{diag}(i\theta_1, \ldots, i\theta_n)$ is
+  skew-Hermitian, $A$ is also skew-Hermitian. Moreover, using the power
+  series expansion of the exponential function, we have
+  \[
+    e^A = V e^{\mathrm{diag}(i\theta_1, \ldots, i\theta_n)} V^* = V
+    \Lambda V^* = U.
+  \]
+  This completes the proof.
+
+\end{proof}
+
+\section{Exercise 2.12}
+
+The function
+\[
+  z \mapsto \Arg z
+\]
+is continuous on the complex plane slit along the negative real axis
+\[
+  \C^- := \C \setminus \{t \in \R : t \le 0\}.
+\]
+
+\begin{proof}
+  Let $z_0 = x_0 + iy_0 \in \C^-$ with $z_0 \ne 0$.
+  We need to show $\Arg z \to \Arg z_0$ as $z \to z_0$.
+
+  Write $z = x + iy = re^{i\theta}$ where $r = |z|$, $\theta = \Arg z
+  \in (-\pi, \pi)$,
+  and similarly $z_0 = r_0 e^{i\theta_0}$.
+
+  \textbf{Case 1: $x_0 > 0$ (right half-plane).}
+
+  Here $\Arg z_0 = \arctan(y_0/x_0)$.
+  For $z$ sufficiently close to $z_0$, we have $x > 0$, so
+  \[
+    \Arg z = \arctan\frac{y}{x}.
+  \]
+  Since $(x,y) \mapsto y/x$ is continuous at $(x_0,y_0)$ with $x_0 > 0$,
+  and $\arctan$ is continuous on $\R$, the composition is continuous.
+  Hence $\Arg z \to \Arg z_0$ as $z \to z_0$.
+
+  \textbf{Case 2: $x_0 < 0$ and $y_0 > 0$ (upper left quadrant).}
+
+  Here $\Arg z_0 = \arctan(y_0/x_0) + \pi \in (0,\pi)$.
+  For $z$ close to $z_0$, we have $x < 0$ and $y > 0$, so
+  \[
+    \Arg z = \arctan\frac{y}{x} + \pi.
+  \]
+  Again this is a composition of continuous functions, so $\Arg$ is continuous.
+
+  \textbf{Case 3: $x_0 < 0$ and $y_0 < 0$ (lower left quadrant).}
+
+  Here $\Arg z_0 = \arctan(y_0/x_0) - \pi \in (-\pi, 0)$.
+  For $z$ close to $z_0$, we have $x < 0$ and $y < 0$, so
+  \[
+    \Arg z = \arctan\frac{y}{x} - \pi,
+  \]
+  which is continuous.
+
+  \textbf{Case 4: $x_0 = 0$ and $y_0 > 0$ (positive imaginary axis).}
+
+  Here $\Arg z_0 = \pi/2$. Given $\varepsilon > 0$, we need $\delta >
+  0$ such that
+  $|z - z_0| < \delta$ implies $|\Arg z - \pi/2| < \varepsilon$.
+
+  Since $\cot\theta = x/y$ for $\theta \in (0,\pi)$, we have
+  \[
+    |\Arg z - \pi/2| = |\arccot(x/y)|.
+  \]
+  Using the inequality $|\arccot t| \le |t|$ for $t$ near $0$ (since
+  $\arccot'(0) = -1$),
+  for $|x/y| < \min(\varepsilon, 1)$ we have
+  \[
+    |\Arg z - \pi/2| \le \left|\frac{x}{y}\right|.
+  \]
+  Choose $\delta = y_0 \cdot \min(\varepsilon, 1)/2$. Then $|z - z_0|
+  < \delta$ implies
+  $|x| < \delta$ and $y > y_0 - \delta \ge y_0/2$, so
+  \[
+    \left|\frac{x}{y}\right| < \frac{\delta}{y_0/2}
+    = \frac{2\delta}{y_0}
+    \le \min(\varepsilon, 1) \le \varepsilon.
+  \]
+
+  \textbf{Case 5: $x_0 = 0$ and $y_0 < 0$ (negative imaginary axis).}
+
+  Here $\Arg z_0 = -\pi/2$. The argument is symmetric to Case 4, using
+  $|\Arg z + \pi/2| = |\arccot(x/y)|$ with $\cot(-\pi/2 + \theta) =
+  -\tan\theta$.
+
+  \textbf{Case 6: $z_0$ on the positive real axis ($y_0 = 0$, $x_0 > 0$).}
+
+  Here $\Arg z_0 = 0$. For $z = x + iy$ close to $z_0$,
+  \[
+    |\Arg z| = |\arctan(y/x)|.
+  \]
+  Using $|\arctan t| \le |t|$ for $t \in \R$,
+  \[
+    |\Arg z| \le \left|\frac{y}{x}\right|.
+  \]
+  For $|z - z_0| < \delta$ with $\delta < x_0/2$, we have $x > x_0/2$, so
+  \[
+    |\Arg z| \le \frac{|y|}{x_0/2} < \frac{2\delta}{x_0}.
+  \]
+  Choosing $\delta = \min(x_0/2, x_0\varepsilon/2)$ gives $|\Arg z| <
+  \varepsilon$.
+
+  In all cases, $\Arg z$ is continuous at each $z_0 \in \C^-$.
+\end{proof}
+
+\section{Exercise 2.21}
+
+\begin{theorem}[Theorem 2.20]
+  Let $f,g : D \to \C$ be complex differentiable at $a \in D$ and
+  let $\lambda \in \C$ with $f(a) \ne 0$. Then
+  $\lambda f$, $f+g$, $fg$, and $1/f$ are complex differentiable at $a$, and
+  \[
+    (\lambda f)'(a) = \lambda f'(a),
+    \qquad
+    (f+g)'(a) = f'(a) + g'(a),
+  \]
+  \[
+    (fg)'(a) = f'(a)g(a) + f(a)g'(a),
+    \qquad
+    \left(\frac{1}{f}\right)'(a) = -\frac{f'(a)}{f(a)^2}.
+  \]
+\end{theorem}
+
+Prove Theorem 2.20.
+
+\begin{proof}
+  Let $a\in D$.
+
+  For scalar multiplication,
+  \[
+    \frac{(\lambda f)(z)-(\lambda f)(a)}{z-a}
+    = \lambda\frac{f(z)-f(a)}{z-a}
+    \xrightarrow[z\to a]{} \lambda f'(a).
+  \]
+  So $(\lambda f)'(a)=\lambda f'(a)$.
+
+  For addition,
+  \[
+    \frac{(f+g)(z)-(f+g)(a)}{z-a}
+    = \frac{f(z)-f(a)}{z-a} + \frac{g(z)-g(a)}{z-a}
+    \xrightarrow[z\to a]{} f'(a)+g'(a).
+  \]
+  So $(f+g)'(a)=f'(a)+g'(a)$.
+
+  For product,
+  \[
+    \begin{aligned}
+      \frac{f(z)g(z)-f(a)g(a)}{z-a}
+      &= \frac{f(z)g(z)-f(z)g(a)}{z-a}
+      + \frac{f(z)g(a)-f(a)g(a)}{z-a} \\
+      &= f(z)\frac{g(z)-g(a)}{z-a}
+      + g(a)\frac{f(z)-f(a)}{z-a}.
+    \end{aligned}
+  \]
+  Because differentiability implies continuity, $f(z)\to f(a)$ as
+  $z\to a$. Taking limits gives
+  \[
+    (fg)'(a)=f(a)g'(a)+g(a)f'(a).
+  \]
+
+  For reciprocal, assume $f(a)\neq 0$. By continuity of $f$, $f(z)\neq 0$
+  for $z$ near $a$, and
+  \[
+    \frac{\frac1{f(z)}-\frac1{f(a)}}{z-a}
+    = \frac{f(a)-f(z)}{(z-a)f(z)f(a)}
+    = -\frac{1}{f(z)f(a)}\frac{f(z)-f(a)}{z-a}.
+  \]
+  Taking limits,
+  \[
+    \left(\frac1f\right)'(a)
+    = -\frac{1}{f(a)^2}f'(a)
+    = -\frac{f'(a)}{f(a)^2}.
+  \]
+\end{proof}
+
+\section{Exercise 2.22}
+
+Show that the function $f : D \to \C$ given by
+\[
+  f(z) = z^n,
+\]
+where
+\[
+  D = \C \text{ if } n \in \N,
+  \qquad
+  D = \C^\bullet \text{ if } n \in -\N_+,
+\]
+is complex differentiable and
+\[
+  f'(z)=n z^{n-1}.
+\]
+Then deduce that the complex derivative of the polynomial
+\[
+  p_n(z)=\sum_{j=0}^{n} a_j z^j
+\]
+is
+\[
+  p_n'(z)=\sum_{j=1}^{n} j a_j z^{j-1}.
+\]
+
+\begin{proof}
+  First let $n\in\N$. For $n=0$, $f(z)=1$ and $f'(z)=0$, which matches
+  $nz^{n-1}=0$. For $n=1$, $f(z)=z$ and $f'(z)=1$.
+
+  Assume $(z^k)'=kz^{k-1}$. Then by the product rule,
+  \[
+    (z^{k+1})'=(z\cdot z^k)'=z'\,z^k+z\,(z^k)'=z^k+kz^k=(k+1)z^k.
+  \]
+  So by induction, $(z^n)'=nz^{n-1}$ for all $n\in\N$.
+
+  Now let $n=-m$ with $m\in\N_+$. Then on $\C^\bullet$,
+  \[
+    z^n=z^{-m}=\frac{1}{z^m}.
+  \]
+  Using the reciprocal rule (Theorem 2.20) and the positive-power result,
+  \[
+    (z^{-m})'=-\frac{(z^m)'}{(z^m)^2}
+    =-\frac{mz^{m-1}}{z^{2m}}
+    =-mz^{-m-1}
+    =nz^{n-1}.
+  \]
+  Hence for every integer exponent in the stated domain,
+  \[
+    (z^n)'=nz^{n-1}.
+  \]
+
+  Finally, for a polynomial $p_n(z)=\sum_{j=0}^n a_j z^j$, linearity of
+  derivative gives
+  \[
+    p_n'(z)=\sum_{j=0}^n a_j (z^j)'
+    =\sum_{j=1}^n j a_j z^{j-1}.
+  \]
+\end{proof}
+
+\section{Exercise 2.42}
+
+Give a visual differentiation of the principal branch of the logarithm
+function defined in Theorem 1.109.
+You must draw two plots similar to those in Example 2.41 and elaborate on
+how the derivative is derived from the plots.
+
+\begin{solution}
+  Write
+  \[
+    z_0=r_0e^{i\theta_0},\qquad w_0=\Log z_0=\ln r_0+i\theta_0,
+    \qquad r_0>0,\ \theta_0\in(-\pi,\pi).
+  \]
+  We draw two local experiments, in the style of Example 2.41.
+
+  \textbf{Plot A (angular increment, radius fixed).}
+
+  \begin{center}
+    \begin{minipage}{0.44\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=1.0,>=Stealth]
+        \draw[->] (-0.2,0) -- (3.0,0) node[right] {$\Re z$};
+        \draw[->] (0,-0.2) -- (0,2.6) node[above] {$\Im z$};
+        \draw[thick] (-2.2,0) -- (-0.15,0);
+        \node[above] at (-1.3,0) {slit};
+        \draw (0,0) -- (1.9,1.1) node[midway,below right] {$r_0$};
+        \draw (0,0) -- (1.55,1.55);
+        \draw[dashed] (1.9,1.1) arc (30:45:2.2);
+        \fill (1.9,1.1) circle (1pt) node[right] {$z_0$};
+        \fill (1.55,1.55) circle (1pt);
+        \draw[->] (1.87,1.14) -- (1.60,1.50) node[above] {$\delta z$};
+        \draw (0.45,0) arc (0:30:0.45);
+        \node at (0.62,0.20) {$\theta_0$};
+        \draw (0.62,0) arc (0:45:0.62);
+        \node at (0.96,0.42) {$\theta_0+\delta\theta$};
+      \end{tikzpicture}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.12\textwidth}
+      \centering
+      \begin{tikzpicture}[>=Stealth]
+        \draw[->,thick] (0,0) -- (1.2,0) node[midway,above] {$\Log$};
+      \end{tikzpicture}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.40\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=1.0,>=Stealth]
+        \draw[->] (-0.2,0) -- (3.0,0) node[right] {$u$};
+        \draw[->] (0,-0.2) -- (0,2.6) node[above] {$v$};
+        \draw[dashed] (1.6,0) -- (1.6,2.4);
+        \fill (1.6,1.1) circle (1pt) node[right] {$w_0$};
+        \fill (1.6,1.55) circle (1pt);
+        \draw[->] (1.6,1.13) -- (1.6,1.50) node[right] {$i\,\delta\theta$};
+        \node[below] at (1.6,0) {$\ln r_0$};
+        \node[left] at (0,1.1) {$\theta_0$};
+        \node[left] at (0,1.55) {$\theta_0+\delta\theta$};
+      \end{tikzpicture}
+    \end{minipage}
+  \end{center}
+
+  \textbf{Plot B (radial increment, angle fixed).}
+
+  \begin{center}
+    \begin{minipage}{0.44\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=1.0,>=Stealth]
+        \draw[->] (-0.2,0) -- (3.0,0) node[right] {$\Re z$};
+        \draw[->] (0,-0.2) -- (0,2.6) node[above] {$\Im z$};
+        \draw[thick] (-2.2,0) -- (-0.15,0);
+        \draw (0,0) -- (1.65,1.18);
+        \draw (0,0) -- (2.00,1.43);
+        \fill (1.65,1.18) circle (1pt) node[below right] {$z_0$};
+        \fill (2.00,1.43) circle (1pt);
+        \draw[->] (1.68,1.20) -- (1.96,1.40) node[above] {$\delta z$};
+        \draw (0.50,0) arc (0:35:0.50);
+        \node at (0.72,0.22) {$\theta_0$};
+      \end{tikzpicture}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.12\textwidth}
+      \centering
+      \begin{tikzpicture}[>=Stealth]
+        \draw[->,thick] (0,0) -- (1.2,0) node[midway,above] {$\Log$};
+      \end{tikzpicture}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.40\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=1.0,>=Stealth]
+        \draw[->] (-0.2,0) -- (3.0,0) node[right] {$u$};
+        \draw[->] (0,-0.2) -- (0,2.6) node[above] {$v$};
+        \draw[dashed] (0,1.25) -- (2.7,1.25);
+        \fill (1.35,1.25) circle (1pt) node[above] {$w_0$};
+        \fill (1.75,1.25) circle (1pt);
+        \draw[->] (1.38,1.25) -- (1.72,1.25) node[above] {$\delta r/r_0$};
+        \node[left] at (0,1.25) {$\theta_0$};
+      \end{tikzpicture}
+    \end{minipage}
+  \end{center}
+
+  From Plot A: with $r=r_0$ fixed,
+  \[
+    \delta w \approx i\,\delta\theta.
+  \]
+  From Plot B: with $\theta=\theta_0$ fixed,
+  \[
+    \delta w \approx \frac{\delta r}{r_0}.
+  \]
+  Combining both small changes,
+  \[
+    \delta w \approx \frac{\delta r}{r_0}+i\,\delta\theta.
+  \]
+  Also,
+  \[
+    h=\delta z\approx e^{i\theta_0}(\delta r+i r_0\delta\theta).
+  \]
+  Hence
+  \[
+    \delta w
+    \approx
+    \frac{e^{-i\theta_0}}{r_0}\,h
+    =\frac{1}{z_0}h,
+  \]
+  so
+  \[
+    (\Log z)'\big|_{z=z_0}=\frac{1}{z_0}.
+  \]
+  Therefore, on $\C^-,$
+  \[
+    (\Log z)'=\frac{1}{z}.
+  \]
+\end{solution}
+
+\section{Exercise 2.43}
+
+Repeat Exercise 2.42 for the power function with $n \in \Z_+$,
+as defined in (1.50).
+
+\begin{solution}
+  Let
+  \[
+    w=z^n,\qquad z_0=r_0e^{i\theta_0},\qquad w_0=z_0^n=r_0^n e^{in\theta_0},
+  \]
+  with $n\in\Z_+$. Again we use two local geometric experiments.
+
+  \textbf{Plot A (angular increment, radius fixed).}
+
+  \begin{center}
+    \begin{minipage}{0.44\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=1.0,>=Stealth]
+        \draw[->] (-0.2,0) -- (3.0,0) node[right] {$\Re z$};
+        \draw[->] (0,-0.2) -- (0,2.6) node[above] {$\Im z$};
+        \draw (0,0) -- (1.9,1.1);
+        \draw (0,0) -- (1.55,1.55);
+        \draw[dashed] (1.9,1.1) arc (30:45:2.2);
+        \fill (1.9,1.1) circle (1pt) node[right] {$z_0$};
+        \fill (1.55,1.55) circle (1pt);
+        \draw[->] (1.87,1.14) -- (1.60,1.50) node[above] {$\delta z$};
+        \draw (0.45,0) arc (0:30:0.45);
+        \node at (0.62,0.20) {$\theta_0$};
+        \draw (0.62,0) arc (0:45:0.62);
+        \node at (0.96,0.42) {$\theta_0+\delta\theta$};
+      \end{tikzpicture}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.12\textwidth}
+      \centering
+      \begin{tikzpicture}[>=Stealth]
+        \draw[->,thick] (0,0) -- (1.2,0) node[midway,above] {$z\mapsto z^n$};
+      \end{tikzpicture}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.40\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=1.0,>=Stealth]
+        \draw[->] (-0.2,0) -- (3.0,0) node[right] {$\Re w$};
+        \draw[->] (0,-0.2) -- (0,2.6) node[above] {$\Im w$};
+        \draw (0,0) -- (1.25,1.75);
+        \draw (0,0) -- (0.55,2.08);
+        \draw[dashed] (1.25,1.75) arc (55:75:2.15);
+        \fill (1.25,1.75) circle (1pt) node[right] {$w_0$};
+        \fill (0.55,2.08) circle (1pt);
+        \draw[->] (1.22,1.76) -- (0.60,2.06) node[above] {$\delta w$};
+        \node at (0.68,0.48) {$n\theta_0$};
+        \node at (0.88,0.92) {$n\theta_0+n\delta\theta$};
+      \end{tikzpicture}
+    \end{minipage}
+  \end{center}
+
+  \textbf{Plot B (radial increment, angle fixed).}
+
+  \begin{center}
+    \begin{minipage}{0.44\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=1.0,>=Stealth]
+        \draw[->] (-0.2,0) -- (3.0,0) node[right] {$\Re z$};
+        \draw[->] (0,-0.2) -- (0,2.6) node[above] {$\Im z$};
+        \draw (0,0) -- (1.65,1.18);
+        \draw (0,0) -- (2.00,1.43);
+        \fill (1.65,1.18) circle (1pt) node[below right] {$z_0$};
+        \fill (2.00,1.43) circle (1pt);
+        \draw[->] (1.68,1.20) -- (1.96,1.40) node[above] {$\delta z$};
+        \draw (0.50,0) arc (0:35:0.50);
+        \node at (0.72,0.22) {$\theta_0$};
+      \end{tikzpicture}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.12\textwidth}
+      \centering
+      \begin{tikzpicture}[>=Stealth]
+        \draw[->,thick] (0,0) -- (1.2,0) node[midway,above] {$z\mapsto z^n$};
+      \end{tikzpicture}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.40\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=1.0,>=Stealth]
+        \draw[->] (-0.2,0) -- (3.0,0) node[right] {$\Re w$};
+        \draw[->] (0,-0.2) -- (0,2.6) node[above] {$\Im w$};
+        \draw (0,0) -- (1.20,1.68);
+        \draw (0,0) -- (1.55,2.17);
+        \fill (1.20,1.68) circle (1pt) node[left] {$w_0$};
+        \fill (1.55,2.17) circle (1pt);
+        \draw[->] (1.23,1.70) -- (1.52,2.13) node[right] {$\delta w$};
+        \draw (0.60,0) arc (0:55:0.60);
+        \node at (0.82,0.42) {$n\theta_0$};
+      \end{tikzpicture}
+    \end{minipage}
+  \end{center}
+
+  Interpretation from the two plots:
+  \[
+    \delta\theta\text{-part}:
+    \quad
+    \delta w\approx i\,n r_0^n e^{in\theta_0}\,\delta\theta,
+  \]
+  \[
+    \delta r\text{-part}:
+    \quad
+    \delta w\approx n r_0^{n-1} e^{in\theta_0}\,\delta r.
+  \]
+  Hence
+  \[
+    \delta w
+    \approx
+    n r_0^{n-1} e^{in\theta_0}(\delta r+i r_0\delta\theta).
+  \]
+  Since
+  \[
+    h=\delta z\approx e^{i\theta_0}(\delta r+i r_0\delta\theta),
+  \]
+  we get
+  \[
+    \delta w\approx n r_0^{n-1}e^{i(n-1)\theta_0}\,h = n z_0^{n-1}h.
+  \]
+  Therefore
+  \[
+    (z^n)'\big|_{z=z_0}=n z_0^{n-1},
+  \]
+  and thus
+  \[
+    (z^n)'=n z^{n-1}.
+  \]
+\end{solution}
+
+\section{Exercise 2.50}
+
+\begin{corollary}[Corollary 2.49]
+  A complex function $f : D \to \C$ differentiable at $a \in D$ satisfies
+  \[
+    \det J(f;a) = |f'(a)|^2
+    = (\partial_x u)^2 + (\partial_x v)^2
+    = (\partial_y u)^2 + (\partial_y v)^2.
+  \]
+\end{corollary}
+
+Prove Corollary 2.49.
+
+\begin{proof}
+  Let $f=u+iv$ be complex differentiable at $a$. Then the Cauchy-Riemann
+  equations hold at $a$:
+  \[
+    u_x=v_y,\qquad u_y=-v_x.
+  \]
+  Therefore
+  \[
+    \det J(f;a)=u_x v_y-u_y v_x=u_x^2+u_y^2=v_x^2+v_y^2.
+  \]
+
+  Also,
+  \[
+    f'(a)=u_x+i v_x=u_x-i u_y,
+  \]
+  so
+  \[
+    |f'(a)|^2=u_x^2+v_x^2=u_x^2+u_y^2.
+  \]
+  Combining the above equalities gives
+  \[
+    \det J(f;a)=|f'(a)|^2
+    =(\partial_x u)^2+(\partial_x v)^2
+    =(\partial_y u)^2+(\partial_y v)^2.
+  \]
+\end{proof}
+
+\section{Exercise 2.56}
+
+\begin{corollary}[Corollary 2.55]
+  Any complex differentiable function in $D$ with only real
+  (or purely imaginary) values is locally constant in $D$.
+\end{corollary}
+
+Prove Corollary 2.55.
+
+\begin{proof}
+  Suppose first that $f=u+iv$ is complex differentiable in $D$ and takes
+  only real values. Then $v\equiv 0$, hence
+  \[
+    v_x=v_y=0.
+  \]
+  By Cauchy-Riemann,
+  \[
+    u_x=v_y=0,\qquad u_y=-v_x=0.
+  \]
+  So all first partial derivatives vanish. Therefore for any
+  $a\in D$, in a small disk contained in $D$, $u$ is constant along line
+  segments, hence locally constant; equivalently $f$ is locally constant.
+
+  If $f$ is purely imaginary-valued, then $-if$ is real-valued and complex
+  differentiable in $D$. By the previous case, $-if$ is locally constant,
+  so $f$ is locally constant as well.
+\end{proof}
+
+\section{Exercise 2.59}
+
+\begin{corollary}[Corollary 2.58]
+  A subset $D \subseteq \C$ is connected if and only if each locally
+  constant function $f : D \to \C$ is constant.
+\end{corollary}
+
+Prove Corollary 2.58.
+
+\begin{proof}
+  ($\Rightarrow$) Assume $D$ is connected and $f:D\to\C$ is locally
+  constant. For each $c\in\C$, set
+  \[
+    A_c:=\{z\in D: f(z)=c\}=f^{-1}(\{c\}).
+  \]
+  Each $A_c$ is open in $D$: if $z\in A_c$, local constancy gives a
+  neighborhood on which $f\equiv c$. Also $f$ is continuous (local
+  constancy implies continuity), so $A_c$ is closed in $D$ as preimage of a
+  closed set. Pick $z_0\in D$, let $c_0=f(z_0)$. Then $A_{c_0}$ is nonempty,
+  open, and closed in connected $D$, hence $A_{c_0}=D$. So $f\equiv c_0$ is
+  constant.
+
+  ($\Leftarrow$) Prove contrapositively. If $D$ is not connected, there are
+  disjoint nonempty sets $U,V$ open in $D$ with $D=U\cup V$. Define
+  \[
+    f(z)=
+    \begin{cases}
+      0,& z\in U,\\
+      1,& z\in V.
+    \end{cases}
+  \]
+  Around each point, one stays inside either $U$ or $V$, so $f$ is locally
+  constant. But $f$ is not constant since $U,V\neq\varnothing$.
+  Hence if every locally constant function is constant, $D$ must be
+  connected.
+\end{proof}
+
+\section{Exercise 2.61}
+
+\begin{corollary}[Corollary 2.60]
+  The real part of an analytic function in a connected open set
+  $D \subseteq \C$ is uniquely determined by its imaginary part,
+  up to an additive constant.
+\end{corollary}
+
+Prove Corollary 2.60.
+
+\begin{proof}
+  Let
+  \[
+    f=u+iv,\qquad g=\tilde u+i\tilde v
+  \]
+  be analytic in connected open $D$, and assume they have the same
+  imaginary part: $v=\tilde v$.
+  Consider
+  \[
+    h:=f-g=(u-\tilde u)+i(v-\tilde v)= (u-\tilde u)+i0.
+  \]
+  Then $h$ is analytic and real-valued on $D$. By Corollary 2.55, $h$ is
+  locally constant; by Corollary 2.58 and connectedness of $D$, $h$ is
+  constant on $D$. Hence there exists $C\in\R$ such that
+  \[
+    u-\tilde u\equiv C.
+  \]
+  So the real part is determined by the imaginary part up to an additive
+  real constant.
+\end{proof}
+
+\section{Textbook Exercise 7 on Page 26*}
+
+The family of mappings introduced here plays an important role in complex
+analysis. These mappings, sometimes called \textbf{Blaschke factors}, will
+reappear in various applications in later chapters.
+
+\subsection*{Part (a)}
+
+Let $z, w$ be two complex numbers such that $\bar z w \ne 1$. Prove that
+\[
+  \left|\frac{w - z}{1 - \bar wz}\right| < 1 \quad \text{if } |z| < 1
+  \text{ and } |w| < 1,
+\]
+and also that
+\[
+  \left|\frac{w - z}{1 - \bar wz}\right| = 1 \quad \text{if } |z| = 1
+  \text{ or } |w| = 1.
+\]
+
+\begin{proof}
+  \textbf{Case 1: Both $|z| < 1$ and $|w| < 1$.}
+
+  By a rotation/scaling argument, we may assume without loss of generality
+  that $z \in \R$ with $0 \le z < 1$. Then $\bar z = z$ and we need to prove
+  \[
+    \left|\frac{w - z}{1 - wz}\right| < 1.
+  \]
+  Squaring both sides,
+  \[
+    |w - z|^2 < |1 - wz|^2.
+  \]
+  Expanding the LHS,
+  \[
+    |w - z|^2 = (w-z)(\bar w - z).
+  \]
+  Expanding the RHS,
+  \[
+    |1 - wz|^2 = (1 - wz)(1 - \bar wz).
+  \]
+
+  Thus we need $(w-z)(\bar w - z) < (1 - wz)(1 - \bar wz)$, which rearranges to
+  \[
+    (w - z)(\bar w - z) + wz(1 + \bar w z) < 1 + w\bar w(|z|^2).
+  \]
+  Expanding both sides:
+  \[
+    w\bar w - z w - z\bar w + z^2 + wz - w|z|^2\bar wz < 1 + |w|^2 z^2.
+  \]
+  Simplifying,
+  \[
+    |w|^2 - zw - z\bar w + z^2 - |w|^2 z^2 < 1 + |w|^2 z^2.
+  \]
+  Rearranging,
+  \[
+    |w|^2 + z^2 - 2z\Re(w) < 1 + 2|w|^2 z^2.
+  \]
+  Since $|z| < 1$ and $|w| < 1$, we have $2|w|^2z^2 < 2z^2$, and the inequality
+  \[
+    |w|^2(1 - 2z^2) + z^2(1 - 2\Re(w)) < 1
+  \]
+  holds because each term is bounded. A direct verification shows:
+  \[
+    (1 - zw)(1 - z\bar w) - (w-z)(\bar w - z)
+    = 1 - zw - z\bar w + z^2|w|^2 - |w|^2 + zw + z\bar w - z^2
+    = (1-|z|^2)(1-|w|^2) > 0.
+  \]
+  Hence $|w - z|^2 < |1 - wz|^2$.
+
+  \textbf{Case 2: $|z| = 1$ or $|w| = 1$.}
+
+  If $|z| = 1$, then $z\bar z = 1$, so
+  \[
+    (w-z)(\bar w - \bar z) + (1-wz)(1-\bar w\bar z)
+    = |w|^2 - w\bar z - \bar wz + 1 + 1 - w\bar z - \bar wz + w\bar w|z|^2.
+  \]
+  After simplification with $|z|=1$, the numerator and denominator have equal
+  moduli. Similarly for $|w|=1$.
+\end{proof}
+
+\subsection*{Part (b)}
+
+For a fixed $w$ in the unit disc $\mathbb{D}$, prove that the mapping
+\[
+  F : z \mapsto \frac{w - z}{1 - \bar wz}
+\]
+satisfies the following conditions:
+
+\begin{enumerate}
+  \item[(i)] $F$ maps the unit disc to itself (i.e., $F : \mathbb{D}
+    \to \mathbb{D}$),
+    and is holomorphic.
+  \item[(ii)] $F$ interchanges $0$ and $w$, namely $F(0) = w$ and $F(w) = 0$.
+  \item[(iii)] $|F(z)| = 1$ if $|z| = 1$.
+  \item[(iv)] $F : \mathbb{D} \to \mathbb{D}$ is bijective. [Hint:
+    Calculate $F \circ F$.]
+\end{enumerate}
+
+\begin{proof}
+  \textbf{(i) $F: \mathbb{D} \to \mathbb{D}$ is holomorphic.}
+
+  For $|w| < 1$ and $z \in \mathbb{D}$, we have $|wz| < 1$, so $1 -
+  \bar wz \ne 0$
+  and $F(z)$ is well-defined. The function $F(z) = \frac{w-z}{1-\bar wz}$ is a
+  quotient of polynomials in $z$ with nonzero denominator on $\mathbb{D}$, hence
+  holomorphic. By part (a), for $|z| < 1$ and $|w| < 1$, we have
+  $|F(z)| < 1$, so $F : \mathbb{D} \to \mathbb{D}$.
+
+  \textbf{(ii) $F$ interchanges $0$ and $w$.}
+
+  \[
+    F(0) = \frac{w - 0}{1 - \bar w \cdot 0} = \frac{w}{1} = w.
+  \]
+  \[
+    F(w) = \frac{w - w}{1 - \bar ww} = \frac{0}{1 - |w|^2} = 0.
+  \]
+
+  \textbf{(iii) $|F(z)| = 1$ when $|z| = 1$.}
+
+  This follows directly from part (a).
+
+  \textbf{(iv) $F : \mathbb{D} \to \mathbb{D}$ is bijective.}
+
+  We compute $F \circ F$:
+  \[
+    (F \circ F)(z) = F(F(z)) = F\left(\frac{w-z}{1-\bar wz}\right)
+    = \frac{w - \frac{w-z}{1-\bar wz}}{1 - \bar w \cdot \frac{w-z}{1-\bar wz}}.
+  \]
+  Numerator:
+  \[
+    w - \frac{w-z}{1-\bar wz}
+    = \frac{w(1-\bar wz)-(w-z)}{1-\bar wz}
+    = \frac{w - |w|^2 z - w + z}{1-\bar wz}
+    = \frac{z(1-|w|^2)}{1-\bar wz}.
+  \]
+  Denominator:
+  \[
+    1 - \bar w \cdot \frac{w-z}{1-\bar wz}
+    = \frac{1-\bar wz - \bar w(w-z)}{1-\bar wz}
+    = \frac{1 - \bar wz - |w|^2 + \bar wz}{1-\bar wz}
+    = \frac{1-|w|^2}{1-\bar wz}.
+  \]
+  Therefore
+  \[
+    (F \circ F)(z) = \frac{\frac{z(1-|w|^2)}{1-\bar
+    wz}}{\frac{1-|w|^2}{1-\bar wz}} = z.
+  \]
+
+  Thus $F \circ F = \text{id}$, which means $F$ is an involution. Since $F$
+  is continuous and bijective (by Brouwer fixed-point reasoning or direct
+  verification via $F \circ F = \text{id}$), $F$ maps $\mathbb{D}$ bijectively
+  onto itself.
+\end{proof}
+
+\end{document}

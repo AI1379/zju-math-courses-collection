@@ -12,6 +12,8 @@
 *.synctex.gz
 *.xdv
 
+!homework*.pdf
+
 # Python
 __pycache__/
 *.py[cod]
