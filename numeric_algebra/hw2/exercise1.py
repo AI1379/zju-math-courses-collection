@@ -136,9 +136,9 @@ def gaussian_column_pivoting(
     return P, L, U
 
 
-def solve_by_LU(L: np.ndarray, U: np.ndarray, b: np.ndarray) -> np.ndarray:
-    y = forward_substitution(L, b)
-    x = backward_substitution(U, y)
+def solve_by_LU(L: np.ndarray, U: np.ndarray, b: np.ndarray, validate: bool = False) -> np.ndarray:
+    y = forward_substitution(L, b, validate)
+    x = backward_substitution(U, y, validate)
     return x
 
 
