@@ -1,0 +1,375 @@
+\documentclass{article}
+\usepackage{geometry}
+\geometry{margin=1.5cm, vmargin={0pt,1cm}}
+\setlength{\topmargin}{-1cm}
+\setlength{\headheight}{12.5pt}
+\setlength{\paperheight}{29.7cm}
+\setlength{\textheight}{25.3cm}
+
+% useful packages.
+\usepackage[UTF8]{ctex}
+\usepackage{fancyhdr}
+\usepackage{layout}
+\usepackage{luacode}
+
+% import common macros
+\input{../../common/macros.tex}
+
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Configure listings for Python code highlighting
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\bfseries\color{blue},
+  commentstyle=\color{gray},
+  stringstyle=\color{red},
+  breaklines=true,
+  showstringspaces=false,
+  tabsize=4,
+  frame=single,
+  framesep=5pt,
+  rulecolor=\color{gray},
+  backgroundcolor=\color{white},
+  captionpos=b,
+  numberstyle=\tiny\color{gray},
+  numbers=left,
+  stepnumber=5,
+}
+
+\lstnewenvironment{plaintext}[1][]{
+  \lstset{
+    language=none,
+    basicstyle=\ttfamily,
+    keywordstyle=,
+    commentstyle=,
+    stringstyle=,
+    numbers=none,
+    frame=none,
+    backgroundcolor=\color{white},
+    #1                % 允许用户自行覆盖默认设置
+  }
+}{}
+
+% Name and uID
+\newcommand{\name}{\getEnv{NAME}{NAME}}
+\newcommand{\uid}{\getEnv{UID}{UID}}
+\newcommand{\course}{数值代数}
+\newcommand{\hwNum}{6}
+
+\newcommand{\fl}{\mathrm{fl}}
+
+\begin{document}
+
+\pagestyle{fancy}
+\fancyhead{}
+\lhead{\name (\uid)}
+\chead{\course \#\hwNum}
+\rhead{\today}
+
+\section{题目 14：连乘的浮点误差上界}
+
+估计连乘
+\[
+  \fl(x_1 \cdots x_n) = x_1 \cdots x_n (1+\varepsilon)
+\]
+中 $\varepsilon$ 的上界。
+
+\begin{solution}
+
+  设按顺序计算连乘：
+  \[
+    p_1 = x_1, \qquad p_k = \fl(p_{k-1}x_k),\ k=2,\ldots,n.
+  \]
+  由标准浮点模型可写成
+  \[
+    p_k = p_{k-1}x_k(1+\delta_k),\qquad |\delta_k|\le \mathbf{u},\ k=2,\ldots,n.
+  \]
+  递推展开得
+  \[
+    \fl(x_1\cdots x_n)=x_1\cdots x_n\prod_{k=2}^n(1+\delta_k)
+    =x_1\cdots x_n(1+\varepsilon),
+  \]
+  其中
+  \[
+    1+\varepsilon=\prod_{k=2}^n(1+\delta_k).
+  \]
+  由于 $|\delta_k|\le \mathbf{u}$，有
+  \[
+    |1+\varepsilon|\le\prod_{k=2}^n(1+|\delta_k|)\le (1+\mathbf{u})^{n-1},
+  \]
+  从而
+  \[
+    |\varepsilon|\le (1+\mathbf{u})^{n-1}-1.
+  \]
+  进一步，当 $(n-1)\mathbf{u}<1$ 时，记
+  \[
+    \gamma_{n-1}=\frac{(n-1)\mathbf{u}}{1-(n-1)\mathbf{u}},
+  \]
+  则有
+  \[
+    |\varepsilon|\le \gamma_{n-1}.
+  \]
+  特别地，若 $n\mathbf{u}\le 0.01$，则
+  \[
+    |\varepsilon|\le \gamma_{n-1}\le 1.01(n-1)\mathbf{u}.
+  \]
+
+\end{solution}
+
+\section{题目 15：顺序求和的浮点误差}
+
+证明：若 $n\mathbf{u} \le 0.01$，则
+\[
+  \fl\left(\sum_{i=1}^n x_i\right) = \sum_{i=1}^n x_i (1+\eta_i),
+\]
+其中
+\[
+  |\eta_1| \le 1.01(n-1)\mathbf{u}, \qquad |\eta_i| \le
+  1.01(n-i+1)\mathbf{u} \quad (i \ge 2).
+\]
+
+\begin{solution}
+
+  设按顺序求和：
+  \[
+    s_1=x_1,\qquad s_k=\fl(s_{k-1}+x_k),\quad k=2,\ldots,n.
+  \]
+  由浮点加法模型，存在 $\delta_k$ 使得
+  \[
+    s_k=(s_{k-1}+x_k)(1+\delta_k),\qquad |\delta_k|\le \mathbf{u}.
+  \]
+  递推展开得
+  \[
+    s_n = x_1\prod_{k=2}^n(1+\delta_k)
+    +\sum_{i=2}^n x_i\prod_{k=i}^n(1+\delta_k).
+  \]
+  令
+  \[
+    \eta_1=\prod_{k=2}^n(1+\delta_k)-1,
+    \qquad \eta_i=\prod_{k=i}^n(1+\delta_k)-1\ (i\ge 2),
+  \]
+  便有
+  \[
+    \fl\left(\sum_{i=1}^n x_i\right)=\sum_{i=1}^n x_i(1+\eta_i).
+  \]
+
+  而 $\eta_1$ 是 $n-1$ 个误差因子的乘积减 1，$\eta_i$（$i\ge 2$）是 $n-i+1$ 个误差因子的乘积减 1，故
+  \[
+    |\eta_1|\le \gamma_{n-1},\qquad |\eta_i|\le \gamma_{n-i+1},
+  \]
+  其中 $\gamma_m=\dfrac{m\mathbf{u}}{1-m\mathbf{u}}$。由于 $n\mathbf{u}\le
+  0.01$，有 $\gamma_m\le 1.01\,m\mathbf{u}$，因此
+  \[
+    |\eta_1| \le 1.01(n-1)\mathbf{u}, \qquad |\eta_i| \le
+    1.01(n-i+1)\mathbf{u} \quad (i \ge 2).
+  \]
+
+\end{solution}
+
+\section{题目 16：矩阵-向量乘法的后向误差}
+
+设 $A$ 为 $n \times n$ 矩阵，$x$ 为 $n$ 维向量，而且 $n\mathbf{u} \le 0.01$。证明：
+\[
+  \fl(Ax) = (A+E)x,
+\]
+其中 $E = [e_{ij}]$ 的元素满足
+\[
+  |e_{i1}| \le 1.01n|a_{i1}|\mathbf{u} \quad (i = 1, \cdots, n),
+\]
+\[
+  |e_{ij}| \le 1.01(n-j+2)|a_{ij}|\mathbf{u} \quad (i = 1, \cdots,
+  n;\ j = 2, \cdots, n).
+\]
+
+\begin{solution}
+
+  对第 $i$ 行，先计算每个乘积
+  \[
+    y_{ij}=\fl(a_{ij}x_j)=a_{ij}x_j(1+\delta_{ij}),\qquad
+    |\delta_{ij}|\le \mathbf{u}.
+  \]
+  再按顺序把 $y_{i1},\ldots,y_{in}$ 相加。第 $j$ 项从乘法到最后结果一共经历 1 次乘法舍入和
+  $n-j+1$ 次加法舍入，因此总相对误差可合并为一个 $\theta_{ij}$，满足
+  \[
+    |\theta_{i1}|\le \gamma_n,\qquad |\theta_{ij}|\le
+    \gamma_{n-j+2}\quad (j\ge 2).
+  \]
+  于是
+  \[
+    \fl((Ax)_i)=\sum_{j=1}^n a_{ij}x_j(1+\theta_{ij}).
+  \]
+  令 $E=[e_{ij}]$，其中 $e_{ij}=a_{ij}\theta_{ij}$，则
+  \[
+    \fl(Ax)=(A+E)x.
+  \]
+
+  由于 $n\mathbf{u}\le 0.01$，有 $\gamma_m\le 1.01\,m\mathbf{u}$，代入即得
+  \[
+    |e_{i1}|\le 1.01\,n|a_{i1}|\mathbf{u},
+  \]
+  以及对 $j\ge 2$,
+  \[
+    |e_{ij}|\le 1.01\,(n-j+2)|a_{ij}|\mathbf{u}.
+  \]
+
+\end{solution}
+
+\section{题目 17：点积的相对误差}
+
+证明：若 $x$ 是 $n$ 维向量，则 $\fl(x^T x) = x^T x(1+\alpha)$，其中
+\[
+  |\alpha| \le n\mathbf{u} + O(\mathbf{u}^2).
+\]
+
+\begin{solution}
+
+  当 $x=0$ 时，$x^Tx=0$ 且 $\fl(x^Tx)=0$，结论显然成立。下设 $x\neq 0$，于是 $x^Tx>0$。
+
+  先计算各分量平方：
+  \[
+    z_i=\fl(x_i^2)=x_i^2(1+\delta_i),\qquad |\delta_i|\le \mathbf{u}.
+  \]
+  再对 $z_1,\ldots,z_n$ 逐次求和。由第 15 题的结论，每个加数上的总误差可合并为一个 $\varepsilon_i$，且
+  \[
+    |\varepsilon_i|\le \gamma_n.
+  \]
+  因此
+  \[
+    \fl(x^Tx)=\sum_{i=1}^n x_i^2(1+\varepsilon_i)
+    =x^Tx+\sum_{i=1}^n x_i^2\varepsilon_i
+    =x^Tx(1+\alpha),
+  \]
+  其中
+  \[
+    \alpha=\frac{\sum_{i=1}^n x_i^2\varepsilon_i}{\sum_{i=1}^n x_i^2}.
+  \]
+
+  于是
+  \[
+    |\alpha|\le \max_i|\varepsilon_i|\le \gamma_n
+    =\frac{n\mathbf{u}}{1-n\mathbf{u}}
+    =n\mathbf{u}+O(\mathbf{u}^2).
+  \]
+
+\end{solution}
+
+\section{题目 18：三对角矩阵列主元消去的增长因子}
+
+证明：如果 $A$ 是三对角矩阵，那么列主元 Gauss 消去法的增长因子 $\rho$ 以 2 为界。
+
+\begin{solution}
+
+  \textbf{Step 1.}
+
+  记
+  \[
+    M:=\max_{i,j}|a_{ij}|,
+  \]
+  并令 $A^{(k)}$ 表示第 $k-1$ 步消去完成后（即第 $k$ 步开始时）的工作矩阵，$A^{(1)}=A$。
+
+  对三对角矩阵做列主元 Gauss 消去时，第 $k$ 列只有两项可能非零：
+  \[
+    a_{kk}^{(k)},\quad a_{k+1,k}^{(k)}.
+  \]
+  因此每步只有一个乘子
+  \[
+    \ell_k=\frac{a_{k+1,k}^{(k)}}{a_{kk}^{(k)}}
+  \]
+  且由列主元选择恒有 $|\ell_k|\le 1$。
+
+  下用归纳法证明：每步新产生或被更新的元素绝对值都不超过 $2M$，从而增长因子 $\rho\le 2$。
+
+  \textbf{Step 2. $k=1$ 时}
+
+  $A^{(1)}=A$，所有元素模均不超过 $M$。第一步至多更新第 2 行的两个位置：
+  \[
+    a_{22}^{(2)} = a_{22}^{(1)}-\ell_1 a_{12}^{(1)},
+    \qquad
+    a_{23}^{(2)} = a_{23}^{(1)}-\ell_1 a_{13}^{(1)}.
+  \]
+  三对角结构下 $a_{13}^{(1)}=0$，故 $|a_{23}^{(2)}|=|a_{23}^{(1)}|\le M\le 2M$；而
+  \[
+    |a_{22}^{(2)}|
+    \le |a_{22}^{(1)}|+|\ell_1|\,|a_{12}^{(1)}|
+    \le M+M=2M.
+  \]
+  结论对 $k=1$ 成立。
+
+  \textbf{Step 3. 假设 $k$ 时成立，$k+1$ 时}
+
+  第 $k$ 步只有一个乘子 $\ell_k$ 且 $|\ell_k|\le 1$，受影响的位置局限于第 $k+1$ 行的两项：
+  \[
+    a_{k+1,k+1}^{(k+1)} = a_{k+1,k+1}^{(k)}-\ell_k a_{k,k+1}^{(k)},
+  \]
+  \[
+    a_{k+1,k+2}^{(k+1)} = a_{k+1,k+2}^{(k)}-\ell_k a_{k,k+2}^{(k)}.
+  \]
+  由归纳假设，参与运算的量都不超过 $2M$；故更新后
+  \[
+    |a_{k+1,k+1}^{(k+1)}|\le 2M,
+    \qquad
+    |a_{k+1,k+2}^{(k+1)}|\le 2M.
+  \]
+  其余元素本步不变（或仅交换行次序，不改变模值），故结论对 $k+1$ 亦成立。
+
+  \textbf{Step 4.}
+
+  由归纳法，整个消去过程中所有元素绝对值都不超过 $2M$，因此
+  \[
+    \rho
+    =\frac{\max\limits_{k,i,j}|a_{ij}^{(k)}|}{\max\limits_{i,j}|a_{ij}|}
+    \le \frac{2M}{M}=2.
+  \]
+  即列主元 Gauss 消去法在三对角矩阵上有增长因子上界 2。
+
+\end{solution}
+
+\section{题目 20：带状矩阵列主元消去的后向误差}
+
+设 $A$ 为带状矩阵，带宽为 $2m+1$，其中 $m = 3$。若用列主元 Gauss 消去法计算得到的 $\tilde L$ 和
+$\tilde U$ 满足
+\[
+  \tilde L\tilde U = P(A+E),
+\]
+其中 $P$ 是排列方阵，试估计 $\|E\|_\infty$ 的上界。
+
+\begin{solution}
+
+  设排列后的矩阵为 $PA$。由标准浮点误差模型，误差矩阵 $PE = \tilde{L}\tilde{U} - PA$ 的元素满足
+  \[
+    | (PE)_{ij} | \le \sum_{k} \gamma_{n_i} |\tilde{L}_{ik}|\,|\tilde{U}_{kj}|,
+  \]
+  其中 $n_i$ 为计算该元素时内积实际涉及的非零乘加项数。
+
+  原矩阵半带宽 $m=3$，列主元消去后 $\tilde{L}$ 每行非零元（含对角元 1）至多 $m+1=4$ 个，
+  因此 $n_i \le 4$。取 $\gamma_4 = \dfrac{4\mathbf{u}}{1-4\mathbf{u}}$，得
+  \[
+    |PE| \le \gamma_4 |\tilde{L}|\,|\tilde{U}|.
+  \]
+
+  两边取 $\infty$-范数。$P$ 为排列阵，不改变 $\infty$-范数，故
+  \[
+    \|E\|_\infty = \|PE\|_\infty \le \gamma_4 \big\|
+    |\tilde{L}|\,|\tilde{U}| \big\|_\infty
+    \le \gamma_4 \| |\tilde{L}| \|_\infty \| |\tilde{U}| \|_\infty.
+  \]
+
+  由列主元消去法知 $|\tilde{L}_{ij}| \le 1$，$\tilde L$ 每行非零元不超过 $4$ 个，故
+  $\| |\tilde{L}| \|_\infty \le 4$。
+
+  另一方面，$\tilde U$ 每行非零元至多 $2m+1=7$ 个。设增长因子为 $\rho$，则
+  $\max_{i,j} |\tilde{U}_{ij}| \le \rho \|A\|_\infty$，故
+  \[
+    \| |\tilde{U}| \|_\infty \le 7\rho\|A\|_\infty.
+  \]
+
+  代入得
+  \[
+    \|E\|_\infty \le 28\gamma_4 \rho \|A\|_\infty.
+  \]
+
+\end{solution}
+
+\end{document}
