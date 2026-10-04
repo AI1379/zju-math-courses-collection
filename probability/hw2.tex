@@ -1,0 +1,195 @@
+\documentclass{article}
+\usepackage[UTF8]{ctex}
+\usepackage[a4paper,margin=2.2cm]{geometry}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{lmodern}
+
+\hypersetup{
+  pdftitle={概率论 HW2},
+  colorlinks=true,
+  linkcolor=blue,
+  urlcolor=blue
+}
+
+\input{../common/macros.tex}
+\newcommand{\name}{\getEnv{NAME}{NAME}}
+\newcommand{\uid}{\getEnv{UID}{UID}}
+
+\newenvironment{problem}{\par\medskip\noindent\textbf{题目.}\ }{\par\smallskip}
+
+\title{概率论 HW2}
+\author{\name \uid}
+\date{2026-09-28}
+
+\begin{document}
+\maketitle
+
+\section*{第 21 题\quad 事件表示}
+
+\begin{problem}
+  设 $A,B,C,D$ 是四个事件，试用它们表示下列事件:
+  \begin{enumerate}[(1)]
+    \item 四个事件至少发生一个;
+    \item 四个事件恰好发生两个;
+    \item $A$，$B$ 同时发生而 $C$，$D$ 不发生;
+    \item 四个事件都不发生;
+    \item 四个事件至多发生一个;
+    \item 四个事件至少发生两个;
+    \item 它们至多发生两个.
+  \end{enumerate}
+\end{problem}
+
+\begin{solution}
+  \begin{enumerate}[(1)]
+    \item $A\cup B\cup C\cup D$.
+
+    \item 恰有一对同时发生，其余两个都不发生，共 $\binom42=6$ 种：
+      \[
+        \begin{aligned}
+          &AB\bar C\bar D\cup A\bar BC\bar D\cup A\bar B\bar CD\\
+          &\quad\cup\bar ABC\bar D\cup\bar AB\bar CD\cup\bar A\bar BCD .
+        \end{aligned}
+      \]
+
+    \item $AB\bar C\bar D$.
+
+    \item $\bar A\bar B\bar C\bar D$.
+
+    \item 一个都不发生，或恰有一个发生：
+      \[
+        \begin{aligned}
+          &\bar A\bar B\bar C\bar D\cup A\bar B\bar C\bar D\cup\bar AB\bar C\bar D\\
+          &\quad\cup\bar A\bar BC\bar D\cup\bar A\bar B\bar CD .
+        \end{aligned}
+      \]
+
+    \item 至少两个发生，等价于存在一对事件同时发生：
+      \[
+        AB\cup AC\cup AD\cup BC\cup BD\cup CD .
+      \]
+
+    \item 至多两个发生，即没有三个同时发生：
+      \[
+        \overline{ABC\cup ABD\cup ACD\cup BCD} .
+      \]
+  \end{enumerate}
+\end{solution}
+
+\section*{第 24 题\quad 串并联电路}
+
+\begin{problem}
+  元件 $A$，$D$ 与并联电路 $B$，$C$ 串联. 以 $A,B,C,D$ 记相应元件能正常工作的事件.
+  \begin{enumerate}[(1)]
+    \item 以 $A,B,C,D$ 表示 $\{$线路能正常工作$\}$ 这一事件;
+    \item 以 $\bar A,\bar B,\bar C,\bar D$ 表示 $\{$线路不能正常工作$\}$ 的事件.
+  \end{enumerate}
+\end{problem}
+
+\begin{solution}
+  \begin{enumerate}[(1)]
+    \item 线路上 $A$、$D$ 与 $B$、$C$ 的并联部分依次串联，各段都通线路才通，故线路正常工作即
+      \[
+        AD(B\cup C) = ABD\cup ACD .
+      \]
+
+    \item 取对立事件，再用德摩根律：
+      \[
+        \overline{AD(B\cup C)} = \bar A\cup\bar D\cup\overline{B\cup C}
+        = \bar A\cup\bar D\cup\bar B\bar C .
+      \]
+  \end{enumerate}
+\end{solution}
+
+\section*{第 27 题\quad 多还少补定理}
+
+\begin{problem}
+  用数学归纳法证明 1.3 节的 $n$ 个事件并的概率公式 (1.4).
+\end{problem}
+
+\begin{solution}
+  即证
+  \[
+    P\left(\bigcup_{i=1}^n A_i\right)
+    = \sum_{i=1}^n P(A_i) - \sum_{1\le i<j\le n} P(A_iA_j) + \cdots
+    + (-1)^{n-1} P(A_1A_2\cdots A_n) .
+  \]
+
+  $n=2$ 时，$A_1\cup A_2 = A_1\cup(A_2\bar A_1)$，右端两项不相交，故
+  \[
+    P(A_1\cup A_2) = P(A_1) + P(A_2\bar A_1)
+    = P(A_1) + P(A_2) - P(A_1A_2),
+  \]
+  公式成立。
+
+  设公式对 $n-1$ 个事件成立，记 $B=A_1\cup\cdots\cup A_{n-1}$。对 $B$ 与 $A_n$ 用已证的 $n=2$ 情形，
+  \[
+    P\left(\bigcup_{i=1}^n A_i\right) = P(B\cup A_n)
+    = P(B) + P(A_n) - P(BA_n) .
+  \]
+  由归纳假设，
+  \[
+    P(B) = \sum_{i=1}^{n-1} P(A_i) - \sum_{1\le i<j\le n-1} P(A_iA_j)
+    + \cdots + (-1)^{n-2} P(A_1A_2\cdots A_{n-1}) .
+  \]
+  又 $BA_n = (A_1A_n)\cup\cdots\cup(A_{n-1}A_n)$，对 $n-1$ 个事件 $A_1A_n,\dots,A_{n-1}A_n$ 用归纳假设，
+  \[
+    P(BA_n) = \sum_{i=1}^{n-1} P(A_iA_n)
+    - \sum_{1\le i<j\le n-1} P(A_iA_jA_n) + \cdots
+    + (-1)^{n-2} P(A_1A_2\cdots A_n) .
+  \]
+  两式代入 $P(B)+P(A_n)-P(BA_n)$ 合并同类项：$k$ 元乘积之和由不含 $A_n$ 的和含 $A_n$ 的两部分组成，符号同为
+  $(-1)^{k-1}$，合起来恰为全部 $k$ 元乘积之和。故
+  \[
+    P\left(\bigcup_{i=1}^n A_i\right)
+    = \sum_{i=1}^n P(A_i) - \sum_{1\le i<j\le n} P(A_iA_j) + \cdots
+    + (-1)^{n-1} P(A_1A_2\cdots A_n),
+  \]
+  公式对 $n$ 个事件亦成立。由归纳法，公式 (1.4) 对一切 $n\ge2$ 成立。
+\end{solution}
+
+\section*{第 29 题\quad 考签问题}
+
+\begin{problem}
+  考试时共有 $n$ 张考签，$m$ ($m\ge n$) 个学生参加考试，被抽过的考签立即放回，求在考试结束后，至少有一张考签没有被抽到的概率.
+\end{problem}
+
+\begin{solution}
+  每个学生有 $n$ 种等可能的抽法，样本空间共有 $n^m$ 个样本点。
+
+  设 $A_i=\{$第 $i$ 张考签没有被抽到$\}$，$i=1,\dots,n$。若指定的 $k$ 张考签都未被抽到，则 $m$
+  个学生都从其余 $n-k$ 张中抽，故对任意 $k$ 张考签
+  \[
+    P(A_{i_1}A_{i_2}\cdots A_{i_k}) = \left(\frac{n-k}{n}\right)^m .
+  \]
+  由多还少补公式，
+  \[
+    P\left(\bigcup_{i=1}^n A_i\right)
+    = \sum_{k=1}^n (-1)^{k+1}\binom nk\left(\frac{n-k}{n}\right)^m
+    = \frac{1}{n^m}\sum_{k=1}^{n-1}(-1)^{k+1}\binom nk(n-k)^m ,
+  \]
+  末式已去掉 $k=n$ 的零项。
+\end{solution}
+
+\section*{第 31 题\quad 并交概率的换算}
+
+\begin{problem}
+  给定 $p=P(A)$，$q=P(B)$，$r=P(A\cup B)$，求 $P(A\bar B)$ 及 $P(\overline{AB})$.
+\end{problem}
+
+\begin{solution}
+  由加法公式，
+  \[
+    P(AB) = P(A) + P(B) - P(A\cup B) = p + q - r .
+  \]
+  于是
+  \[
+    P(A\bar B) = P(A) - P(AB) = p - (p+q-r) = r - q,
+  \]
+  \[
+    P(\overline{AB}) = 1 - P(AB) = 1 - p - q + r .
+  \]
+\end{solution}
+
+\end{document}

@@ -1,0 +1,3088 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+\documentclass[
+UTF8]{ctexart}
+\usepackage{xcolor}
+\usepackage[a4paper,margin=2.2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+\usepackage{fontspec}
+% Keep AMS blackboard-bold glyphs from amssymb instead of unicode-math's
+% double-struck alphabet, which looks visually inconsistent here.
+\defaultfontfeatures{Scale=MatchLowercase}
+\defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+% xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+  \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+\KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{longtable,booktabs,array}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={实变函数复习大纲与报告},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={blue},
+pdfcreator={LaTeX via pandoc}}
+
+\definecolor{impAColor}{RGB}{176,0,32}
+\definecolor{impBColor}{RGB}{190,105,0}
+\definecolor{impCColor}{RGB}{90,90,90}
+\newcommand{\impA}{\hspace{0.4em}{\small\textcolor{impAColor}{\textbf{[A 核心]}}}}
+\newcommand{\impB}{\hspace{0.4em}{\small\textcolor{impBColor}{\textbf{[B 重要]}}}}
+\newcommand{\impC}{\hspace{0.4em}{\small\textcolor{impCColor}{\textbf{[C 专题]}}}}
+\newcommand{\thmlabel}[1]{\phantomsection\label{#1}}
+\newcommand{\thmref}[2]{\hyperref[#1]{#2}}
+
+\title{实变函数复习大纲与报告}
+\author{}
+\date{2026-07-02}
+
+\begin{document}
+\pagestyle{plain}
+\maketitle
+
+{
+  \setcounter{tocdepth}{3}
+  \tableofcontents
+}
+\newpage
+资料来源：\texttt{real\_analysis/实变函数.md} 的 ASR
+课堂记录、\texttt{real\_analysis/hw\_answer/} 中作业答案 PDF
+抽取文本，以及
+\texttt{hw11.tex}、\texttt{hw12.tex}、\texttt{hw14.tex}、\texttt{hw15.tex}、\texttt{hw16.tex}
+中已整理的后续答案。ASR
+有同音和术语误识别，下文按数学语境统一为标准表述。
+
+\subsection{0. 总体主线}\label{ux603bux4f53ux4e3bux7ebf}
+
+这门课的逻辑链条是：
+
+集合运算与拓扑基础 \(\to\) Lebesgue 外测度 \(\to\) Lebesgue 可测集
+\(\to\) 可测函数 \(\to\) 几乎处处/依测度收敛 \(\to\) Lebesgue 积分
+\(\to\) 极限定理与 Fubini/Tonelli \(\to\) 微分定理、BV 与 AC \(\to\)
+\(L^p\) 空间、卷积与极大函数。
+
+\textbf{符号约定。} 本文统一用 \(E_n\uparrow E\) 表示集合列递增到
+\(E\)，即
+\[
+  E_1\subset E_2\subset\cdots,\qquad E=\bigcup_{n=1}^{\infty}E_n.
+\]
+类似地，\(E_n\downarrow E\) 表示集合列递减到 \(E\)，即
+\[
+  E_1\supset E_2\supset\cdots,\qquad E=\bigcap_{n=1}^{\infty}E_n.
+\]
+对函数列，\(f_n\uparrow f\) 表示 \(f_n(x)\) 关于 \(n\) 单调递增且
+\(f_n(x)\to f(x)\)；若只在几乎处处成立，则写作 \(f_n\uparrow f\)
+a.e.。\(f_n\downarrow f\) 的含义类似。
+
+复习时不要把定理孤立背诵。每个大定理都要同时掌握：
+
+\begin{enumerate}
+    \def\labelenumi{\arabic{enumi}.}
+    \tightlist
+  \item
+    条件：有限测度、非负、可积控制、单调、\(p>1\) 等假设不能漏。
+  \item
+    结论：是集合可测、积分收敛、几乎处处成立，还是范数估计。
+  \item
+    典型证明入口：\(\varepsilon\) 覆盖、Carathéodory
+    分割、简单函数逼近、Fatou、Egorov、Lusin、Hölder、Vitali 覆盖。
+  \item
+    反例边界：有限测度去掉会怎样，控制函数不存在会怎样，非负条件去掉会怎样。
+\end{enumerate}
+
+\subsection{1.
+课程模块与复习目标}\label{ux8bfeux7a0bux6a21ux5757ux4e0eux590dux4e60ux76eeux6807}
+
+{\def\LTcaptype{none} % do not increment counter
+  \begin{longtable}[]{@{}
+      >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2308}}
+      >{\raggedleft\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.3077}}
+      >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2308}}
+    >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2308}}@{}}
+    \toprule\noalign{}
+    \begin{minipage}[b]{\linewidth}\raggedright
+      模块
+    \end{minipage} &
+    \begin{minipage}[b]{\linewidth}\raggedleft
+      ASR 主要日期
+    \end{minipage} &
+    \begin{minipage}[b]{\linewidth}\raggedright
+      核心内容
+    \end{minipage} &
+    \begin{minipage}[b]{\linewidth}\raggedright
+      必会产出
+    \end{minipage} \\
+    \midrule\noalign{}
+    \endhead
+    \bottomrule\noalign{}
+    \endlastfoot
+    集合与基数 & 03-02, 03-04 &
+    集合运算、映射、等势、可数/不可数、Cantor-Bernstein &
+    会把极限集合写成可数并交；会证明可数性和不可数性 \\
+    Euclidean 拓扑 & 03-09, 03-11, 03-16 &
+    开闭集、闭包/内点/边界、聚点、紧集、连续函数集合刻画 &
+    会用点列、邻域、有限覆盖互证；会处理闭集/紧集题 \\
+    外测度与可测集 & 03-18, 03-23, 03-25, 03-30, 04-01, 04-08 & Lebesgue
+    覆盖、外测度、可测性判别、Borel 集、正则性、零测集 & 会用
+    \(\varepsilon\) 覆盖证明外测度性质；会用 Carathéodory 条件 \\
+    可测函数 & 04-13, 04-15 &
+    阈值集刻画、简单函数逼近、上/下极限、可测函数运算 &
+    会证明函数可测；会构造简单函数逼近 \\
+    收敛方式 & 04-20, 04-22, 04-27 & a.e. 收敛、依测度收敛、Riesz
+    子列定理、Egorov、Lusin & 会写收敛点集；会区分各种收敛及反例 \\
+    Lebesgue 积分 & 04-29, 05-06, 05-11, 05-13, 05-18, 05-20 &
+    非负积分、Levi、Fatou、DCT、积分绝对连续性、Fubini/Tonelli &
+    会选择正确极限定理；会交换积分、级数与极限 \\
+    微分、BV、AC & 05-25, 05-27, 06-03, 06-08, 06-10 & Vitali 覆盖、Lebesgue
+    微分定理、单调函数、BV、绝对连续 & 会用平均值极限推出点态结论；会证明 AC
+    等价刻画 \\
+    \(L^p\) 与算子 & 06-15, 06-17 & Hölder、Minkowski、完备性、可分性、Young
+    卷积不等式、Hardy-Littlewood 极大函数 &
+    会做范数估计、弱收敛配对、卷积和极大函数估计 \\
+  \end{longtable}
+}
+
+\subsection{1.5 高频概念定义速查}\label{ux9ad8ux9891ux6982ux5ff5ux5b9aux4e49ux901fux67e5}
+
+本节只列最容易在填空、简答或证明第一步中用到的定义。建议复习时能把每条定义从符号到文字完整写出。
+
+\textbf{外测度 \(m^*\)。}\impA
+对任意 \(E\subset\mathbb R^n\)，
+\[
+  m^*(E)=\inf\left\{\sum_{j=1}^{\infty}|Q_j|:
+  E\subset\bigcup_{j=1}^{\infty}Q_j,\ Q_j\text{ 为开方体}\right\}.
+\]
+一维时也可用开区间覆盖。关键词是：可数覆盖、体积和、下确界。
+
+\textbf{Lebesgue 可测集。}\impA
+课程与教材可能选择不同等价命题作为“定义”。考试中至少要会写下面三种等价表述：
+\[
+  \text{(开集外逼近)}\qquad
+  \forall \varepsilon>0,\ \exists\text{ 开集 }G\supset E,\quad
+  m^*(G\setminus E)<\varepsilon.
+\]
+等价地，存在 \(G_\delta\) 集 \(G\supset E\)，使
+\[
+  m^*(G\setminus E)=0.
+\]
+也等价于 Carathéodory 判别：
+\[
+  \forall A\subset\mathbb R^n,\qquad
+  m^*(A)=m^*(A\cap E)+m^*(A\cap E^c).
+\]
+记忆时可以把“开集外逼近”当作直观定义，把 Carathéodory 判别当作证明
+\(\sigma\)-代数、零测集可测、可数可加性时最方便的工具。
+
+\textbf{零测集与几乎处处。}\impA
+若 \(m^*(N)=0\)，称 \(N\) 为零测集。命题 \(P(x)\) 在 \(E\) 上 a.e. 成立，是指
+\[
+  m(\{x\in E:P(x)\text{ 不成立}\})=0.
+\]
+Lebesgue 测度完备：零测集的任意子集都可测。
+
+\textbf{Borel 集。}\impB
+\(\mathbb R^n\) 中由所有开集生成的最小 \(\sigma\)-代数称为 Borel
+\(\sigma\)-代数，其中元素称为 Borel 集。开集、闭集、\(G_\delta\) 集、\(F_\sigma\) 集都是 Borel 集，因此都 Lebesgue 可测。
+
+\textbf{Lebesgue 可测函数。}\impA
+设 \(E\) 可测，\(f:E\to[-\infty,+\infty]\)。称 \(f\) 可测，是指对任意
+\(a\in\mathbb R\)，
+\[
+  \{x\in E:f(x)>a\}
+\]
+可测。等价地可用 \(\{f\ge a\}\)、\(\{f<a\}\)、\(\{f\le a\}\)，且只检验
+\(a\in\mathbb Q\) 也足够。
+
+\textbf{简单函数。}\impA
+简单函数是只取有限多个值的可测函数，通常写成
+\[
+  \varphi=\sum_{j=1}^N a_j\chi_{E_j},
+\]
+其中 \(E_j\) 可测。非负可测函数可由非负简单函数单调递增逼近：
+\[
+  0\le \varphi_k\uparrow f.
+\]
+
+\textbf{三种收敛。}\impA
+设 \(f_k,f\) 定义在可测集 \(E\) 上。
+\[
+  f_k\to f\ \text{a.e.}
+  \quad\Longleftrightarrow\quad
+  m(\{x\in E:f_k(x)\not\to f(x)\})=0.
+\]
+\[
+  f_k\to f\ \text{依测度}
+  \quad\Longleftrightarrow\quad
+  \forall \varepsilon>0,\ 
+  m(\{x\in E:|f_k(x)-f(x)|>\varepsilon\})\to0.
+\]
+近一致收敛，也叫 almost uniform convergence，是指对任意 \(\varepsilon>0\)，存在
+\(F\subset E\)，使
+\[
+  m(E\setminus F)<\varepsilon,
+\]
+且 \(f_k\to f\) 在 \(F\) 上一致。这里“一致”具体是指：对任意
+\(\eta>0\)，存在 \(N\)，使得当 \(k\ge N\) 时，
+\[
+  \sup_{x\in F}|f_k(x)-f(x)|<\eta.
+\]
+换句话说，可以先丢掉一个任意小测度的坏集；在剩下的大集合上，收敛速度不再依赖于点
+\(x\)。Egorov 定理的有限测度条件必须记住。
+
+\textbf{Lebesgue 积分。}\impA
+若 \(\varphi=\sum_{j=1}^N a_j\chi_{E_j}\ge0\) 是简单函数，则
+\[
+  \int_E\varphi=\sum_{j=1}^N a_jm(E_j).
+\]
+若 \(f\ge0\) 可测，则
+\[
+  \int_E f=\sup\left\{\int_E\varphi:
+  0\le\varphi\le f,\ \varphi\text{ 为简单函数}\right\}.
+\]
+一般实值可测函数写成 \(f=f^+-f^-\)。若 \(\int f^+\) 与 \(\int f^-\)
+不同时为 \(+\infty\)，则
+\[
+  \int f=\int f^+-\int f^-.
+\]
+若 \(\int_E|f|<\infty\)，称 \(f\in L^1(E)\)。
+
+\textbf{\(L^p\) 与本质上确界。}\impA
+对 \(1\le p<\infty\)，
+\[
+  L^p(E)=\left\{f:\int_E|f|^p<\infty\right\},\qquad
+  \|f\|_p=\left(\int_E|f|^p\right)^{1/p}.
+\]
+\[
+  \|f\|_\infty=\operatorname*{ess\,sup}_{x\in E}|f(x)|
+  =\inf\{M\ge0:|f|\le M\ \text{a.e.}\}.
+\]
+注意 \(L^p\) 中函数按 a.e. 相等视为同一个元素。
+
+\textbf{密度点。}\impB
+若 \(E\subset\mathbb R\) 可测，点 \(x\) 称为 \(E\) 的密度点，是指
+\[
+  \lim_{r\downarrow0}\frac{m(E\cap(x-r,x+r))}{2r}=1.
+\]
+在 \(\mathbb R^n\) 中把区间换成球。Lebesgue 密度定理说明可测集几乎每个点都是密度点。
+
+\textbf{Vitali 覆盖。}\impB
+集合族 \(\mathcal B\) 是 \(E\) 的 Vitali 覆盖，是指对每个 \(x\in E\) 和每个
+\(\eta>0\)，存在 \(B\in\mathcal B\)，使
+\[
+  x\in B,\qquad \operatorname{diam}B<\eta.
+\]
+它用于从任意小邻域中选出两两不交的子族，是 Lebesgue 微分定理的核心工具。
+
+\textbf{有界变差 \(\mathrm{BV}[a,b]\)。}\impA
+对分割 \(P:a=x_0<\cdots<x_N=b\)，定义
+\[
+  V(f;P)=\sum_{i=1}^N|f(x_i)-f(x_{i-1})|.
+\]
+若
+\[
+  V_a^b(f)=\sup_P V(f;P)<\infty,
+\]
+则称 \(f\in\mathrm{BV}[a,b]\)。单调函数属于 BV；BV 函数等价于两个单调递增函数之差。
+
+\textbf{绝对连续 \(\mathrm{AC}[a,b]\)。}\impA
+函数 \(f:[a,b]\to\mathbb R\) 绝对连续，是指对任意 \(\varepsilon>0\)，存在
+\(\delta>0\)，使任意有限个互不相交区间 \((\alpha_i,\beta_i)\subset[a,b]\)
+满足
+\[
+  \sum_i(\beta_i-\alpha_i)<\delta
+\]
+时，都有
+\[
+  \sum_i|f(\beta_i)-f(\alpha_i)|<\varepsilon.
+\]
+最重要的等价刻画是
+\[
+  f\in AC[a,b]
+  \quad\Longleftrightarrow\quad
+  \exists g\in L^1[a,b],\quad f(x)=f(a)+\int_a^x g(t)\,dt,
+\]
+此时 \(g=f'\) a.e.，且
+\[
+  V_a^b(f)=\int_a^b|f'(x)|\,dx.
+\]
+
+\subsection{1.6 高频专题：概念关系与推导图谱}\label{ux9ad8ux9891ux4e13ux9898ux6982ux5ff5ux5173ux7cfbux4e0eux63a8ux5bfcux56feux8c31}
+
+本节按“充分条件、必要条件、反向反例”整理。读箭头时默认所有函数都定义在同一个可测集或闭区间上；若需要有限测度、可积控制等额外条件，会在箭头旁写出。
+
+\textbf{专题一：连续、绝对连续、BV 的关系。}\impA
+在闭区间 \([a,b]\) 上有
+\[
+  C^1[a,b]\Longrightarrow \mathrm{AC}[a,b]\Longrightarrow \mathrm{BV}[a,b],
+\]
+并且
+\[
+  \mathrm{AC}[a,b]\Longrightarrow C[a,b]\Longrightarrow \text{可测}.
+\]
+由于 \([a,b]\) 紧，连续还推出一致连续：
+\[
+  C[a,b]\Longrightarrow \text{一致连续}.
+\]
+更强的常用充分条件是
+\[
+  \text{Lipschitz}\Longrightarrow \mathrm{AC}[a,b].
+\]
+
+反向一般不成立：
+\begin{itemize}
+  \tightlist
+\item \(\mathrm{AC}\not\Rightarrow C^1\)：例如 \(f(x)=|x|\) 在 \([-1,1]\) 上绝对连续，但在 \(0\) 不可导。
+\item \(\mathrm{BV}\not\Rightarrow \mathrm{AC}\)：跳跃函数属于 BV 但不连续；Cantor 函数连续且 BV，但不绝对连续。
+\item \(C\not\Rightarrow \mathrm{BV}\)：连续振荡函数可有无穷变差，例如适当定义的 \(x^\alpha\sin x^{-\beta}\)。
+\item 一致连续不推出绝对连续：Cantor 函数在 \([0,1]\) 上一致连续，但不 AC。
+\end{itemize}
+
+最重要的等价刻画是
+\[
+  f\in \mathrm{AC}[a,b]
+  \Longleftrightarrow
+  f(x)=f(a)+\int_a^x f'(t)\,dt,\quad f'\in L^1[a,b],
+\]
+以及
+\[
+  f\in\mathrm{BV}[a,b]
+  \Longleftrightarrow
+  f=u-v,\quad u,v\text{ 单调递增}.
+\]
+因此临场判断时：
+\[
+  \text{要证 AC，优先找 }f'\in L^1\text{ 并恢复积分公式；}
+\]
+\[
+  \text{要证不 AC，常证明不连续或全变差无穷。}
+\]
+
+\textbf{专题二：单调、BV、可导性的关系。}\impA
+在闭区间上，
+\[
+  \text{单调}\Longrightarrow \mathrm{BV}\Longrightarrow \text{a.e. 可导},
+\]
+并且
+\[
+  f\in \mathrm{BV}[a,b]\Longrightarrow
+  \int_a^b|f'(x)|\,dx\le V_a^b(f).
+\]
+若 \(f\in\mathrm{AC}[a,b]\)，则更强：
+\[
+  V_a^b(f)=\int_a^b|f'(x)|\,dx.
+\]
+注意 a.e. 可导远弱于 BV；导数可积也不自动推出原函数 AC，除非同时有 Newton-Leibniz 表示
+\[
+  f(x)=f(a)+\int_a^x f'(t)\,dt.
+\]
+
+\textbf{专题三：a.e. 收敛、依测度收敛、近一致收敛。}\impA
+设 \(m(E)<\infty\)。核心关系是
+\[
+  f_n\to f\ \text{a.e.}
+  \Longrightarrow
+  f_n\to f\ \text{依测度},
+\]
+并且由 Egorov 定理，
+\[
+  f_n\to f\ \text{a.e.}
+  \Longrightarrow
+  f_n\to f\ \text{近一致}.
+\]
+近一致收敛又推出
+\[
+  \text{近一致收敛}\Longrightarrow \text{a.e. 收敛}
+  \quad\text{且}\quad
+  \text{近一致收敛}\Longrightarrow \text{依测度收敛}.
+\]
+因此在有限测度集上，a.e. 收敛与近一致收敛等价，并且二者都推出依测度收敛：
+\[
+  f_n\to f\ \text{近一致}
+  \Longleftrightarrow
+  f_n\to f\ \text{a.e.}
+  \Longrightarrow
+  f_n\to f\ \text{依测度}.
+\]
+这里第一个反向箭头正是 Egorov 定理；若 \(m(E)=\infty\)，a.e. 收敛一般不推出近一致收敛。
+依测度收敛本身不推出整列 a.e. 收敛，但有 Riesz 子列定理：
+\[
+  f_n\to f\ \text{依测度}
+  \Longrightarrow
+  \exists n_j,\quad f_{n_j}\to f\ \text{a.e.}
+\]
+更实用的判别是：在有限测度集上，
+\[
+  f_n\to f\ \text{依测度}
+  \Longleftrightarrow
+  \text{任意子列都有进一步子列 a.e. 收敛到 }f.
+\]
+
+反例边界：
+\begin{itemize}
+  \tightlist
+\item 无限测度空间上，a.e. 收敛不一定推出依测度收敛，例如 \(\chi_{[n,n+1]}\) 在 \(\mathbb R\) 上 a.e. 趋于 \(0\)，但不依测度趋于 \(0\)。
+\item 依测度收敛不一定推出整列 a.e. 收敛，例如 \([0,1]\) 上的打字机序列。
+\end{itemize}
+
+\textbf{专题四：\(L^p\) 收敛与依测度收敛。}\impA
+若 \(1\le p<\infty\)，则
+\[
+  \|f_n-f\|_p\to0
+  \Longrightarrow
+  f_n\to f\ \text{依测度}.
+\]
+证明入口是 Chebyshev 不等式：
+\[
+  m(\{|f_n-f|>\varepsilon\})
+  \le \frac{\|f_n-f\|_p^p}{\varepsilon^p}.
+\]
+反向一般不成立。依测度收敛若想推出 \(L^p\) 收敛，需要额外控制。常用充分条件：
+\[
+  f_n\to f\ \text{依测度},\quad |f_n|\le g\in L^p
+  \Longrightarrow
+  \|f_n-f\|_p\to0.
+\]
+这是 DCT 用在 \(|f_n-f|^p\) 上。
+
+特别地，在有限测度集上，
+\[
+  f_n\to f\ \text{依测度},\quad |f_n|\le M
+  \Longrightarrow
+  \|f_n-f\|_p\to0,\quad 1\le p<\infty.
+\]
+这是有界收敛型结论。若没有统一控制，尖峰函数
+\[
+  f_n=n\chi_{(0,1/n)}
+\]
+在 \([0,1]\) 上依测度趋于 \(0\)，但不 \(L^1\) 收敛到 \(0\)。
+
+\textbf{专题五：a.e. 收敛与 \(L^p\) 收敛。}\impA
+a.e. 收敛本身不推出 \(L^p\) 收敛。正确的高频充分条件是 DCT：
+\[
+  f_n\to f\ \text{a.e.},\quad |f_n|\le g\in L^p
+  \Longrightarrow
+  \|f_n-f\|_p\to0.
+\]
+若 \(m(E)<\infty\)，且 \(|f_n|\le M\)，则也有
+\[
+  f_n\to f\ \text{a.e.}
+  \Longrightarrow
+  \|f_n-f\|_p\to0.
+\]
+反过来，\(L^p\) 收敛不一定推出整列 a.e. 收敛；但一定能取子列 a.e. 收敛：
+\[
+  \|f_n-f\|_p\to0
+  \Longrightarrow
+  f_n\to f\ \text{依测度}
+  \Longrightarrow
+  \exists n_j,\ f_{n_j}\to f\ \text{a.e.}
+\]
+
+\textbf{专题六：有限测度集上的 \(L^p\) 包含关系。}\impA
+若 \(m(E)<\infty\)，且
+\[
+  1\le p<q\le\infty,
+\]
+则
+\[
+  L^q(E)\subset L^p(E),
+\]
+并有估计
+\[
+  \|f\|_p\le m(E)^{1/p-1/q}\|f\|_q
+  \quad(q<\infty),
+\]
+以及
+\[
+  \|f\|_p\le m(E)^{1/p}\|f\|_\infty.
+\]
+因此有限测度集上高指数可积推出低指数可积。无限测度空间上这个包含关系一般失效。
+
+\textbf{专题七：积分收敛的常用充分条件。}\impA
+最常用的三条路线：
+\[
+  0\le f_n\uparrow f
+  \Longrightarrow
+  \int f_n\to\int f
+  \qquad\text{Levi}.
+\]
+\[
+  f_n\to f\ \text{a.e.},\quad |f_n|\le g\in L^1
+  \Longrightarrow
+  \int |f_n-f|\to0,\quad \int f_n\to\int f
+  \qquad\text{DCT}.
+\]
+\[
+  f_n\ge0,\quad f_n\to f\ \text{依测度}
+  \Longrightarrow
+  \int f\le \liminf_n\int f_n
+  \qquad\text{依测度版 Fatou}.
+\]
+如果题目只给 \(\int f_n\to0\) 且 \(f_n\ge0\)，通常可推出
+\[
+  f_n\to0\ \text{依测度},
+\]
+因为
+\[
+  m(\{f_n>\varepsilon\})\le \varepsilon^{-1}\int f_n.
+\]
+
+\subsection{2. 大定理清单}\label{ux5927ux5b9aux7406ux6e05ux5355}
+
+\subsubsection{2.1
+集合、基数、拓扑}\label{ux96c6ux5408ux57faux6570ux62d3ux6251}
+
+\textbf{集合极限公式。} 对集合列 \(E_n\)：
+
+\[
+  \limsup E_n=\bigcap_{n=1}^{\infty}\bigcup_{k=n}^{\infty}E_k,\qquad
+  \liminf E_n=\bigcup_{n=1}^{\infty}\bigcap_{k=n}^{\infty}E_k.
+\]
+
+它是后面 a.e. 收敛、Borel-Cantelli、测度连续性题的基础。
+
+\textbf{Cantor-Bernstein 定理。} 若存在单射 \(A\to B\) 与 \(B\to A\)，则
+\(A\) 与 \(B\) 等势。常用于证明区间、直线、平面、连续统之间等势。
+
+\textbf{可数性基本结论。}
+
+\begin{itemize}
+    \tightlist
+  \item
+    可数集的子集至多可数。
+  \item
+    有限个或可数个可数集的并仍至多可数。
+  \item
+    \(\mathbb Q^n\) 可数且在 \(\mathbb R^n\) 中稠密。
+  \item
+    \(\mathbb R\)、任意非退化区间、\(\{0,1\}^{\mathbb N}\) 都不可数。
+  \item
+    离散点/孤立点常用``给每个点塞一个不同有理点''证明至多可数。
+\end{itemize}
+
+\textbf{开闭集与闭包。}
+
+\begin{itemize}
+    \tightlist
+  \item
+    \(x\in\overline E\) 当且仅当任意邻域与 \(E\) 相交，也当且仅当存在
+    \(E\) 中点列收敛到 \(x\)。
+  \item
+    \(E\) 闭当且仅当包含所有极限点。
+  \item
+    \(E^\circ\) 是包含于 \(E\) 的最大开集；\(\overline E\) 是包含 \(E\)
+    的最小闭集。
+  \item
+    \(\partial E=\overline E\setminus E^\circ=\overline E\cap\overline{E^c}\)。
+\end{itemize}
+
+\textbf{开集分解。}
+
+\begin{itemize}
+    \tightlist
+  \item
+    \(\mathbb R\) 中开集是至多可数个互不相交开区间的并。
+  \item
+    \(\mathbb R^n\)
+    中开集可表示为可数个方体/球的并。证明时用有理中心、有理半径或 dyadic
+    cubes。
+\end{itemize}
+
+\textbf{紧性。}
+
+在 \(\mathbb R^n\) 中，紧集等价于闭且有界。常用形式：
+
+\begin{itemize}
+    \tightlist
+  \item
+    任意开覆盖有有限子覆盖。
+  \item
+    任意序列有收敛子列且极限仍在集合内。
+  \item
+    闭集族有限交性质：紧集内闭集族若任意有限交非空，则总交非空。
+\end{itemize}
+
+\subsubsection{2.2 Lebesgue
+外测度与可测集}\label{lebesgue-ux5916ux6d4bux5ea6ux4e0eux53efux6d4bux96c6}
+
+\textbf{外测度定义。} 对 \(E\subset\mathbb R^n\)，以可数开方体覆盖
+\(E\)，取体积和下确界定义 \(m^*(E)\)。
+
+基本性质：
+
+\begin{itemize}
+    \tightlist
+  \item
+    空集外测度为 \(0\)，单调性
+    \(A\subset B\Rightarrow m^*(A)\le m^*(B)\)。
+  \item
+    次可数可加性：
+\end{itemize}
+
+\[
+  m^*(\bigcup_{k=1}^{\infty}E_k)\le \sum_{k=1}^{\infty}m^*(E_k).
+\]
+
+\begin{itemize}
+    \tightlist
+  \item
+    区间/方体外测度等于长度/体积。
+  \item
+    可数集零测。
+  \item
+    平移不变；线性伸缩在一维中 \(m(aE+b)=|a|m(E)\)。
+\end{itemize}
+
+\textbf{Carathéodory 可测性。} 集合 \(E\) Lebesgue 可测当且仅当对任意
+\(A\subset\mathbb R^n\)，
+
+\[
+  m^*(A)=m^*(A\cap E)+m^*(A\cap E^c).
+\]
+
+只需证明 \(\ge\) 方向，因为 \(\le\) 来自次可加性。
+
+\textbf{可测集族。}
+
+\begin{itemize}
+    \tightlist
+  \item
+    Lebesgue 可测集构成 \(\sigma\)-代数。
+  \item
+    Borel 集都 Lebesgue 可测。
+  \item
+    零测集及其任意子集都可测，Lebesgue 测度是完备测度。
+  \item
+    对不交可测集列有可数可加性。
+\end{itemize}
+
+\textbf{测度连续性。}
+
+\begin{itemize}
+    \tightlist
+  \item
+    若 \(E_n\uparrow E\)，则 \(m(E_n)\to m(E)\)。
+  \item
+    若 \(E_n\downarrow E\) 且某个 \(m(E_N)<\infty\)，则
+    \(m(E_n)\to m(E)\)。
+  \item
+    若 \(\sum m(E_n)<\infty\)，则 \(m(\limsup E_n)=0\)。这是
+    Borel-Cantelli 型结论。
+\end{itemize}
+
+\textbf{正则性。} 对可测集 \(E\)：
+
+\begin{itemize}
+    \tightlist
+  \item
+    可用开集从外逼近：任意 \(\varepsilon>0\)，存在开集 \(G\supset E\)，使
+    \(m(G\setminus E)<\varepsilon\)。
+  \item
+    有限测度时可用闭集从内逼近：存在闭集 \(F\subset E\)，使
+    \(m(E\setminus F)<\varepsilon\)。
+  \item
+    等价地，可测集可与某个 \(G_\delta\) 或 \(F_\sigma\) 集相差零测集。
+\end{itemize}
+
+\subsubsection{2.3 可测函数}\label{ux53efux6d4bux51fdux6570}
+
+\textbf{可测函数刻画。} 对扩展实值函数 \(f\)：
+
+\begin{itemize}
+    \tightlist
+  \item
+    \(f\) 可测当且仅当 \(\{f>a\}\) 对每个实数 \(a\) 可测。
+  \item
+    等价地可用 \(\{f\ge a\}\)、\(\{f<a\}\)、\(\{f\le a\}\)。
+  \item
+    实数阈值可化为有理阈值：只检验 \(a\in\mathbb Q\) 通常足够。
+  \item
+    若 \(f\) 可测，\(\phi\) 连续，则 \(\phi\circ f\) 可测。
+\end{itemize}
+
+\textbf{稳定性。}
+
+\begin{itemize}
+    \tightlist
+  \item
+    有限个可测函数的和、差、积、商（分母非零处）可测。
+  \item
+    可数上确界、下确界、\(\limsup\)、\(\liminf\) 可测。
+  \item
+    可测函数列的逐点极限可测。
+  \item
+    函数列收敛点集 \(\{x: f_n(x)\text{ 收敛}\}\) 可测，因为可写成
+    \(\limsup f_n=\liminf f_n\)。
+  \item
+    可导函数的导函数可测：差商是可测函数列，导函数是极限。
+\end{itemize}
+
+\textbf{简单函数逼近。}
+
+\begin{itemize}
+    \tightlist
+  \item
+    非负可测函数可由非负简单函数单调递增逼近。
+  \item
+    一般可测函数可先拆成正负部，再分别逼近。
+  \item
+    有限测度或 \(L^1/L^p\)
+    情形下，常进一步用有界函数、有限支撑简单函数、连续函数逼近。
+\end{itemize}
+
+\subsubsection{2.4 收敛方式}\label{ux6536ux655bux65b9ux5f0f}
+
+\textbf{三种核心收敛。}
+
+\begin{itemize}
+    \tightlist
+  \item
+    a.e. 收敛：除零测集外逐点收敛。
+  \item
+    依测度收敛：对任意
+    \(\varepsilon>0\)，\(m(\{|f_n-f|>\varepsilon\})\to0\)。
+  \item
+    近一致收敛：对任意 \(\varepsilon>0\)，存在 \(F\subset E\) 使
+    \(m(E\setminus F)<\varepsilon\)，且 \(f_n\to f\) 在 \(F\) 上一致；即对任意
+    \(\eta>0\)，存在 \(N\)，使 \(n\ge N\) 时
+    \(\sup_{x\in F}|f_n(x)-f(x)|<\eta\)。
+\end{itemize}
+
+\textbf{重要关系。}
+
+\begin{itemize}
+    \tightlist
+  \item
+    有限测度集上，a.e. 收敛推出依测度收敛。
+  \item
+    Egorov 定理：有限测度集上，a.e. 收敛推出近一致收敛。
+  \item
+    近一致收敛推出 a.e. 收敛与依测度收敛。
+  \item
+    Riesz 子列定理：依测度收敛蕴含存在子列 a.e.
+    收敛；更强地，有限测度集上，\(f_n\) 依测度收敛到 \(f\)
+    当且仅当任意子列都有进一步子列 a.e. 收敛到 \(f\)。
+  \item
+    依测度 Cauchy 列存在依测度极限。
+\end{itemize}
+
+\textbf{常见反例。}
+
+\begin{itemize}
+    \tightlist
+  \item
+    依测度收敛不必推出整列 a.e. 收敛：\([0,1]\) 上``打字机序列''。
+  \item
+    无限测度空间上，a.e. 收敛不一定推出依测度收敛：平移的示性函数。
+  \item
+    非可数上确界不保持可测：取不可测集
+    \(E\)，\(\sup_{\lambda\in E}\chi_{\{\lambda\}}=\chi_E\)。
+  \item
+    有界可测函数不一定能在零测集外改成连续函数，如 \(\chi_{[0,1/2]}\) 在
+    \([0,1]\) 上。
+\end{itemize}
+
+\subsubsection{2.5 Lebesgue
+积分与极限定理}\label{lebesgue-ux79efux5206ux4e0eux6781ux9650ux5b9aux7406}
+
+\textbf{积分定义路线。}
+
+\begin{enumerate}
+    \def\labelenumi{\arabic{enumi}.}
+    \tightlist
+  \item
+    非负简单函数积分：\(\sum a_i m(E_i)\)。
+  \item
+    非负可测函数积分：所有小于它的简单函数积分的上确界。
+  \item
+    一般函数：\(f=f^+-f^-\)，若 \(\int f^+\) 与 \(\int f^-\)
+    不同时为无穷则定义；若 \(\int |f|<\infty\) 则 \(f\in L^1\)。
+\end{enumerate}
+
+\textbf{Levi 单调收敛定理。}
+
+若 \(0\le f_n\uparrow f\)，则
+
+\[
+  \int f_n \to \int f.
+\]
+
+常用于交换非负级数与积分。
+
+\textbf{Fatou 引理。}
+
+若 \(f_n\ge0\)，则
+
+\[
+  \int \liminf f_n \le \liminf \int f_n.
+\]
+
+常用于证明下半连续性、从积分极限推出不等式，以及处理``没有控制函数''的问题。
+
+\textbf{Lebesgue 控制收敛定理。}
+
+若 \(f_n\to f\) a.e.，且 \(|f_n|\le g\in L^1\)，则
+
+\[
+  \int |f_n-f|\to0,\qquad \int f_n\to\int f.
+\]
+
+有限测度集上，有界控制给出有界收敛定理。
+
+\textbf{积分的绝对连续性。} 若 \(f\in L^1(E)\)，则任意
+\(\varepsilon>0\)，存在 \(\delta>0\)，使得 \(m(A)<\delta\) 时
+
+\[
+  \int_A |f|<\varepsilon.
+\]
+
+它是 \(L^p\) 尾部估计、局部小区间积分估计、连续函数逼近题的常用工具。
+
+\textbf{Tonelli 与 Fubini。}
+
+\begin{itemize}
+    \tightlist
+  \item
+    Tonelli：非负可测函数可交换积分次序，即使积分为 \(+\infty\)。
+  \item
+    Fubini：可积函数可交换积分次序，且几乎处处截面可积。
+\end{itemize}
+
+先判``非负''还是``绝对可积''。级数积分、二维截面、图形测度题一般先想
+Tonelli/Fubini。
+
+\textbf{分布函数公式。} 对 \(p>0\)：
+
+\[
+  \int |f|^p
+  =p\int_0^\infty t^{p-1}m(\{|f|>t\})\,dt.
+\]
+
+作业中还反复出现离散版本：用 \(\sum 2^k m(\{f\ge2^k\})\) 或
+\(\sum m(\{f\ge k\})\) 判断非负函数可积。
+
+\subsubsection{2.6 微分定理、BV 与
+AC}\label{ux5faeux5206ux5b9aux7406bv-ux4e0e-ac}
+
+\textbf{Vitali 覆盖与 Lebesgue 微分定理。}
+
+Vitali 覆盖是证明 Lebesgue 微分定理和 Hardy-Littlewood
+极大函数弱型估计的核心工具。
+
+Lebesgue 微分定理：若 \(f\in L^1_{\mathrm{loc}}(\mathbb R^n)\)，则对
+a.e. \(x\)，
+
+\[
+  \lim_{r\to0}\frac{1}{m(B(x,r))}\int_{B(x,r)} f(y)\,dy=f(x).
+\]
+
+常见用法：把区间平均不等式除以长度后令长度趋于 \(0\)，得到点态 a.e.
+不等式。
+
+\textbf{单调函数。}
+
+\begin{itemize}
+    \tightlist
+  \item
+    单调函数至多有可数个不连续点。
+  \item
+    单调函数 a.e. 可导，导数非负。
+  \item
+    若 \(f\) 单调递增，则 \(\int_a^b f'\le f(b)-f(a)\)。
+  \item
+    有界单调函数在 \(\mathbb R\) 上导数属于 \(L^1(\mathbb R)\)。
+\end{itemize}
+
+\textbf{有界变差函数 \(\mathrm{BV}[a,b]\)。}
+
+\begin{itemize}
+    \tightlist
+  \item
+    \(V_a^b(f)\) 是所有分割增量和的上确界。
+  \item
+    \(f\in\mathrm{BV}\) 当且仅当 \(f\) 可写成两个单调函数之差。
+  \item
+    \(f\in\mathrm{BV}\) 蕴含 a.e. 可导，且 \(\int_a^b |f'|\le V_a^b(f)\)。
+  \item
+    若 \(f'\) 有界变差且 \(f\) 可微，则 \(f'\) 连续：因为导函数有 Darboux
+    性质，而 BV 函数间断只能是跳跃型。
+\end{itemize}
+
+\textbf{绝对连续 \(\mathrm{AC}[a,b]\)。}
+
+等价刻画：
+
+\begin{itemize}
+    \tightlist
+  \item
+    \(f\) 绝对连续。
+  \item
+    存在 \(g\in L^1[a,b]\)，使 \(f(x)=f(a)+\int_a^x g(t)\,dt\)。
+  \item
+    \(f\) a.e. 可导，\(f'\in L^1\)，且 \(f(x)-f(a)=\int_a^x f'\)。
+\end{itemize}
+
+结论：
+
+\begin{itemize}
+    \tightlist
+  \item
+    \(\mathrm{AC}\Rightarrow \mathrm{BV}\Rightarrow\) a.e. 可导。
+  \item
+    \(\mathrm{AC}\) 函数满足 Newton-Leibniz 公式。
+  \item
+    \(|f|^p\)：若 \(f\in\mathrm{AC}\) 且 \(p\ge1\)，则
+    \(|f|^p\in \mathrm{AC}\)；\(0<p<1\) 不一定。
+\end{itemize}
+
+\subsubsection{\texorpdfstring{2.7 \(L^p\)
+空间、卷积、极大函数}{2.7 L\^{}p 空间、卷积、极大函数}}\label{lp-ux7a7aux95f4ux5377ux79efux6781ux5927ux51fdux6570}
+
+\textbf{\(L^p\) 范数。}
+
+对 \(1\le p<\infty\)，
+
+\[
+  \|f\|_p=(\int |f|^p)^{1/p}.
+\]
+
+对 \(p=\infty\)，取本性上确界。\(L^p\) 元素本质上是``a.e.
+相等函数的等价类''。
+
+\textbf{Hölder 不等式。}
+
+若 \(\frac1p+\frac1q=1\)，则
+
+\[
+  \int |fg|\le \|f\|_p\|g\|_q.
+\]
+
+推广形式：若 \(\sum 1/p_k=1\)，则
+
+\[
+  \int \prod_{k=1}^n |f_k|
+  \le \prod_{k=1}^n \|f_k\|_{p_k}.
+\]
+
+\textbf{Minkowski 不等式。}
+
+对 \(1\le p\le\infty\)，
+
+\[
+  \|f+g\|_p\le \|f\|_p+\|g\|_p.
+\]
+
+这是 \(L^p\) 成为赋范线性空间的关键。
+
+\textbf{完备性。} \(L^p(E)\) 对 \(1\le p\le\infty\) 是 Banach
+空间。课堂证明主线：\(L^p\) Cauchy \(\to\) 依测度 Cauchy \(\to\)
+存在依测度极限和 a.e. 收敛子列 \(\to\) Fatou/DCT 型估计推出范数收敛。
+
+\textbf{可分性与稠密性。}
+
+\begin{itemize}
+    \tightlist
+  \item
+    \(1\le p<\infty\)
+    时，简单函数、有限支撑简单函数、连续紧支撑函数在适当空间中稠密。
+  \item
+    \(L^p\) 在 \(p<\infty\) 时可分；\(L^\infty\) 通常不可分。
+\end{itemize}
+
+\textbf{Young 卷积不等式。}
+
+若 \(f\in L^p(\mathbb R^n)\)、\(g\in L^q(\mathbb R^n)\)，并且
+
+\[
+  1+\frac1r=\frac1p+\frac1q,
+\]
+
+则 \(f*g\in L^r\) 且
+
+\[
+  \|f*g\|_r\le \|f\|_p\|g\|_q.
+\]
+
+证明核心是 Hölder 与 Fubini/Tonelli。
+
+\textbf{Hardy-Littlewood 极大函数。}
+
+\[
+  Mf(x)=\sup_{r>0}\frac1{m(B(x,r))}\int_{B(x,r)}|f(y)|\,dy.
+\]
+
+重点结论：
+
+\begin{itemize}
+    \tightlist
+  \item
+    \(Mf\) 可测。
+  \item
+    \(M\) 不是 \(L^1\to L^1\) 有界算子；\(\chi_{(0,1)}\) 可给出一维反例。
+  \item
+    弱 \((1,1)\) 型估计：
+\end{itemize}
+
+\[
+  m(\{Mf>\lambda\})\le \frac{C_n}{\lambda}\|f\|_1.
+\]
+
+\begin{itemize}
+    \tightlist
+  \item
+    对 \(p>1\)，\(M\) 是 \(L^p\to L^p\)
+    有界算子。课堂证明用弱型估计、分布函数公式和截断分解。
+\end{itemize}
+
+\subsection{3. 证明模板}\label{ux8bc1ux660eux6a21ux677f}
+
+\textbf{模板 A：证明集合相等。} 先写``取 \(x\)''，做双包含。涉及
+\(\limsup/\liminf\) 时，把``属于无穷多个/最终属于所有''翻译成可数并交。
+
+\textbf{模板 B：证明至多可数。}
+给每个对象分配一个唯一的有理数、有理点、有理区间，构造到 \(\mathbb Q\)
+或 \(\mathbb Q^n\) 的单射。孤立点、互不相交开区间族、跳跃点都用这一招。
+
+\textbf{模板 C：外测度上界。} 给 \(\varepsilon>0\)，取覆盖，使体积和小于
+\(m^*(E)+\varepsilon\)，再对覆盖做平移、伸缩、并集或切割。
+
+\textbf{模板 D：外测度下界。}
+区间/紧集下界常用有限覆盖定理；可测分割下界常用 Carathéodory 条件。
+
+\textbf{模板 E：证明可测。} 优先证明 \(\{f>a\}\) 可测。遇到一般实数
+\(a\)，用有理数逼近；遇到极限，写成 \(\sup/\inf/\limsup/\liminf\)。
+
+\textbf{模板 F：极限与积分交换。}
+
+\begin{itemize}
+    \tightlist
+  \item
+    非负单调：Levi。
+  \item
+    非负但不单调：Fatou。
+  \item
+    有 a.e. 收敛和可积控制：DCT。
+  \item
+    级数/二重积分且非负：Tonelli。
+  \item
+    可积函数换序：Fubini。
+\end{itemize}
+
+\textbf{模板 G：依测度收敛。} 从集合包含入手，例如
+
+\[
+  \{|f_n+g_n-(f+g)|>\varepsilon\}
+  \subset
+  \{|f_n-f|>\varepsilon/2\}\cup\{|g_n-g|>\varepsilon/2\}.
+\]
+
+乘积题若无一致有界，要先截断或取 a.e. 收敛子列。
+
+\textbf{模板 H：用 Egorov。} 有限测度集上，把 a.e.
+收敛变成``去掉小集合后一致收敛''，再把积分拆成好集合与坏集合。\(L^p\)
+弱收敛配对题、有限测度支撑函数题常用。
+
+\textbf{模板 I：用 Lusin。}
+可测函数在大测度闭集上近似为连续函数；用于证明可测加法函数连续、\(L^1\)
+中连续函数逼近等。
+
+\textbf{模板 J：用 Lebesgue 微分定理。} 先把题设写成区间平均：
+
+\[
+  \left|\frac1{|I|}\int_I f\right|\le \cdots
+\]
+
+然后令区间收缩到 \(x\)，得到 a.e. 点态结论。
+
+\textbf{模板 K：证明绝对连续。} 最稳的是证明存在 \(g\in L^1\)，使
+\(f(x)=f(a)+\int_a^x g\)。反证``不绝对连续''常证明全变差无穷。
+
+\textbf{模板 L：\(L^p\) 估计。} 看到乘积就想 Hölder；看到和的范数就想
+Minkowski；看到小集合积分就想积分绝对连续；看到尾部就想 DCT 或分布函数。
+
+\subsection{4.
+作业中的经典题型索引}\label{ux4f5cux4e1aux4e2dux7684ux7ecfux5178ux9898ux578bux7d22ux5f15}
+
+\subsubsection{4.1 集合与拓扑}\label{ux96c6ux5408ux4e0eux62d3ux6251}
+
+\begin{itemize}
+    \tightlist
+  \item
+    第一周：集合恒等式、对称差、把集合列拆成两两不交列、集合
+    \(\limsup/\liminf\)、单调函数孤立/间断点的可数性。
+  \item
+    第二周：闭包、内点、补集公式；孤立点至多可数；局部闭集拼接；闭集判别；开区间族取可数子覆盖；闭区间连通性。
+  \item
+    第三周：单调函数的特殊点集；由连续函数列构造
+    \(F_\sigma/G_\delta\)；紧性与有限覆盖；闭集族有限交；完备集/第一纲相关题。
+\end{itemize}
+
+\subsubsection{4.2
+外测度与可测集}\label{ux5916ux6d4bux5ea6ux4e0eux53efux6d4bux96c6}
+
+\begin{itemize}
+    \tightlist
+  \item
+    第五周：相距正距离集合的外测度可加；外测度关于对称差的控制；零测集无内点；Cantor
+    型集；竖线段零测；\(\sum m(E_k)<\infty\Rightarrow m(\limsup E_k)=0\)；Carathéodory
+    判别只需检验开区间。
+  \item
+    第六周：测度连续性；对称差为零推出可测性等价；开集/闭集逼近；有限测度集正则性；线性变换保持可测且测度按比例缩放；零测集在合适映射下的像。
+  \item
+    \texttt{hw12.tex}：可积函数在正测集上的下界型问题；由``任意测度为
+    \(\lambda\)
+    的集合积分为零''推出函数为零；分布函数与可积性；图形或双曲线类集合的二维测度。
+\end{itemize}
+
+\subsubsection{4.3
+可测函数与收敛}\label{ux53efux6d4bux51fdux6570ux4e0eux6536ux655b}
+
+\begin{itemize}
+    \tightlist
+  \item
+    第七周：分布函数 \(m(\{f>a\})\)
+    的左右连续性；中位数存在；只检验有理阈值；非可数上确界不可测反例；收敛点集可测；导函数可测；局部可测推出整体可测。
+  \item
+    第八周：a.e. 收敛的集合表达；Lusin
+    不能把任意有界可测函数改成连续函数；依测度收敛对加法、绝对值、连续复合的稳定性；对角线选取；Riesz
+    子列判别。
+  \item
+    第九周：\(f(x)g(y)\) 的乘积可测性；依测度 Cauchy 拼接；Carathéodory
+    型函数可测；Cauchy 方程可测解连续；依测度收敛与积分度量。
+\end{itemize}
+
+\subsubsection{4.4
+积分与极限定理}\label{ux79efux5206ux4e0eux6781ux9650ux5b9aux7406}
+
+\begin{itemize}
+    \tightlist
+  \item
+    第十周：\(L^1\) 函数由有界可测函数、连续函数逼近；\(x^{-\alpha}\)
+    可积判别；参数单调时用 Levi 交换极限与积分。
+  \item
+    第十一周：Fatou 推出积分上下极限不等式；依测度收敛加
+    Fatou；\(\sin n_kx\)
+    收敛点为零测集；变量替换；周期函数积分平均；Tonelli 证明级数 a.e.
+    收敛。
+  \item
+    第十二周：积分的绝对连续性；分布函数级数判别 \(f\in L^1\)；Fatou
+    证明子集上积分收敛；平移连续性；Fubini
+    证明曲线/图像零测；开集上积分为零推出函数为零。
+\end{itemize}
+
+\subsubsection{4.5 微分、BV、AC}\label{ux5faeux5206bvac}
+
+\begin{itemize}
+    \tightlist
+  \item
+    第十三周：有界单调函数导数属于 \(L^1\)；跳跃函数构造；Dini
+    导数；单调函数间断点；绝对连续和有界变差的边界例子。
+  \item
+    第十四周：\(f'\) 有界变差推出 \(f'\) 连续；用 Lebesgue
+    微分定理从区间积分不等式推出 \(f^2\in L^1\) 或 \(f=0\)；\(\sin x\)
+    的变差函数；\(\mathrm{BV}\) 的导数积分估计；\(|f|^p\) 的 AC
+    判别；平均函数逼近示性函数；AC 函数列的导数极限。
+  \item
+    第十五周：\(x^\alpha\sin x^{-\beta}\) 绝对连续当且仅当
+    \(\alpha>\beta\)；由微分定理刻画满测集；端点附近 AC/BV
+    拼接；\(f(x^n)\) 的极限积分；\(L^p\) 尾部估计和广义 Hölder。
+\end{itemize}
+
+\subsubsection{\texorpdfstring{4.6
+\(L^p\)、弱收敛、算子}{4.6 L\^{}p、弱收敛、算子}}\label{lpux5f31ux6536ux655bux7b97ux5b50}
+
+\begin{itemize}
+    \tightlist
+  \item
+    \texttt{hw15.tex} P135：\(L^p\)
+    尾部积分趋零；\(\lambda^p m(\{|f|>\lambda\})\) 的两端极限；广义
+    Hölder；带权 Jensen/Hölder 型不等式。
+  \item
+    \texttt{hw16.tex} P136：\(\sin x/x\in L^p\)；积分算子 Hölder
+    连续估计；不定积分算子 \(L^2\to L^2\)
+    范数估计；\(F(x+h)-F(x)=o(|h|^{1/q})\)；a.e. 收敛加 \(L^p\)
+    有界推出对偶配对收敛；非负函数 \(\liminf f_k\ge f\) 且范数收敛推出强
+    \(L^p\) 收敛。
+\end{itemize}
+
+\subsubsection{4.7
+作业经典题题面与完整解答}\label{ux4f5cux4e1aux7ecfux5178ux9898ux9898ux9762ux4e0eux5b8cux6574ux89e3ux7b54}
+
+下面题面为根据作业答案与课堂记录复原的标准版本，未必逐字等同原题，但保留核心条件与证明方法。
+
+\textbf{经典题 1：正函数在大测度集上的积分下界。}\impB
+
+\textbf{题面。} 设 \(f\in L^1[0,1]\)，且 \(f>0\) a.e.。给定
+\(0<\lambda<1\)，证明
+\[
+  \inf_{m(E)\ge\lambda}\int_E f(x)\,dx>0.
+\]
+
+\textbf{解答。} 令
+\[
+  A_k=\{x\in[0,1]:f(x)\ge 1/k\}.
+\]
+因为 \(f>0\) a.e.，有 \(A_k\uparrow[0,1]\) a.e.，故
+\[
+  m(A_k)\to1.
+\]
+取 \(K\) 使 \(m(A_K)>1-\lambda/2\)。若 \(m(E)\ge\lambda\)，则
+\[
+  m(E\cap A_K)\ge m(E)-m(A_K^c)>\lambda-\lambda/2=\lambda/2.
+\]
+于是
+\[
+  \int_E f\ge\int_{E\cap A_K}f\ge \frac1K m(E\cap A_K)>\frac{\lambda}{2K}.
+\]
+因此所求下确界为正。
+
+\textbf{经典题 2：全序闭集族上的积分下极限。}\impC
+
+\textbf{题面。} 设 \(f\ge0\)、\(f\in L^1[a,b]\)。设 \(\{F_\alpha\}_{\alpha\in\Lambda}\)
+是一族闭子集，并且对任意 \(\alpha,\beta\)，有
+\[
+  F_\alpha\subset F_\beta\quad\text{或}\quad F_\beta\subset F_\alpha.
+\]
+若对所有 \(\alpha\) 都有
+\[
+  \int_{F_\alpha} f\ge1,
+\]
+证明
+\[
+  \int_{\cap_{\alpha}F_\alpha} f\ge1.
+\]
+
+\textbf{解答。} 记 \(F=\cap_\alpha F_\alpha\)。若结论不成立，取
+\(\eta>0\) 使
+\[
+  \int_F f<1-2\eta.
+\]
+由积分的绝对连续性与正则性，可取开集 \(U\supset F\)，使
+\[
+  \int_U f<1-\eta.
+\]
+紧集 \([a,b]\setminus U\) 被开集族 \(\{F_\alpha^c\}_{\alpha\in\Lambda}\) 覆盖。由紧性，存在有限子覆盖
+\[
+  [a,b]\setminus U\subset F_{\alpha_1}^c\cup\cdots\cup F_{\alpha_N}^c.
+\]
+由于 \(\{F_\alpha\}\) 按包含关系全序，有限交
+\[
+  F_{\alpha_1}\cap\cdots\cap F_{\alpha_N}
+\]
+等于其中最小的一个闭集，记为 \(F_{\alpha_0}\)。上式等价于
+\[
+  F_{\alpha_0}\subset U.
+\]
+于是
+\[
+  1\le \int_{F_{\alpha_0}}f\le \int_U f<1-\eta,
+\]
+矛盾。
+
+\textbf{经典题 3：层集求和判别可积性。}\impA
+
+\textbf{题面。} 设 \(m(E)<\infty\)，\(f\ge0\) 可测。证明以下条件等价：
+\[
+  f\in L^1(E),
+\]
+\[
+  \sum_{k=1}^{\infty}m(\{f\ge k\})<\infty,
+\]
+\[
+  \sum_{j=1}^{\infty}2^j m(\{f\ge2^j\})<\infty.
+\]
+
+\textbf{解答。} 令 \(E_k=\{f\ge k\}\)。在 \(f<\infty\) 的点上，
+\[
+  \sum_{k=1}^{\infty}\chi_{E_k}(x)\le f(x)
+  \le 1+\sum_{k=1}^{\infty}\chi_{E_k}(x).
+\]
+积分并用 Tonelli 定理，得
+\[
+  \sum_{k=1}^{\infty}m(E_k)\le \int_E f
+  \le m(E)+\sum_{k=1}^{\infty}m(E_k).
+\]
+所以前两个条件等价。
+
+再比较整数层集与 dyadic 层集。若 \(2^{j-1}\le k<2^j\)，则
+\[
+  \{f\ge2^j\}\subset\{f\ge k\}\subset\{f\ge2^{j-1}\}.
+\]
+按 \(k\) 的 dyadic 块求和，得到两类级数只差常数因子，故第三个条件也等价。
+
+\textbf{经典题 4：积分收敛推出任意子集上积分收敛。}\impB
+
+\textbf{题面。} 设 \(f_k,f\ge0\)，\(f_k\to f\) a.e. 于 \(E\)，并且
+\[
+  \int_E f_k\to\int_E f<\infty.
+\]
+证明对任意可测子集 \(A\subset E\)，
+\[
+  \int_A f_k\to\int_A f.
+\]
+
+\textbf{解答。} 由 Fatou 引理，
+\[
+  \int_A f\le \liminf_k\int_A f_k.
+\]
+对补集 \(E\setminus A\) 同理，
+\[
+  \int_{E\setminus A} f\le \liminf_k\int_{E\setminus A} f_k.
+\]
+若 \(\limsup_k\int_A f_k>\int_A f+\eta\)，取子列使
+\[
+  \int_A f_{k_j}\to L>\int_A f+\eta.
+\]
+则
+\[
+  \liminf_j\int_{E\setminus A}f_{k_j}\ge\int_{E\setminus A}f.
+\]
+于是
+\[
+  \liminf_j\int_E f_{k_j}
+  =\liminf_j\left(\int_A f_{k_j}+\int_{E\setminus A}f_{k_j}\right)
+  \ge L+\int_{E\setminus A}f
+  >\int_E f,
+\]
+与 \(\int_E f_k\to\int_E f\) 矛盾。因此
+\[
+  \limsup_k\int_A f_k\le\int_A f.
+\]
+结合 Fatou 给出的下界，即得结论。
+
+\textbf{经典题 5：依测度收敛版 Fatou 引理。}\impA
+
+\textbf{题面。} 设 \(f_k\ge0\) 可测，且 \(f_k\to f\) 依测度。证明
+\[
+  \int_E f\le \liminf_{k\to\infty}\int_E f_k.
+\]
+
+\textbf{解答。} 取子列 \(f_{k_j}\) 使
+\[
+  \int f_{k_j}\to \liminf_k\int f_k.
+\]
+由 Riesz 子列定理，从 \(f_{k_j}\) 中再取子列 \(f_{k_{j_i}}\to f\) a.e.。对该子列用 Fatou 引理：
+\[
+  \int f\le \liminf_i\int f_{k_{j_i}}
+  =\lim_j\int f_{k_j}
+  =\liminf_k\int f_k.
+\]
+
+\textbf{经典题 6：\(\sin n_kx\) 收敛点集为零测集。}\impC
+
+\textbf{题面。} 设 \(n_k\) 是严格递增的正整数列。证明集合
+\[
+  E=\{x\in\mathbb R:\sin n_kx\text{ 收敛}\}
+\]
+为零测集。
+
+\textbf{解答。} 反设 \(m(E)>0\)。取有界区间 \(I\)，使
+\[
+  m(E\cap I)>0.
+\]
+在 \(E\cap I\) 上，\(\sin n_kx\) 有界且收敛。由有界收敛定理和 Riemann-Lebesgue 引理，
+\[
+  \int_{E\cap I}\sin n_kx\,dx\to0,
+\]
+另一方面也趋于极限函数的积分。对任意子区间重复此论证，可得极限函数在 \(E\) 上 a.e. 为
+\(0\)。于是
+\[
+  \sin^2 n_kx\to0,\qquad \cos 2n_kx=1-2\sin^2 n_kx\to1
+\]
+a.e. 于 \(E\cap I\)。再用有界收敛定理，
+\[
+  \int_{E\cap I}\cos 2n_kx\,dx\to m(E\cap I).
+\]
+但 Riemann-Lebesgue 引理又给出左侧趋于 \(0\)，矛盾。因此 \(m(E)=0\)。
+
+\textbf{经典题 7：Tonelli 证明级数 a.e. 收敛。}\impA
+
+\textbf{题面。} 设 \(u_k\ge0\) 可测，且
+\[
+  \sum_{k=1}^{\infty}\int u_k<\infty.
+\]
+证明
+\[
+  \sum_{k=1}^{\infty}u_k(x)<\infty
+  \quad\text{a.e.}
+\]
+
+\textbf{解答。} 令
+\[
+  U(x)=\sum_{k=1}^{\infty}u_k(x).
+\]
+由 Tonelli 定理，
+\[
+  \int U=\int\sum_{k=1}^{\infty}u_k
+  =\sum_{k=1}^{\infty}\int u_k<\infty.
+\]
+若 \(\{U=\infty\}\) 有正测度，则 \(\int U=\infty\)，矛盾。因此 \(U<\infty\) a.e.。
+这类题常用于证明
+\(\sum_n |f(x+n)|\) 或 \(\sum_k k^{-2}|x-r_k|^{-1/2}\) a.e. 收敛。
+
+\textbf{经典题 8：\(L^1\) 平移连续性。}\impA
+
+\textbf{题面。} 设 \(f\in L^1(\mathbb R)\)。证明
+\[
+  \int_{\mathbb R}|f(x+h)-f(x)|\,dx\to0
+  \qquad (h\to0).
+\]
+
+\textbf{解答。} 先设 \(g\in C_c(\mathbb R)\)。由于 \(g\) 一致连续且支集紧，
+\[
+  \|g(\cdot+h)-g\|_1\to0.
+\]
+对一般 \(f\in L^1\)，取 \(g\in C_c(\mathbb R)\) 使
+\[
+  \|f-g\|_1<\varepsilon.
+\]
+平移保持 \(L^1\) 范数，因此
+\[
+  \|f(\cdot+h)-f\|_1
+  \le \|f(\cdot+h)-g(\cdot+h)\|_1
+  +\|g(\cdot+h)-g\|_1+\|g-f\|_1
+  <2\varepsilon+\|g(\cdot+h)-g\|_1.
+\]
+令 \(h\to0\)，再令 \(\varepsilon\downarrow0\)，即得结论。
+
+\textbf{经典题 9：图像或曲线为零测集。}\impB
+
+\textbf{题面。} 设 \(f:[a,b]\to\mathbb R\) 可测且有限 a.e.。证明其图像
+\[
+  \Gamma_f=\{(x,f(x)):x\in[a,b]\}
+\]
+在 \(\mathbb R^2\) 中为零测集。
+
+\textbf{解答。} 对每个 \(x\)，垂直截面
+\[
+  (\Gamma_f)_x=\{y:(x,y)\in\Gamma_f\}
+\]
+至多一个点，故一维测度为 \(0\)。图像的可测性可由截断和可测函数逼近得到。由 Fubini 定理，
+\[
+  m_2(\Gamma_f)=\int_a^b m_1((\Gamma_f)_x)\,dx=0.
+\]
+同理，集合 \(\{(x,y):xy=\alpha\}\) 也可用截面法证明为零测集。
+
+\textbf{经典题 10：区间平均不等式推出 \(f^2\in L^1\)。}\impA
+
+\textbf{题面。} 设 \(f\in L^1[0,1]\)，\(g\) 在 \([0,1]\) 上单调递增。若对任意
+\([u,v]\subset[0,1]\)，有
+\[
+  \left(\int_u^v f(x)\,dx\right)^2
+  \le (g(v)-g(u))(v-u),
+\]
+证明 \(f^2\in L^1[0,1]\)。
+
+\textbf{解答。} 两边除以 \((v-u)^2\)，得
+\[
+  \left(\frac1{v-u}\int_u^v f\right)^2
+  \le \frac{g(v)-g(u)}{v-u}.
+\]
+令 \(u,v\to x\)。由 Lebesgue 微分定理，左侧趋于 \(f(x)^2\) a.e.；由单调函数 a.e.
+可导，右侧趋于 \(g'(x)\) a.e.。故
+\[
+  f(x)^2\le g'(x)\quad\text{a.e.}
+\]
+而单调函数满足
+\[
+  \int_0^1 g'(x)\,dx\le g(1)-g(0)<\infty.
+\]
+因此 \(f^2\in L^1[0,1]\)。
+
+\textbf{经典题 11：导数有界变差则连续。}\impB
+
+\textbf{题面。} 设 \(f\) 在 \([a,b]\) 上可微，且 \(f'\in\mathrm{BV}[a,b]\)。证明
+\[
+  f'\in C[a,b].
+\]
+
+\textbf{解答。} BV 函数可写成两个单调函数之差，因此它的间断点只能是第一类跳跃间断。另一方面，导函数具有 Darboux 性质：若
+\(x<y\)，则 \(f'\) 在 \([x,y]\) 上取遍割线斜率附近的中间值，这由 Rolle 定理推出。
+跳跃间断会破坏介值性质。因此 \(f'\) 没有间断点，即 \(f'\) 连续。
+
+\textbf{经典题 12：\(|f|^p\) 的绝对连续性。}\impB
+
+\textbf{题面。} 若 \(f\in AC[a,b]\)、\(p\ge1\)，证明 \(|f|^p\in AC[a,b]\)。并说明
+\(0<p<1\) 时结论不一定成立。
+
+\textbf{解答。} 因 \(f\) 在紧区间上连续，故存在 \(M\) 使 \(|f|\le M\)。函数
+\(\Phi(t)=|t|^p\) 在 \([-M,M]\) 上 Lipschitz，因此
+\[
+  ||s|^p-|t|^p|\le C|s-t|.
+\]
+对任意互不相交区间 \((\alpha_i,\beta_i)\)，
+\[
+  \sum_i\bigl||f(\beta_i)|^p-|f(\alpha_i)|^p\bigr|
+  \le C\sum_i|f(\beta_i)-f(\alpha_i)|.
+\]
+由 \(f\) 的绝对连续性得到 \(|f|^p\) 绝对连续。
+
+当 \(0<p<1\) 时可取
+\[
+  f(x)=x^2\sin^2(1/x),\quad f(0)=0.
+\]
+则 \(f\in AC[0,1]\)，但 \(|f|^{1/2}=x|\sin(1/x)|\) 变差无穷，不绝对连续。
+
+\textbf{经典题 13：振荡函数的 AC 判别。}\impA
+
+\textbf{题面。} 设
+\[
+  f(x)=x^\alpha\sin x^{-\beta}\quad(0<x\le1),\qquad f(0)=0,
+\]
+其中 \(\alpha,\beta>0\)。证明
+\[
+  f\in AC[0,1]\quad\Longleftrightarrow\quad \alpha>\beta.
+\]
+
+\textbf{解答。} 若 \(\alpha>\beta\)，则
+\[
+  f'(x)=\alpha x^{\alpha-1}\sin x^{-\beta}
+  -\beta x^{\alpha-\beta-1}\cos x^{-\beta}.
+\]
+两项分别由 \(x^{\alpha-1}\) 和 \(x^{\alpha-\beta-1}\) 控制。因为
+\[
+  \alpha-1>-1,\qquad \alpha-\beta-1>-1,
+\]
+所以 \(f'\in L^1[0,1]\)。又 \(f(x)=\int_0^x f'(t)\,dt\)，故 \(f\in AC[0,1]\)。
+
+若 \(\alpha\le\beta\)，取
+\[
+  x_n=\left(\frac{\pi}{2}+n\pi\right)^{-1/\beta}.
+\]
+则 \(x_n\downarrow0\)，且 \(f(x_n)=(-1)^n x_n^\alpha\)。沿这些交错极值点取分割，得到
+\[
+  V_0^1(f)\ge \sum_n\bigl(x_n^\alpha+x_{n+1}^\alpha\bigr).
+\]
+由于 \(x_n^\alpha\asymp n^{-\alpha/\beta}\)，当 \(\alpha/\beta\le1\) 时级数发散。因此
+\(f\notin BV[0,1]\)，更不可能绝对连续。
+
+\textbf{经典题 14：AC 函数列导数受控收敛。}\impA
+
+\textbf{题面。} 设 \(g_k\in AC[a,b]\)，且
+\[
+  |g_k'(x)|\le F(x)\quad\text{a.e.},\qquad F\in L^1[a,b].
+\]
+若 \(g_k(x)\to g(x)\) 对每个 \(x\) 成立，且 \(g_k'(x)\to h(x)\) a.e.，证明
+\[
+  g\in AC[a,b],\qquad g'=h\quad\text{a.e.}
+\]
+
+\textbf{解答。} 由 \(|g_k'|\le F\) 与 \(g_k'\to h\) a.e.，得 \(|h|\le F\)，故
+\(h\in L^1[a,b]\)。对每个 \(x\)，
+\[
+  g_k(x)=g_k(a)+\int_a^x g_k'(t)\,dt.
+\]
+令 \(k\to\infty\)。左侧趋于 \(g(x)\)，且 \(g_k(a)\to g(a)\)。积分项由 DCT 得
+\[
+  \int_a^x g_k'(t)\,dt\to\int_a^x h(t)\,dt.
+\]
+故
+\[
+  g(x)=g(a)+\int_a^x h(t)\,dt.
+\]
+因此 \(g\in AC[a,b]\)，且 \(g'=h\) a.e.。
+
+\textbf{经典题 15：\(L^p\) 有界加 a.e. 收敛推出弱配对收敛。}\impA
+
+\textbf{题面。} 设 \(1<p<\infty\)，\(q\) 为共轭指数。若
+\[
+  f_k\to f\quad\text{a.e.},\qquad \sup_k\|f_k\|_p<\infty,
+\]
+证明对任意 \(g\in L^q\)，
+\[
+  \int f_k g\to\int fg.
+\]
+
+\textbf{解答。} 由 Fatou 引理，\(f\in L^p\)，且
+\[
+  \sup_k\|f_k-f\|_p<\infty.
+\]
+先对有界且支集测度有限的 \(\varphi\) 证明。由 Egorov 定理，在支集上去掉任意小测度集合后，
+\(f_k-f\) 一致趋于 \(0\)。好集合上的积分由一致收敛控制；坏集合上的积分由 Hölder 控制：
+\[
+  \int_B |f_k-f||\varphi|
+  \le \|\varphi\|_\infty \|f_k-f\|_p m(B)^{1/q}.
+\]
+因此
+\[
+  \int(f_k-f)\varphi\to0.
+\]
+一般 \(g\in L^q\) 用有界且有限支撑的 \(\varphi\) 在 \(L^q\) 中逼近，再由 Hölder 不等式控制误差：
+\[
+  \left|\int(f_k-f)(g-\varphi)\right|
+  \le \|f_k-f\|_p\|g-\varphi\|_q.
+\]
+于是结论成立。
+
+\textbf{经典题 16：范数收敛推出强 \(L^p\) 收敛。}\impB
+
+\textbf{题面。} 设 \(f_k,f\ge0\)，\(1\le p<\infty\)，并且
+\[
+  \liminf_{k\to\infty}f_k\ge f\quad\text{a.e.},\qquad
+  \|f_k\|_p\to\|f\|_p.
+\]
+证明
+\[
+  \|f_k-f\|_p\to0.
+\]
+
+\textbf{解答。} 令
+\[
+  h_k=\min(f_k,f),\qquad r_k=f_k-h_k=(f_k-f)^+.
+\]
+由条件可知 \(h_k\to f\) a.e.，且 \(0\le h_k\le f\)。由 DCT，
+\[
+  \|h_k-f\|_p\to0,\qquad \|h_k\|_p^p\to\|f\|_p^p.
+\]
+又 \(f_k=h_k+r_k\)，且 \(h_k,r_k\ge0\)，所以
+\[
+  f_k^p=(h_k+r_k)^p\ge h_k^p+r_k^p.
+\]
+从而
+\[
+  0\le \|r_k\|_p^p
+  \le \|f_k\|_p^p-\|h_k\|_p^p\to0.
+\]
+最后
+\[
+  \|f_k-f\|_p\le \|r_k\|_p+\|h_k-f\|_p\to0.
+\]
+
+\subsection{5.
+必背但要带条件的定理}\label{ux5fc5ux80ccux4f46ux8981ux5e26ux6761ux4ef6ux7684ux5b9aux7406}
+
+\begin{enumerate}
+    \def\labelenumi{\arabic{enumi}.}
+    \tightlist
+  \item
+    Egorov：必须在有限测度集上。
+  \item
+    Lusin：通常要求有限测度或函数在有限测度集上可测且几乎处处有限。
+  \item
+    Fatou：函数列非负；一般函数要先加控制或拆正负部。
+  \item
+    DCT：需要 a.e. 收敛与同一个 \(L^1\) 控制函数。
+  \item
+    Fubini：需要绝对可积；非负时用 Tonelli。
+  \item
+    测度上连续：递减集合列要有某一项有限测度。
+  \item
+    a.e. 收敛推出依测度收敛：需要底空间有限测度。
+  \item
+    \(L^p\) 完备：函数按 a.e. 等价类看，否则范数为零不是逐点为零。
+  \item
+    Lebesgue 微分定理：\(f\) 至少局部可积，结论是 a.e.。
+  \item
+    AC 等价于不定积分：在紧区间上使用最标准。
+\end{enumerate}
+
+\subsection{6.
+高频反例与边界例子}\label{ux9ad8ux9891ux53cdux4f8bux4e0eux8fb9ux754cux4f8bux5b50}
+
+\begin{itemize}
+    \tightlist
+  \item
+    不可测集 \(E\) 的示性函数
+    \(\chi_E\)：可用于打破``非可数上确界保持可测''等错误命题。
+  \item
+    Dirichlet 函数 \(\chi_{\mathbb Q}\)：Riemann 不可积但 Lebesgue
+    可积且积分为 \(0\)，适合比较两种积分。
+  \item
+    Cantor 集与胖 Cantor
+    集：一个展示不可数零测集，一个展示无内点但正测度闭集。
+  \item
+    打字机序列：依测度收敛到 \(0\)，但不 a.e. 收敛。
+  \item
+    平移示性函数 \(\chi_{[n,n+1]}\)：a.e. 收敛到
+    \(0\)，但在无限测度空间不依测度收敛。
+  \item
+    \(\chi_{[0,1/2]}\)：有界可测，但不能在零测集外等于连续函数。
+  \item
+    \(x^2\sin^2(1/x)\) 与其平方根：说明 \(0<p<1\) 时 \(|f|^p\) 不保持 AC。
+  \item
+    \(x^\alpha\sin(x^{-\beta})\)：AC 当且仅当
+    \(\alpha>\beta\)，用导数可积与全变差发散分界。
+  \item
+    \(Mf\) 对 \(f=\chi_{(0,1)}\)：Hardy-Littlewood 极大函数不在
+    \(L^1\)，说明只有弱 \((1,1)\)，不是强 \((1,1)\)。
+\end{itemize}
+
+\subsection{7. 建议复习路线}\label{ux5efaux8baeux590dux4e60ux8defux7ebf}
+
+\textbf{第一轮：按定义打地基。}
+把外测度、可测集、可测函数、三种收敛、Lebesgue 积分、BV、AC、\(L^p\)
+的定义各写一遍，并给出两个等价刻画。
+
+\textbf{第二轮：按定理条件刷题。}
+每次做题先判断用哪一类工具：集合可数操作、\(\varepsilon\)
+覆盖、Carathéodory、简单函数逼近、Fatou/DCT、Fubini/Tonelli、Egorov/Lusin、Lebesgue
+微分定理、Hölder/Minkowski。
+
+\textbf{第三轮：按反例查漏。}
+对每条``看起来应该成立''的命题，问自己是否需要有限测度、非负、控制函数、可积性、\(p>1\)。能马上给出反例，说明边界掌握到位。
+
+\subsection{8.
+最小必会习题清单}\label{ux6700ux5c0fux5fc5ux4f1aux4e60ux9898ux6e05ux5355}
+
+优先重做这些类型：
+
+\begin{enumerate}
+    \def\labelenumi{\arabic{enumi}.}
+    \tightlist
+  \item
+    集合列 \(\limsup/\liminf\) 与测度连续性。
+  \item
+    孤立点、互不相交开区间、单调函数间断点的可数性。
+  \item
+    外测度次可加性、区间外测度、零测集、Carathéodory 可测性。
+  \item
+    开集/闭集逼近可测集，\(G_\delta/F_\sigma\) 与零测差。
+  \item
+    \(\{f>a\}\) 判别可测，函数列收敛点集可测，导函数可测。
+  \item
+    a.e. 收敛、依测度收敛、Riesz 子列定理和打字机反例。
+  \item
+    Fatou 与 DCT 的正反应用，尤其是``积分收敛推出局部积分收敛''。
+  \item
+    Tonelli/Fubini 证明级数 a.e. 收敛、图像零测、变量替换。
+  \item
+    用 Lebesgue 微分定理由区间平均不等式推出点态 a.e. 结论。
+  \item
+    BV/AC 等价刻画、\(|f|^p\)、\(\sqrt{x}\)、\(x^\alpha\sin x^{-\beta}\)。
+  \item
+    Hölder、Minkowski、广义 Hölder、\(L^p\) 尾部估计。
+  \item
+    \(L^p\) 弱配对收敛、范数收敛推出强收敛、Young
+    卷积不等式、极大函数弱型估计。
+\end{enumerate}
+
+\subsection{9.
+大定理与重要引理证明汇编}\label{ux5927ux5b9aux7406ux4e0eux91cdux8981ux5f15ux7406ux8bc1ux660eux6c47ux7f16}
+
+本节把前面大定理清单中的证明主线和作业中反复出现的重要引理集中整理。复习时建议先能独立复现每个证明的第一步：取点、取覆盖、取简单函数、取子列、取截断或取近似函数。
+
+\textbf{重要程度标注。}以下评级已结合 \(2020,2023,2024,2025\) 回忆卷重新校准。
+\impA 表示近年直接出现、多年反复出现，或在综合题中反复作为主干工具；
+\impB 表示至少一年直接出现，或常作为证明中的关键一步；
+\impC 表示回忆卷中较少直接出现，但仍可能作为作业型、专题型或证明辅助工具考查。
+从频率看，优先级最高的是可测性与正则性、收敛方式、积分极限定理、Lebesgue 微分定理、BV/AC 与 \(L^p\) 中的 Hölder 型估计。
+
+\subsubsection{9.1
+集合、基数与拓扑}\label{ux96c6ux5408ux57faux6570ux4e0eux62d3ux6251ux8bc1ux660e}
+
+\thmlabel{thm:set-lims}\textbf{集合上、下极限公式。}\impB
+对集合列 \(E_n\)，
+\[
+  \limsup_{n\to\infty}E_n
+  =\bigcap_{n=1}^{\infty}\bigcup_{k=n}^{\infty}E_k,\qquad
+  \liminf_{n\to\infty}E_n
+  =\bigcup_{n=1}^{\infty}\bigcap_{k=n}^{\infty}E_k.
+\]
+\textbf{证明。} 点 \(x\) 属于右侧第一个集合，当且仅当对每个 \(n\) 都存在
+\(k\ge n\) 使 \(x\in E_k\)，也就是 \(x\) 属于无穷多个 \(E_k\)。这正是
+\(\limsup E_n\) 的含义。点 \(x\) 属于右侧第二个集合，当且仅当存在
+\(n_0\)，使得对所有 \(k\ge n_0\) 都有 \(x\in E_k\)，也就是 \(x\) 最终总在
+\(E_k\) 中。这正是 \(\liminf E_n\) 的含义。于是两式成立。 \(\square\)
+
+\thmlabel{thm:cantor-bernstein}\textbf{Cantor-Bernstein 定理。}\impC
+若存在单射 \(f:A\to B\) 与 \(g:B\to A\)，则 \(A\) 与 \(B\) 等势。
+
+\textbf{证明。} 令
+\[
+  A_0=A\setminus g(B),\qquad A_{n+1}=g(f(A_n)),\qquad
+  C=\bigcup_{n=0}^{\infty}A_n.
+\]
+在 \(C\) 上用 \(f\) 映到 \(B\)，在 \(A\setminus C\) 上用 \(g^{-1}\) 映到
+\(B\)。具体定义
+\[
+  h(a)=
+  \begin{cases}
+    f(a), & a\in C,\\
+    g^{-1}(a), & a\in A\setminus C.
+  \end{cases}
+\]
+若 \(a\in A\setminus C\)，则 \(a\notin A_0\)，故 \(a\in g(B)\)，于是
+\(g^{-1}(a)\) 有定义。并且此时 \(g^{-1}(a)\notin f(C)\)，否则
+\(a\in g(f(C))=\bigcup_{n\ge1}A_n\subset C\)，矛盾。因此
+\[
+  h(C)=f(C),\qquad h(A\setminus C)=B\setminus f(C).
+\]
+两个部分分别一一对应，且值域互不相交并起来为 \(B\)，所以 \(h:A\to B\)
+是双射。 \(\square\)
+
+\thmlabel{thm:countable-union}\textbf{可数并仍可数。}\impB
+若 \(A_n\) 至多可数，则 \(\bigcup_{n=1}^{\infty}A_n\) 至多可数。
+
+\textbf{证明。} 对每个非空 \(A_n\) 取满射 \(\phi_n:\mathbb N\to A_n\)。定义
+\(\Phi:\mathbb N\times\mathbb N\to\bigcup_n A_n\) 为
+\(\Phi(n,k)=\phi_n(k)\)。由于 \(\mathbb N\times\mathbb N\) 可数，而
+\(\Phi\) 是满射，故并集至多可数。有限并是可数并的特例。 \(\square\)
+
+\thmlabel{thm:qn-countable-dense}\textbf{\(\mathbb Q^n\) 可数且稠密。}\impB
+\(\mathbb Q\) 可数，有限笛卡尔积保持可数，所以 \(\mathbb Q^n\) 可数。给定
+\(x=(x_1,\dots,x_n)\in\mathbb R^n\) 和 \(\varepsilon>0\)，由
+\(\mathbb Q\) 在 \(\mathbb R\) 中稠密，可取 \(q_i\in\mathbb Q\) 使
+\(|x_i-q_i|<\varepsilon/\sqrt n\)。则 \(q=(q_1,\dots,q_n)\in\mathbb Q^n\)
+且 \(|x-q|<\varepsilon\)，所以 \(\mathbb Q^n\) 在 \(\mathbb R^n\) 中稠密。
+
+\thmlabel{thm:isolated-countable}\textbf{孤立点至多可数。}\impB
+若 \(E\subset\mathbb R^n\)，则 \(E\) 的孤立点集至多可数。
+
+\textbf{证明。} 对每个孤立点 \(x\)，取 \(\delta_x>0\) 使
+\(B(x,\delta_x)\cap E=\{x\}\)，再取
+\[
+  q_x\in \mathbb Q^n\cap B(x,\delta_x/3).
+\]
+若 \(x\ne y\) 是两个孤立点，则
+\[
+  B(x,\delta_x/3)\cap B(y,\delta_y/3)=\varnothing,
+\]
+否则由三角不等式可推出其中一个孤立球含有另一个孤立点，矛盾。故
+\(x\mapsto q_x\) 是到可数集 \(\mathbb Q^n\) 的单射，孤立点至多可数。
+\(\square\)
+
+\thmlabel{thm:open-interval-decomp}\textbf{\(\mathbb R\) 中开集的可数区间分解。}\impB
+若 \(G\subset\mathbb R\) 开，则 \(G\) 可唯一写成至多可数个两两不相交开区间的并。
+
+\textbf{证明。} 对 \(x\in G\)，令
+\[
+  I_x=\bigcup\{I:\ I\text{ 是开区间},\ x\in I\subset G\}.
+\]
+则 \(I_x\) 是开区间，且若 \(I_x\cap I_y\ne\varnothing\)，则
+\(I_x=I_y\)。这些 \(I_x\) 是 \(G\) 的连通分支，互不相交且并为 \(G\)。每个非空分支中含有一个有理数，不同分支含有不同有理数，因此分支至多可数。唯一性来自极大连通分支的定义。 \(\square\)
+
+\thmlabel{thm:open-ball-cover}\textbf{\(\mathbb R^n\) 中开集的可数球覆盖。}\impB
+若 \(G\subset\mathbb R^n\) 开，则
+\[
+  G=\bigcup\{B(q,r):q\in\mathbb Q^n,\ r\in\mathbb Q_+,\ \overline{B(q,r)}\subset G\}.
+\]
+证明只需对 \(x\in G\) 取 \(B(x,\rho)\subset G\)，再用有理中心和有理半径选出
+\(x\in B(q,r)\subset \overline{B(q,r)}\subset B(x,\rho)\)。右侧是可数并。
+
+\thmlabel{thm:heine-borel}\textbf{Heine-Borel 紧性判别。}\impB
+\(\mathbb R^n\) 中集合 \(K\) 紧当且仅当 \(K\) 闭且有界。
+
+\textbf{证明。} 紧集必有界，否则开覆盖
+\(\{B(0,m)\}_{m\ge1}\) 无有限子覆盖；紧集也闭，因为若 \(x\notin K\)，则对每个
+\(y\in K\) 取不交球 \(B(y,r_y)\) 与 \(B(x,r_y)\)，由有限子覆盖得到 \(x\) 与
+\(K\) 有正距离，故 \(K^c\) 开。反过来，闭有界集 \(K\) 包含在闭方体中。任意序列
+\(\{x_k\}\subset K\) 有界，由 Bolzano-Weierstrass 定理有收敛子列，极限因
+\(K\) 闭仍在 \(K\)。于是 \(K\) 序列紧，而在 \(\mathbb R^n\) 中序列紧等价于开覆盖紧：若某开覆盖无有限子覆盖，可构造没有收敛子列的点列，矛盾。 \(\square\)
+
+\subsubsection{9.2 Lebesgue
+外测度与可测集}\label{lebesgue-ux5916ux6d4bux5ea6ux4e0eux53efux6d4bux96c6ux8bc1ux660e}
+
+\thmlabel{thm:outer-basic}\textbf{外测度的基本性质。}\impB
+定义
+\[
+  m^*(E)=\inf\left\{\sum_{j=1}^{\infty}|Q_j|:\ E\subset\bigcup_{j=1}^{\infty}Q_j,\ Q_j
+  \text{ 为开方体}\right\}.
+\]
+则 \(m^*(\varnothing)=0\)，若 \(A\subset B\)，则 \(m^*(A)\le m^*(B)\)，并且
+\[
+  m^*\Bigl(\bigcup_{j=1}^{\infty}E_j\Bigr)\le\sum_{j=1}^{\infty}m^*(E_j).
+\]
+
+\textbf{证明。} 空集可由空覆盖或任意小方体覆盖，故外测度为 \(0\)。单调性来自任何覆盖
+\(B\) 的方体族也覆盖 \(A\)。对次可加性，给定 \(\varepsilon>0\)，对每个 \(j\) 取开方体覆盖
+\(\{Q_{jk}\}_k\) 使
+\[
+  \sum_k |Q_{jk}|<m^*(E_j)+2^{-j}\varepsilon.
+\]
+则所有 \(Q_{jk}\) 覆盖 \(\bigcup_jE_j\)，故
+\[
+  m^*\Bigl(\bigcup_jE_j\Bigr)
+  \le\sum_{j,k}|Q_{jk}|
+  \le\sum_jm^*(E_j)+\varepsilon.
+\]
+令 \(\varepsilon\downarrow0\) 即得。 \(\square\)
+
+\thmlabel{thm:cube-measure}\textbf{区间和方体的外测度。}\impB
+若 \(I\subset\mathbb R\) 是区间，则 \(m^*(I)=|I|\)；若 \(Q\subset\mathbb R^n\)
+是方体，则 \(m^*(Q)=|Q|\)。
+
+\textbf{证明。} 上界由 \(I\) 或 \(Q\) 本身稍微放大成开方体覆盖得到。下界先对紧区间或闭方体证明：若紧方体
+\(K\) 被开方体 \(Q_j\) 覆盖，则由紧性取有限子覆盖；有限覆盖的体积和至少为
+\(|K|\)，这可由有限分割成小方体后逐块计数得到。对一般区间或方体，用内部闭方体
+\(K_\delta\subset Q\) 且 \(|K_\delta|\uparrow |Q|\)，于是
+\[
+  m^*(Q)\ge m^*(K_\delta)=|K_\delta|\uparrow |Q|.
+\]
+与上界合并即得。 \(\square\)
+
+\thmlabel{thm:positive-distance-additivity}\textbf{正距离集合的外测度可加性。}\impB
+若 \(\operatorname{dist}(A,B)>0\)，则
+\[
+  m^*(A\cup B)=m^*(A)+m^*(B).
+\]
+
+\textbf{证明。} 次可加性给出 \(\le\)。反向取覆盖 \(A\cup B\) 的开方体族并把方体细分到边长小于
+\(\operatorname{dist}(A,B)/3\)。每个小方体不可能同时遇到 \(A\) 与 \(B\)，于是小方体族分成覆盖
+\(A\) 的部分和覆盖 \(B\) 的部分，体积和至少为 \(m^*(A)+m^*(B)\)。对覆盖取下确界即得
+\(\ge\)。 \(\square\)
+
+\thmlabel{thm:caratheodory}\textbf{Carathéodory 可测性判别。}\impA
+集合 \(E\) Lebesgue 可测当且仅当对任意 \(A\subset\mathbb R^n\)，
+\[
+  m^*(A)=m^*(A\cap E)+m^*(A\cap E^c).
+\]
+
+\textbf{证明。} 由于次可加性总给出
+\[
+  m^*(A)\le m^*(A\cap E)+m^*(A\cap E^c),
+\]
+只需证反向。若 \(E\) 是由开集 \(G\) 去掉零测集得到的集合，即
+\(E=G\setminus N\)，\(m^*(N)=0\)，则先对开集 \(G\) 证明分割等式：用
+\[
+  G_k=\{x\in G:\operatorname{dist}(x,G^c)>1/k,\ |x|<k\}
+\]
+逼近 \(G\)，各 \(G_k\) 与 \(G^c\) 有正距离，应用上一条外测度可加性，再令
+\(k\to\infty\)。零测集 \(N\) 不影响等式，因为与 \(N\) 相交的部分外测度为 \(0\)。反过来，若分割等式对所有
+\(A\) 成立，则按定义 \(E\) 是 Carathéodory 可测集，也就是 Lebesgue 可测集。 \(\square\)
+
+\thmlabel{thm:measurable-sigma}\textbf{可测集构成 \(\sigma\)-代数。}\impA
+若 \(E\) 可测，则 \(E^c\) 可测，这是判别式对两部分互换。若 \(E,F\) 可测，对任意
+\(A\) 先按 \(E\) 分割，再在每一部分按 \(F\) 分割，可得 \(E\cup F\) 可测。归纳得有限并可测。对可数并
+\(E=\bigcup_{j=1}^{\infty}E_j\)，先把它们化为两两不交的
+\[
+  F_1=E_1,\qquad F_j=E_j\setminus\bigcup_{i<j}E_i.
+\]
+令 \(H_N=\bigcup_{j=1}^N F_j\)，则 \(H_N\) 可测且 \(H_N\uparrow E\)。由有限可加性和外测度次可加性，
+\[
+  m^*(A)\ge m^*(A\cap H_N)+m^*(A\cap E^c)
+  =\sum_{j=1}^N m^*(A\cap F_j)+m^*(A\cap E^c).
+\]
+令 \(N\to\infty\)，再用次可加性比较
+\(\sum_jm^*(A\cap F_j)\) 与 \(m^*(A\cap E)\)，得到 Carathéodory 等式，故 \(E\) 可测。
+
+\thmlabel{thm:measure-continuity}\textbf{测度连续性。}\impA
+若 \(E_n\uparrow E\)，则 \(m(E_n)\uparrow m(E)\)。若 \(E_n\downarrow E\) 且某个
+\(m(E_N)<\infty\)，则 \(m(E_n)\downarrow m(E)\)。
+
+\textbf{证明。} 对递增情形，令 \(F_1=E_1,\ F_n=E_n\setminus E_{n-1}\)。则
+\(F_n\) 两两不交且 \(E=\bigcup_nF_n\)，所以
+\[
+  m(E)=\sum_{n=1}^{\infty}m(F_n)
+  =\lim_{N\to\infty}\sum_{n=1}^Nm(F_n)=\lim_{N\to\infty}m(E_N).
+\]
+递减情形可假设 \(N=1\)。令 \(F_n=E_1\setminus E_n\)，则 \(F_n\uparrow E_1\setminus E\)。由递增连续性
+\[
+  m(E_1)-m(E_n)=m(F_n)\to m(E_1)-m(E),
+\]
+其中 \(m(E_1)<\infty\) 保证可相减，故 \(m(E_n)\to m(E)\)。 \(\square\)
+
+\thmlabel{thm:regularity}\textbf{正则性。}\impA
+若 \(E\) 可测，则
+\[
+  m(E)=\inf\{m(G):E\subset G,\ G\text{ 开}\}
+  =\sup\{m(F):F\subset E,\ F\text{ 闭}\}.
+\]
+
+\textbf{证明。} 外正则性来自外测度定义：对每个 \(k\) 取开集 \(G_k\supset E\) 使
+\[
+  m(G_k)\le m(E)+2^{-k}.
+\]
+则 \(G=\bigcap_kG_k\) 是 \(G_\delta\) 集，\(E\subset G\)，且
+\[
+  m(G\setminus E)\le m(G_k\setminus E)\le2^{-k}
+\]
+对所有 \(k\)，故 \(m(G\setminus E)=0\)。内正则性对有限测度集由外正则性作用于
+包含 \(E\) 的大方体中的 \(E^c\) 得到；一般情形先取
+\(E\cap[-N,N]^n\)，再令 \(N\to\infty\)。 \(\square\)
+
+\subsubsection{9.3 可测函数}\label{ux53efux6d4bux51fdux6570ux8bc1ux660e}
+
+\thmlabel{thm:measurable-threshold}\textbf{阈值集刻画。}\impA
+扩展实值函数 \(f\) 可测，当且仅当对每个 \(a\in\mathbb R\)，集合
+\(\{x:f(x)>a\}\) 可测。等价地，只需对所有 \(a\in\mathbb Q\) 检验。
+
+\textbf{证明。} 若 \(f\) 可测，这是定义。若只知有理阈值，则对任意实数 \(a\)，取有理数列
+\(r_j\downarrow a\)，有
+\[
+  \{f>a\}=\bigcup_{j=1}^{\infty}\{f>r_j\},
+\]
+故可测。其他形式如 \(\{f\ge a\}\)、\(\{f<a\}\)、\(\{f\le a\}\) 由补集和可数交并互相推出。 \(\square\)
+
+\thmlabel{thm:measurable-stability}\textbf{可测函数的稳定性。}\impA
+若 \(f,g\) 可测，则 \(f+g\)、\(fg\)、\(\max(f,g)\)、\(\min(f,g)\) 可测；若
+\(f_n\) 可测，则 \(\sup_nf_n\)、\(\inf_nf_n\)、\(\limsup f_n\)、\(\liminf f_n\)
+均可测。
+
+\textbf{证明。} 例如
+\[
+  \{f+g>a\}
+  =\bigcup_{r\in\mathbb Q}\bigl(\{f>r\}\cap\{g>a-r\}\bigr),
+\]
+所以 \(f+g\) 可测。乘积用
+\[
+  fg=\frac{(f+g)^2-f^2-g^2}{2}
+\]
+化为平方与加法；平方可由连续函数复合保持可测得到。上确界满足
+\[
+  \{\sup_nf_n>a\}=\bigcup_n\{f_n>a\},
+\]
+下确界用补号或 \(\inf f_n=-\sup(-f_n)\)。最后
+\[
+  \limsup f_n=\inf_{N\ge1}\sup_{n\ge N}f_n,\qquad
+  \liminf f_n=\sup_{N\ge1}\inf_{n\ge N}f_n,
+\]
+故可测。 \(\square\)
+
+\thmlabel{thm:simple-approx}\textbf{简单函数逼近。}\impA
+若 \(f\ge0\) 可测，则存在非负简单函数 \(\phi_n\uparrow f\)。若 \(f\) 一般可测，则存在简单函数
+\(\phi_n\to f\) a.e.，且在 \(|f|\le n\) 的部分可做到一致误差不超过 \(2^{-n}\)。
+
+\textbf{证明。} 对 \(f\ge0\)，定义
+\[
+  \phi_n(x)=
+  \begin{cases}
+    k2^{-n}, & k2^{-n}\le f(x)<(k+1)2^{-n},\quad 0\le k<n2^n,\\
+    n, & f(x)\ge n.
+  \end{cases}
+\]
+每个取值层都是可测集，因此 \(\phi_n\) 是简单函数，并且
+\(0\le\phi_n\le f\)、\(\phi_n(x)\uparrow f(x)\)。一般 \(f\) 写成
+\(f=f^+-f^-\)，分别逼近 \(f^+\) 与 \(f^-\)。 \(\square\)
+
+\thmlabel{thm:convergence-set}\textbf{收敛点集可测。}\impB
+若 \(f_n\) 可测，则
+\[
+  \{x:f_n(x)\text{ 收敛}\}
+  =\{x:\limsup f_n(x)=\liminf f_n(x)\}
+\]
+可测，因为它是可测函数 \(\limsup f_n-\liminf f_n\) 的零水平集。
+
+\thmlabel{thm:derivative-measurable}\textbf{导函数可测。}\impC
+若 \(f\) 在区间上可导，则
+\[
+  f'(x)=\lim_{n\to\infty}n\bigl(f(x+1/n)-f(x)\bigr)
+\]
+在端点适当限制后是可测函数列的点态极限，因此可测。
+
+\subsubsection{9.4 收敛方式与近似定理}\label{ux6536ux655bux65b9ux5f0fux4e0eux8fd1ux4f3cux5b9aux7406ux8bc1ux660e}
+
+\thmlabel{thm:ae-to-measure}\textbf{a.e. 收敛推出依测度收敛需要有限测度。}\impA
+若 \(m(E)<\infty\) 且 \(f_n\to f\) a.e.，则 \(f_n\to f\) 依测度。
+
+\textbf{证明。} 对 \(\varepsilon>0\)，令
+\[
+  A_n=\bigcup_{k\ge n}\{|f_k-f|>\varepsilon\}.
+\]
+则 \(A_n\downarrow A\)，其中 \(A\) 是 \(|f_k-f|>\varepsilon\) 发生无穷多次的点集。由 a.e. 收敛知
+\(m(A)=0\)。因为 \(A_1\subset E\) 且 \(m(E)<\infty\)，测度从上连续给出
+\(m(A_n)\to0\)。而
+\[
+  \{|f_n-f|>\varepsilon\}\subset A_n,
+\]
+所以 \(m(\{|f_n-f|>\varepsilon\})\to0\)。 \(\square\)
+
+\thmlabel{thm:riesz-subsequence}\textbf{Riesz 子列定理。}\impA
+若 \(f_n\to f\) 依测度，则存在子列 \(f_{n_j}\to f\) a.e.
+
+\textbf{证明。} 依次取 \(n_j\) 使
+\[
+  m(\{|f_{n_j}-f|>2^{-j}\})<2^{-j}.
+\]
+令 \(E_j=\{|f_{n_j}-f|>2^{-j}\}\)。因 \(\sum_jm(E_j)<\infty\)，由
+\thmref{thm:borel-cantelli}{Borel-Cantelli 引理}，
+\[
+  m(\limsup E_j)=0.
+\]
+若 \(x\notin\limsup E_j\)，则存在 \(j_0\)，使 \(j\ge j_0\) 时
+\(|f_{n_j}(x)-f(x)|\le2^{-j}\)，故 \(f_{n_j}(x)\to f(x)\)。 \(\square\)
+
+\thmlabel{thm:borel-cantelli}\textbf{Borel-Cantelli 引理。}\impB
+若 \(\sum_nm(E_n)<\infty\)，则 \(m(\limsup E_n)=0\)。
+
+\textbf{证明。}
+\[
+  \limsup E_n\subset\bigcup_{k=n}^{\infty}E_k
+\]
+对每个 \(n\) 成立，故
+\[
+  m(\limsup E_n)\le\sum_{k=n}^{\infty}m(E_k).
+\]
+令 \(n\to\infty\)，右侧趋于 \(0\)。 \(\square\)
+
+\thmlabel{thm:egorov}\textbf{Egorov 定理。}\impA
+若 \(m(E)<\infty\) 且 \(f_n\to f\) a.e. 于 \(E\)，则对任意
+\(\varepsilon>0\)，存在 \(F\subset E\)，\(m(E\setminus F)<\varepsilon\)，使
+\(f_n\to f\) 在 \(F\) 上一致。也就是说，对任意一致误差 \(\eta>0\)，存在
+\(N\)，使 \(n\ge N\) 时
+\[
+  \sup_{x\in F}|f_n(x)-f(x)|<\eta.
+\]
+
+\textbf{证明。} 对 \(r,k\in\mathbb N\)，令
+\[
+  A_{r,k}=\bigcup_{n\ge k}\{|f_n-f|>1/r\}.
+\]
+对固定 \(r\)，有 \(A_{r,k}\downarrow \varnothing\) a.e.，且 \(m(E)<\infty\)，所以
+\(m(A_{r,k})\to0\)。取 \(k_r\) 使 \(m(A_{r,k_r})<\varepsilon2^{-r}\)。令
+\[
+  F=E\setminus\bigcup_{r=1}^{\infty}A_{r,k_r}.
+\]
+则 \(m(E\setminus F)<\varepsilon\)。若 \(x\in F\)，则对每个 \(r\)，当
+\(n\ge k_r\) 时 \(|f_n(x)-f(x)|\le1/r\)，这正是一致收敛。 \(\square\)
+
+\thmlabel{thm:lusin}\textbf{Lusin 定理。}\impA
+若 \(f\) 在有限测度可测集 \(E\) 上可测且有限 a.e.，则对任意
+\(\varepsilon>0\)，存在闭集 \(F\subset E\)，\(m(E\setminus F)<\varepsilon\)，使
+\(f|_F\) 连续。
+
+\textbf{证明。} 先用简单函数 \(\phi\) 在大测度子集上逼近 \(f\)：由
+\thmref{thm:simple-approx}{简单函数逼近}和
+\thmref{thm:egorov}{Egorov 定理}，可取 \(E_0\subset E\) 使 \(m(E\setminus E_0)<\varepsilon/2\)，且简单函数序列在
+\(E_0\) 上一致收敛到 \(f\)。每个简单函数只涉及有限个可测层集。由
+\thmref{thm:regularity}{正则性}，在每个层集中取闭子集，使丢掉的总测度小于
+\(\varepsilon/2\)，并且这些闭子集之间保持正距离。令 \(F\) 为所有这些闭子集的适当交并，则
+\(\phi_n|_F\) 连续，且 \(\phi_n\to f\) 在 \(F\) 上一致，故 \(f|_F\) 连续。 \(\square\)
+
+\subsubsection{9.5 Lebesgue
+积分与极限定理}\label{lebesgue-ux79efux5206ux4e0eux6781ux9650ux5b9aux7406ux8bc1ux660e}
+
+\thmlabel{thm:levi}\textbf{Levi 单调收敛定理。}\impA
+若 \(0\le f_n\uparrow f\)，则
+\[
+  \int f_n\to\int f.
+\]
+
+\textbf{证明。} 由单调性，\(\int f_n\uparrow L\le\int f\)。反向只需证明任意简单函数
+\(0\le\phi\le f\) 都有 \(\int\phi\le L\)。取 \(0<c<1\)，令
+\[
+  E_n=\{x:f_n(x)\ge c\phi(x)\}.
+\]
+则 \(E_n\uparrow E\)（在 \(\phi=0\) 的点平凡，在 \(\phi>0\) 的点由
+\(f_n\uparrow f\ge\phi\) 得到）。于是
+\[
+  \int f_n\ge \int_{E_n}f_n\ge c\int_{E_n}\phi.
+\]
+令 \(n\to\infty\)，由简单函数积分的\thmref{thm:measure-continuity}{测度连续性}得
+\[
+  L\ge c\int\phi.
+\]
+再令 \(c\uparrow1\)，得 \(L\ge\int\phi\)。对所有 \(\phi\le f\) 取上确界，即
+\(L\ge\int f\)。 \(\square\)
+
+\thmlabel{thm:fatou}\textbf{Fatou 引理。}\impA
+若 \(f_n\ge0\)，则
+\[
+  \int\liminf_{n\to\infty}f_n\le\liminf_{n\to\infty}\int f_n.
+\]
+
+\textbf{证明。} 令
+\[
+  g_n=\inf_{k\ge n}f_k.
+\]
+则 \(0\le g_n\uparrow\liminf f_n\)，由
+\thmref{thm:levi}{Levi 单调收敛定理}，
+\[
+  \int\liminf f_n=\lim_n\int g_n.
+\]
+又 \(g_n\le f_k\) 对所有 \(k\ge n\)，故
+\[
+  \int g_n\le\inf_{k\ge n}\int f_k.
+\]
+令 \(n\to\infty\) 即得。 \(\square\)
+
+\thmlabel{thm:dct}\textbf{Lebesgue 控制收敛定理。}\impA
+若 \(f_n\to f\) a.e. 且 \(|f_n|\le g\in L^1\)，则
+\[
+  \int |f_n-f|\to0,\qquad \int f_n\to\int f.
+\]
+
+\textbf{证明。} 由 \(|f|\le g\) a.e.，有 \(0\le 2g-|f_n-f|\)。
+\thmref{thm:fatou}{Fatou 引理}给出
+\[
+  \int 2g
+  =\int\liminf (2g-|f_n-f|)
+  \le\liminf\int(2g-|f_n-f|)
+  =2\int g-\limsup\int|f_n-f|.
+\]
+故 \(\limsup\int|f_n-f|\le0\)，于是 \(\int|f_n-f|\to0\)。再由
+\[
+  \left|\int f_n-\int f\right|\le\int|f_n-f|
+\]
+得到积分收敛。 \(\square\)
+
+\thmlabel{thm:integral-abs-cont}\textbf{积分的绝对连续性。}\impA
+若 \(f\in L^1(E)\)，则对任意 \(\varepsilon>0\)，存在 \(\delta>0\)，使
+\(A\subset E\) 可测且 \(m(A)<\delta\) 时
+\[
+  \int_A |f|<\varepsilon.
+\]
+
+\textbf{证明。} 取 \(M>0\) 使
+\[
+  \int_{\{|f|>M\}}|f|<\varepsilon/2.
+\]
+令 \(\delta=\varepsilon/(2M)\)。若 \(m(A)<\delta\)，则
+\[
+  \int_A|f|
+  =\int_{A\cap\{|f|\le M\}}|f|+\int_{A\cap\{|f|>M\}}|f|
+  \le Mm(A)+\varepsilon/2<\varepsilon.
+\]
+\(\square\)
+
+\thmlabel{thm:tonelli}\textbf{Tonelli 定理。}\impA
+若 \(f\ge0\) 在 \(X\times Y\) 上可测，则
+\[
+  \int_{X\times Y}f\,d(\mu\times\nu)
+  =\int_X\left(\int_Y f(x,y)\,d\nu(y)\right)d\mu(x)
+  =\int_Y\left(\int_X f(x,y)\,d\mu(x)\right)d\nu(y),
+\]
+允许取值 \(+\infty\)。
+
+\textbf{证明。} 对矩形示性函数 \(\chi_{A\times B}\) 是乘积测度定义；对非负简单函数由线性性成立。一般非负可测
+\(f\) 取简单函数 \(\phi_n\uparrow f\)，对每个 \(\phi_n\) 等式成立，再对两侧用
+\thmref{thm:levi}{Levi 单调收敛定理}通过极限。 \(\square\)
+
+\thmlabel{thm:fubini}\textbf{Fubini 定理。}\impA
+若 \(f\in L^1(X\times Y)\)，则几乎所有截面可积，迭代积分存在且等于二重积分。
+
+\textbf{证明。} 对 \(f^+\)、\(f^-\) 分别用
+\thmref{thm:tonelli}{Tonelli 定理}。由于
+\[
+  \int f^+ +\int f^-=\int |f|<\infty,
+\]
+两部分迭代积分几乎处处有限，于是可相减，并得到
+\[
+  \int f=\int f^+-\int f^-=\int_X\int_Y f(x,y)\,d\nu d\mu.
+\]
+交换 \(X,Y\) 同理。 \(\square\)
+
+\thmlabel{thm:distribution-formula}\textbf{分布函数公式。}\impC
+若 \(f\) 可测，\(p>0\)，则
+\[
+  \int |f|^p
+  =p\int_0^\infty t^{p-1}m(\{|f|>t\})\,dt.
+\]
+
+\textbf{证明。} 对每个 \(x\)，有
+\[
+  |f(x)|^p=\int_0^{|f(x)|}pt^{p-1}\,dt
+  =\int_0^\infty pt^{p-1}\chi_{\{|f(x)|>t\}}\,dt.
+\]
+对非负函数应用 \thmref{thm:tonelli}{Tonelli 定理}交换 \(x\) 与 \(t\) 的积分，即得公式。 \(\square\)
+
+\thmlabel{thm:controlled-liminf-limsup}\textbf{有控制的 \(\liminf/\limsup\) 积分不等式。}\impC
+若 \(|f_k|\le g\in L^1\)，则
+\[
+  \int\liminf f_k\le\liminf\int f_k
+  \le\limsup\int f_k\le\int\limsup f_k.
+\]
+
+\textbf{证明。} 因 \(f_k+g\ge0\)，对 \(f_k+g\) 用
+\thmref{thm:fatou}{Fatou 引理}得
+\[
+  \int(\liminf f_k+g)\le\liminf\int(f_k+g),
+\]
+消去有限量 \(\int g\) 得第一个不等式。因 \(g-f_k\ge0\)，对 \(g-f_k\) 用
+\thmref{thm:fatou}{Fatou 引理}，利用
+\(\liminf(g-f_k)=g-\limsup f_k\)，得第三个不等式。中间的不等式是数列基本性质。 \(\square\)
+
+\subsubsection{9.6 微分定理、BV 与 AC}\label{ux5faeux5206ux5b9aux7406bv-ux4e0e-acux8bc1ux660e}
+
+\thmlabel{thm:vitali}\textbf{Vitali 覆盖引理。}\impA
+设 \(E\subset\mathbb R^n\) 外测度有限，\(\mathcal B\) 是 \(E\) 的 Vitali 覆盖，即对每个
+\(x\in E\) 和每个 \(\eta>0\)，存在 \(B\in\mathcal B\) 使
+\(x\in B\) 且 \(\operatorname{diam}B<\eta\)。则可取两两不交的
+\(B_j\in\mathcal B\)，使
+\[
+  m\left(E\setminus\bigcup_{j=1}^{\infty}B_j\right)=0.
+\]
+
+\textbf{证明。} 先把 \(E\) 放入有限测度开集。归纳选择半径几乎最大的球：选 \(B_1\)，再在所有与
+\(B_1,\dots,B_{k-1}\) 不交的候选球中选 \(B_k\)，使其半径大于候选半径上确界的一半。所得
+\(B_k\) 两两不交。若剩余集 \(R\) 有正外测度，则其中一点 \(x\) 可由任意小球覆盖；取足够小的候选球
+\(B\ni x\)。它最终会与某个已选 \(B_j\) 相交，且由选择方式 \(r(B)\le2r(B_j)\)，于是
+\[
+  B\subset 5B_j.
+\]
+因此剩余集被选中球的五倍放大覆盖。若剩余测度不为零，可在尾部得到
+\[
+  m^*(R)\le \sum_{j\ge N}m(5B_j)=5^n\sum_{j\ge N}m(B_j)\to0,
+\]
+矛盾。 \(\square\)
+
+\thmlabel{thm:hl-weak}\textbf{Hardy-Littlewood 极大函数弱 \((1,1)\) 估计。}\impB
+对
+\[
+  Mf(x)=\sup_{r>0}\frac1{|B(x,r)|}\int_{B(x,r)}|f(y)|\,dy
+\]
+有
+\[
+  m(\{Mf>\lambda\})\le \frac{C_n}{\lambda}\|f\|_1,\qquad \lambda>0.
+\]
+
+\textbf{证明。} 令 \(E_\lambda=\{Mf>\lambda\}\)。对每个 \(x\in E_\lambda\)，取球
+\(B_x\ni x\) 使
+\[
+  \int_{B_x}|f|>\lambda |B_x|.
+\]
+对 \(E_\lambda\) 的有限测度截断部分应用
+\thmref{thm:vitali}{Vitali 覆盖引理}选择两两不交的 \(B_j\)，使
+\(E_\lambda\) 被 \(5B_j\) 覆盖到零测集。于是
+\[
+  m(E_\lambda)\le\sum_j|5B_j|
+  =5^n\sum_j|B_j|
+  \le \frac{5^n}{\lambda}\sum_j\int_{B_j}|f|
+  \le\frac{5^n}{\lambda}\|f\|_1.
+\]
+对截断放开极限得到结论。 \(\square\)
+
+\thmlabel{thm:lebesgue-diff}\textbf{Lebesgue 微分定理。}\impA
+若 \(f\in L^1_{\mathrm{loc}}(\mathbb R^n)\)，则对 a.e. \(x\)，
+\[
+  \lim_{r\downarrow0}\frac1{|B(x,r)|}\int_{B(x,r)}|f(y)-f(x)|\,dy=0.
+\]
+
+\textbf{证明。} 先对连续紧支函数 \(g\) 成立，因为 \(g\) 一致连续，球平均振荡随 \(r\downarrow0\) 一致趋零。对一般
+\(f\)，在大球内取 \(g\in C_c\) 使 \(\|f-g\|_1\) 很小。令
+\[
+  T_rh(x)=\frac1{|B(x,r)|}\int_{B(x,r)}|h(y)|\,dy,\qquad Mh=\sup_rT_rh.
+\]
+若微分结论对 \(f\) 失败超过 \(\alpha\)，则失败集包含在
+\[
+  \{M(f-g)>\alpha/3\}\cup\{|f-g|>\alpha/3\}
+\]
+以及 \(g\) 的失败集。连续函数失败集为空；第二项由 Chebyshev 控制，第一项由
+\thmref{thm:hl-weak}{Hardy-Littlewood 极大函数弱 \((1,1)\) 估计}控制。令
+\(\|f-g\|_1\to0\)，得到失败集测度为 \(0\)。局部情形用大球截断。 \(\square\)
+
+\thmlabel{thm:monotone-discontinuities}\textbf{单调函数间断点至多可数。}\impB
+若 \(f\) 单调递增，则每点左右极限存在，且间断只能是跳跃间断。对 \(m\ge1\)，令
+\[
+  D_m=\{x:f(x+)-f(x-)>1/m\}.
+\]
+在任意有界区间内，\(D_m\) 中不同点的跳跃对应互不相交的纵向区间，总长度不超过
+\(f(b+)-f(a-)\)，故 \(D_m\) 有限。于是
+\[
+  D=\bigcup_{m=1}^{\infty}D_m
+\]
+至多可数。 \(\square\)
+
+\thmlabel{thm:monotone-diff}\textbf{单调函数 a.e. 可导且导数可积。}\impA
+若 \(f\) 在 \([a,b]\) 上单调递增，则 \(f'\) a.e. 存在，\(f'\ge0\)，且
+\[
+  \int_a^b f'(x)\,dx\le f(b)-f(a).
+\]
+
+\textbf{证明。} 记上、下 Dini 导数为 \(D^+f,D_-f\)。利用
+\thmref{thm:vitali}{Vitali 覆盖引理}可证明
+\[
+  m(\{D_-f<\alpha<\beta<D^+f\})=0
+\]
+对所有有理 \(\alpha<\beta\) 成立；于是上下 Dini 导数 a.e. 相等，导数存在。对积分不等式，取差商
+\[
+  f_h(x)=\frac{f(x+h)-f(x)}{h}\ge0
+\]
+在 \([a,b-h]\) 上。\thmref{thm:fatou}{Fatou 引理}给出
+\[
+  \int_a^{b}f'\le\liminf_{h\downarrow0}\int_a^{b-h}
+  \frac{f(x+h)-f(x)}{h}\,dx
+  \le f(b)-f(a),
+\]
+最后一步由单调性把积分写成两端长度为 \(h\) 的平均差。 \(\square\)
+
+\thmlabel{thm:bv-basic}\textbf{BV 定义与基本性质。}\impA
+对 \(f:[a,b]\to\mathbb R\)，任取分割
+\[
+  P:\quad a=x_0<x_1<\cdots<x_N=b,
+\]
+定义分割变差
+\[
+  V(f;P)=\sum_{i=1}^N |f(x_i)-f(x_{i-1})|.
+\]
+全变差为
+\[
+  V_a^b(f)=\sup_P V(f;P).
+\]
+若 \(V_a^b(f)<\infty\)，则称 \(f\) 在 \([a,b]\) 上有界变差，记为
+\[
+  f\in \mathrm{BV}[a,b].
+\]
+
+\textbf{基本性质。}
+\begin{enumerate}
+\item 单调函数属于 \(\mathrm{BV}[a,b]\)，且若 \(f\) 单调递增，则
+\[
+  V_a^b(f)=f(b)-f(a).
+\]
+\item 若 \(f,g\in\mathrm{BV}[a,b]\)，则 \(\alpha f+\beta g\in\mathrm{BV}[a,b]\)，且
+\[
+  V_a^b(\alpha f+\beta g)\le |\alpha|V_a^b(f)+|\beta|V_a^b(g).
+\]
+\item 若 \(f\in\mathrm{BV}[a,b]\)，则 \(|f|\in\mathrm{BV}[a,b]\)，且
+\[
+  V_a^b(|f|)\le V_a^b(f).
+\]
+\item 若 \(a<c<b\)，则
+\[
+  V_a^b(f)=V_a^c(f)+V_c^b(f).
+\]
+\end{enumerate}
+
+\textbf{证明。} 单调递增时每个分割都有
+\[
+  \sum_{i=1}^N |f(x_i)-f(x_{i-1})|
+  =\sum_{i=1}^N(f(x_i)-f(x_{i-1}))
+  =f(b)-f(a),
+\]
+故全变差等于端点差。线性组合由三角不等式直接得到：
+\[
+  |(\alpha f+\beta g)(x_i)-(\alpha f+\beta g)(x_{i-1})|
+  \le |\alpha||f(x_i)-f(x_{i-1})|+|\beta||g(x_i)-g(x_{i-1})|.
+\]
+对 \(|f|\)，用
+\[
+  \bigl||f(x_i)|-|f(x_{i-1})|\bigr|
+  \le |f(x_i)-f(x_{i-1})|.
+\]
+最后，任意 \([a,c]\) 与 \([c,b]\) 的分割可合并成 \([a,b]\) 的分割，所以
+\(V_a^b(f)\ge V_a^c(f)+V_c^b(f)\)；反过来，任意 \([a,b]\) 的分割若不含
+\(c\)，加入点 \(c\) 只会使分割变差不减，于是该分割变差不超过
+\(V_a^c(f)+V_c^b(f)\)。取上确界即得可加性。 \(\square\)
+
+\thmlabel{thm:jordan}\textbf{Jordan 分解定理。}\impA
+\(f\in\mathrm{BV}[a,b]\) 当且仅当 \(f\) 可写成两个单调递增函数之差。
+
+\textbf{证明。} 若 \(f=u-v\)，其中 \(u,v\) 单调递增，则对任意分割
+\[
+  \sum_i|f(x_i)-f(x_{i-1})|
+  \le\sum_i[u(x_i)-u(x_{i-1})]+\sum_i[v(x_i)-v(x_{i-1})]
+  \le u(b)-u(a)+v(b)-v(a).
+\]
+故 \(f\in BV\)。反过来，设
+\[
+  V(x)=V_a^x(f).
+\]
+由变差的定义，\(V\) 单调递增，并且对 \(a\le s<t\le b\)，
+\[
+  |f(t)-f(s)|\le V(t)-V(s).
+\]
+于是
+\[
+  u(x)=\frac{V(x)+f(x)}2,\qquad v(x)=\frac{V(x)-f(x)}2
+\]
+均单调递增，且 \(f=u-v\)。 \(\square\)
+
+\thmlabel{thm:bv-derivative-estimate}\textbf{BV 导数积分估计。}\impA
+若 \(f\in BV[a,b]\)，则
+\[
+  \int_a^b |f'(x)|\,dx\le V_a^b(f).
+\]
+
+\textbf{证明。} 用 \thmref{thm:jordan}{Jordan 分解定理}得 \(f=u-v\)，其中 \(u,v\) 单调递增。
+\thmref{thm:monotone-diff}{单调函数 a.e. 可导且导数可积}给出
+\(\int u'\le u(b)-u(a)\)、\(\int v'\le v(b)-v(a)\)。因此
+\[
+  |f'|\le u'+v'\quad\text{a.e.}
+\]
+从而
+\[
+  \int_a^b|f'|\le u(b)-u(a)+v(b)-v(a)=V_a^b(f).
+\]
+\(\square\)
+
+\thmlabel{thm:ac-characterization}\textbf{绝对连续函数的等价刻画。}\impA
+对 \(f:[a,b]\to\mathbb R\)，以下等价：
+\[
+  f\in AC[a,b]
+  \quad\Longleftrightarrow\quad
+  \exists g\in L^1[a,b]\ \text{使}\ f(x)=f(a)+\int_a^xg(t)\,dt.
+\]
+此时 \(g=f'\) a.e.
+
+\textbf{证明。} 若 \(f(x)=f(a)+\int_a^xg\)，则由
+\thmref{thm:integral-abs-cont}{积分的绝对连续性}：当互不相交区间
+\((a_i,b_i)\) 的总长度小于 \(\delta\) 时，
+\[
+  \sum_i|f(b_i)-f(a_i)|
+  \le\sum_i\int_{a_i}^{b_i}|g|
+  =\int_{\cup_i(a_i,b_i)}|g|<\varepsilon.
+\]
+故 \(f\) 绝对连续。反过来，若 \(f\in AC\)，则 \(f\in BV\)。由 BV 理论
+（见 \thmref{thm:bv-derivative-estimate}{BV 导数积分估计}）可知 \(f\) a.e. 可导且
+\(f'\in L^1\)。令
+\[
+  F(x)=f(a)+\int_a^x f'(t)\,dt.
+\]
+则 \(F\in AC\) 且 \(F'=f'\) a.e.，所以 \(f-F\) 绝对连续且导数为 \(0\) a.e.。由绝对连续定义和零导数可推出
+\(f-F\) 常数；在 \(a\) 处为 \(0\)，故 \(f=F\)。 \(\square\)
+
+\subsubsection{\texorpdfstring{9.7 \(L^p\)
+空间与算子估计}{9.7 Lp 空间与算子估计}}\label{lp-ux7a7aux95f4ux4e0eux7b97ux5b50ux4f30ux8ba1ux8bc1ux660e}
+
+\thmlabel{thm:young-numeric}\textbf{Young 数值不等式。}\impC
+若 \(a,b\ge0\)，\(1<p<\infty\)，\(\frac1p+\frac1q=1\)，则
+\[
+  ab\le \frac{a^p}{p}+\frac{b^q}{q}.
+\]
+
+\textbf{证明。} 函数 \(\varphi(t)=e^t\) 凸，或直接对
+\(\psi(a)=a^p/p-ab+b^q/q\) 求导。其最小值在 \(a=b^{q-1}\) 处取得，最小值为
+\(0\)。 \(\square\)
+
+\thmlabel{thm:holder}\textbf{Hölder 不等式。}\impA
+若 \(1<p<\infty\)，\(\frac1p+\frac1q=1\)，则
+\[
+  \int |fg|\le \|f\|_p\|g\|_q.
+\]
+
+\textbf{证明。} 若某个范数为 \(0\) 平凡。令 \(F=|f|/\|f\|_p\)，
+\(G=|g|/\|g\|_q\)。由 \thmref{thm:young-numeric}{Young 数值不等式}，
+\[
+  FG\le \frac{F^p}{p}+\frac{G^q}{q}.
+\]
+积分得 \(\int FG\le1/p+1/q=1\)，即 Hölder。不等式的 \(p=1,q=\infty\) 情形由
+\(|fg|\le \|g\|_\infty |f|\) 得到。 \(\square\)
+
+\thmlabel{thm:minkowski}\textbf{Minkowski 不等式。}\impB
+若 \(1\le p<\infty\)，则
+\[
+  \|f+g\|_p\le\|f\|_p+\|g\|_p.
+\]
+
+\textbf{证明。} \(p=1\) 是三角不等式。若 \(p>1\)，则
+\[
+  |f+g|^p\le |f||f+g|^{p-1}+|g||f+g|^{p-1}.
+\]
+对两项分别用 \thmref{thm:holder}{Hölder 不等式}：
+\[
+  \|f+g\|_p^p
+  \le(\|f\|_p+\|g\|_p)\,\||f+g|^{p-1}\|_q.
+\]
+因 \(q=p/(p-1)\)，
+\[
+  \||f+g|^{p-1}\|_q=\|f+g\|_p^{p-1}.
+\]
+若 \(\|f+g\|_p>0\)，两边除以该量即得。 \(\square\)
+
+\thmlabel{thm:lp-complete}\textbf{\(L^p\) 完备性。}\impB
+\(L^p(E)\) 对 \(1\le p\le\infty\) 是 Banach 空间。
+
+\textbf{证明。} 只写 \(1\le p<\infty\)。若 \(\{f_n\}\) 是 Cauchy 列，取子列
+\(f_{n_j}\) 使
+\[
+  \|f_{n_{j+1}}-f_{n_j}\|_p<2^{-j}.
+\]
+令
+\[
+  g_m=\sum_{j=1}^m |f_{n_{j+1}}-f_{n_j}|.
+\]
+由 \thmref{thm:minkowski}{Minkowski 不等式}，
+\[
+  \|g_m\|_p\le\sum_{j=1}^m2^{-j}\le1.
+\]
+\thmref{thm:levi}{Levi 单调收敛定理}给出 \(g=\sum_j|f_{n_{j+1}}-f_{n_j}|\in L^p\)，故该级数 a.e. 收敛，子列
+\(f_{n_j}\) a.e. 收敛到某个 \(f\)。\thmref{thm:fatou}{Fatou 引理}给出
+\[
+  \|f_{n_j}-f\|_p\le \liminf_{k\to\infty}\|f_{n_j}-f_{n_k}\|_p\to0.
+\]
+原列是 Cauchy，故整个 \(f_n\to f\) 于 \(L^p\)。\(p=\infty\) 用本质上确界范数直接取几乎处处一致极限。 \(\square\)
+
+\thmlabel{thm:lp-density}\textbf{\(L^p\) 稠密性。}\impB
+当 \(1\le p<\infty\) 时，简单函数在 \(L^p\) 中稠密；在 \(\mathbb R^n\) 上，紧支连续函数
+\(C_c(\mathbb R^n)\) 在 \(L^p\) 中稠密。
+
+\textbf{证明。} 对 \(f\in L^p\)，先截断 \(f_N=f\chi_{\{|f|\le N\}}\chi_{B(0,N)}\)，由
+\thmref{thm:dct}{Lebesgue 控制收敛定理}得
+\(\|f-f_N\|_p\to0\)。对有限测度支集上的有界可测函数，用简单函数一致逼近得到
+\(L^p\) 逼近。再用 \thmref{thm:regularity}{正则性}把简单函数的可测层集用有限个闭集和开集夹住，并用 Urysohn 型连续函数或分段线性函数逼近示性函数，得到
+\(C_c\) 稠密。 \(\square\)
+
+\thmlabel{thm:young-convolution}\textbf{Young 卷积不等式的一种形式。}\impC
+若 \(1\le p\le\infty\)，\(f\in L^p(\mathbb R^n)\)，\(g\in L^1(\mathbb R^n)\)，则
+\[
+  \|f*g\|_p\le \|f\|_p\|g\|_1.
+\]
+
+\textbf{证明。} \(p=\infty\) 时
+\[
+  |f*g(x)|\le\|f\|_\infty\int|g|.
+\]
+若 \(1\le p<\infty\)，由 \thmref{thm:minkowski}{Minkowski 不等式}的积分形式，
+\[
+  \|f*g\|_p
+  =\left\|\int f(\cdot-y)g(y)\,dy\right\|_p
+  \le\int \|f(\cdot-y)\|_p |g(y)|\,dy
+  =\|f\|_p\|g\|_1.
+\]
+\(\square\)
+
+\thmlabel{thm:hl-strong}\textbf{Hardy-Littlewood 极大函数强 \((p,p)\) 估计。}\impC
+若 \(1<p\le\infty\)，则
+\[
+  \|Mf\|_p\le C_{p,n}\|f\|_p.
+\]
+
+\textbf{证明。} \(p=\infty\) 平凡。对 \(1<p<\infty\)，用
+\thmref{thm:distribution-formula}{分布函数公式}：
+\[
+  \|Mf\|_p^p=p\int_0^\infty \lambda^{p-1}m(\{Mf>\lambda\})\,d\lambda.
+\]
+对每个 \(\lambda\)，分解 \(f=f_1+f_2\)，其中
+\[
+  f_1=f\chi_{\{|f|\le\lambda/2\}},\qquad f_2=f\chi_{\{|f|>\lambda/2\}}.
+\]
+则 \(Mf_1\le\lambda/2\)，所以
+\(\{Mf>\lambda\}\subset\{Mf_2>\lambda/2\}\)。由
+\thmref{thm:hl-weak}{Hardy-Littlewood 极大函数弱 \((1,1)\) 估计}，
+\[
+  m(\{Mf>\lambda\})\le \frac{C}{\lambda}\int_{\{|f|>\lambda/2\}}|f|.
+\]
+代回 \thmref{thm:distribution-formula}{分布函数公式}并用
+\thmref{thm:tonelli}{Tonelli 定理}交换积分：
+\[
+  \|Mf\|_p^p
+  \le C\int_0^\infty \lambda^{p-2}\int_{\{|f|>\lambda/2\}}|f(x)|\,dx\,d\lambda
+  =C_p\int |f(x)|^p\,dx.
+\]
+\(\square\)
+
+\subsubsection{9.8
+作业重要引理与经典题证明}\label{ux4f5cux4e1aux91cdux8981ux5f15ux7406ux4e0eux7ecfux5178ux9898ux8bc1ux660e}
+
+\thmlabel{thm:fatou-measure-convergence}\textbf{依测度收敛版 Fatou 引理。}\impA
+若 \(f_k\ge0\)、\(f_k\to f\) 依测度，则
+\[
+  \int_E f\le\liminf_{k\to\infty}\int_E f_k.
+\]
+
+\textbf{证明。} 取子列 \(f_{k_j}\) 使
+\[
+  \int f_{k_j}\to\liminf_k\int f_k.
+\]
+由 \thmref{thm:riesz-subsequence}{Riesz 子列定理}，再取子列
+\(f_{k_{j_i}}\to f\) a.e.。对该子列用 \thmref{thm:fatou}{Fatou 引理}：
+\[
+  \int f\le\liminf_i\int f_{k_{j_i}}
+  =\lim_j\int f_{k_j}
+  =\liminf_k\int f_k.
+\]
+\(\square\)
+
+\thmlabel{thm:riemann-lebesgue}\textbf{Riemann-Lebesgue 引理。}\impC
+若 \(f\in L^1(\mathbb R)\)，则
+\[
+  \int_{\mathbb R}f(x)e^{itx}\,dx\to0\qquad (|t|\to\infty).
+\]
+
+\textbf{证明。} 先对区间示性函数 \(\chi_{[a,b]}\) 成立，因为
+\[
+  \int_a^b e^{itx}\,dx=\frac{e^{itb}-e^{ita}}{it}\to0.
+\]
+由线性性，对阶梯函数成立。给定 \(f\in L^1\)，取阶梯函数 \(\phi\) 使
+\(\|f-\phi\|_1<\varepsilon\)。则
+\[
+  \left|\int(f-\phi)e^{itx}\,dx\right|\le\varepsilon,
+\]
+而 \(\int\phi e^{itx}\to0\)。令 \(\varepsilon\downarrow0\) 得结论。正弦、余弦形式取实部或虚部。 \(\square\)
+
+\thmlabel{thm:sin-nkx-zero}\textbf{\(\sin n_kx\) 收敛点集为零测集。}\impC
+若 \(n_k\) 严格递增，则
+\[
+  E=\{x:\sin n_kx\text{ 收敛}\}
+\]
+是零测集。
+
+\textbf{证明。} 若 \(m(E)>0\)，取有界区间 \(I\) 使 \(m(E\cap I)>0\)。在
+\(E\cap I\) 上，\(\sin n_kx\) 有界且收敛，由有界收敛定理与
+\thmref{thm:riemann-lebesgue}{Riemann-Lebesgue 引理}，
+\[
+  \int_{E\cap I}\sin n_kx\,dx\to0
+\]
+同时也趋于 \(\int_{E\cap I}\lim_k\sin n_kx\,dx\)，故极限函数积分为 \(0\)。将同一论证用于任何
+\(E\cap J\)，可得 \(\sin n_kx\to0\) a.e. 于 \(E\)。于是
+\(\sin^2 n_kx\to0\)，即 \(\cos 2n_kx\to1\) a.e. 于 \(E\)。再次用有界收敛和
+\thmref{thm:riemann-lebesgue}{Riemann-Lebesgue 引理}：
+\[
+  \int_{E\cap I}\cos 2n_kx\,dx\to m(E\cap I)
+  \quad\text{且}\quad
+  \int_{E\cap I}\cos 2n_kx\,dx\to0.
+\]
+矛盾。故 \(m(E)=0\)。 \(\square\)
+
+\thmlabel{thm:affine-change}\textbf{仿射变量替换。}\impC
+若 \(f\in L^1(\mathbb R)\)，\(a\ne0\)，则
+\[
+  \int_{x_1}^{x_2}f(ax+b)\,dx
+  =\frac1a\int_{ax_1+b}^{ax_2+b}f(u)\,du,
+\]
+其中右侧按有向积分理解。
+
+\textbf{证明。} 先对区间示性函数验证，等式化为区间长度在线性变换下缩放
+\(|a|\) 倍。再由有限线性组合推广到简单函数，由非负简单函数单调逼近
+（即 \thmref{thm:levi}{Levi 单调收敛定理}的标准推广步骤）推广到非负可测函数，最后对一般
+\(L^1\) 函数用正负部分分解。 \(\square\)
+
+\thmlabel{thm:tonelli-series}\textbf{Tonelli 证明级数 a.e. 收敛。}\impB
+若 \(u_k\ge0\) 可测且
+\[
+  \int\sum_{k=1}^{\infty}u_k
+  =\sum_{k=1}^{\infty}\int u_k<\infty,
+\]
+则 \(\sum_ku_k(x)<\infty\) a.e.
+
+\textbf{证明。} 由 \thmref{thm:tonelli}{Tonelli 定理}，非负函数
+\[
+  U(x)=\sum_{k=1}^{\infty}u_k(x)
+\]
+满足 \(\int U<\infty\)。若 \(\{U=\infty\}\) 有正测度，则 \(\int U=\infty\)，矛盾。因此
+\(U<\infty\) a.e.。这正是作业中证明
+\(\sum_n |f(x+n)|\) 或 \(\sum_k k^{-2}|x-r_k|^{-1/2}\) a.e. 收敛的核心。 \(\square\)
+
+\thmlabel{thm:periodic-average}\textbf{周期函数积分平均。}\impC
+若 \(f\) 以 \(T>0\) 为周期且 \(f\in L^1[0,T]\)，则
+\[
+  \frac1x\int_0^x f(t)\,dt\to \frac1T\int_0^T f(t)\,dt
+  \qquad (x\to\infty).
+\]
+
+\textbf{证明。} 写 \(x=nT+r\)，\(0\le r<T\)。由周期性，
+\[
+  \int_0^x f=n\int_0^T f+\int_0^r f.
+\]
+两边除以 \(x\)。第一项系数 \(nT/x\to1\)，第二项被
+\(\|f\|_{L^1[0,T]}/x\) 控制，趋于 \(0\)。 \(\square\)
+
+\thmlabel{thm:positive-large-set}\textbf{正函数在大测度集上的积分下界。}\impC
+若 \(f>0\) a.e. 于 \([0,1]\)，\(f\in L^1[0,1]\)，且 \(0<\lambda<1\)，则
+\[
+  \inf_{m(E)\ge\lambda}\int_E f>0.
+\]
+
+\textbf{证明。} 令 \(A_k=\{f\ge1/k\}\)。因 \(f>0\) a.e.，\(A_k\uparrow[0,1]\) a.e.，故由
+\thmref{thm:measure-continuity}{测度连续性}
+\(m(A_k)\to1\)。取 \(K\) 使 \(m(A_K)>1-\lambda/2\)。若 \(m(E)\ge\lambda\)，则
+\[
+  m(E\cap A_K)\ge \lambda-m(A_K^c)>\lambda/2.
+\]
+于是
+\[
+  \int_E f\ge\int_{E\cap A_K}f\ge K^{-1}m(E\cap A_K)>\frac{\lambda}{2K}.
+\]
+\(\square\)
+
+\thmlabel{thm:nested-closed-integral}\textbf{全序闭集族的积分下极限。}\impC
+设 \(f\ge0\)、\(f\in L^1[a,b]\)，\(\{F_\lambda\}\) 是按包含关系全序的闭集族，且
+\(\int_{F_\lambda}f\ge1\)。则
+\[
+  \int_{\cap_\lambda F_\lambda}f\ge1.
+\]
+
+\textbf{证明。} 记 \(F=\cap_\lambda F_\lambda\)。若结论不成立，则由
+\thmref{thm:integral-abs-cont}{积分的绝对连续性}和
+\thmref{thm:regularity}{正则性}，可取开集
+\(U\supset F\) 使
+\[
+  \int_{U\setminus F}f<\varepsilon
+\]
+且最终导致 \(\int_U f<1\)。紧集 \([a,b]\setminus U\) 被开集族
+\(\{F_\lambda^c\}\) 覆盖，取有限子覆盖。由于 \(\{F_\lambda\}\) 全序，有限交等于其中最小的一个
+\(F_{\lambda_0}\)，所以 \(F_{\lambda_0}\subset U\)。于是
+\[
+  1\le\int_{F_{\lambda_0}}f
+  =\int_Ff+\int_{F_{\lambda_0}\setminus F}f
+  \le\int_Ff+\int_{U\setminus F}f.
+\]
+令 \(\varepsilon\downarrow0\)，得 \(\int_Ff\ge1\)。 \(\square\)
+
+\thmlabel{thm:layer-sum-integrability}\textbf{层集求和判别可积性。}\impC
+若 \(m(E)<\infty\)、\(f\ge0\) 可测，则
+\[
+  f\in L^1(E)
+  \quad\Longleftrightarrow\quad
+  \sum_{k=1}^{\infty}m(\{f\ge k\})<\infty
+  \quad\Longleftrightarrow\quad
+  \sum_{j=1}^{\infty}2^jm(\{f\ge2^j\})<\infty.
+\]
+
+\textbf{证明。} 记 \(E_k=\{f\ge k\}\)。逐点有
+\[
+  \sum_{k=1}^{\infty}\chi_{E_k}\le f\le 1+\sum_{k=1}^{\infty}\chi_{E_k}
+\]
+在 \(f<\infty\) 的点上成立。积分并用 \thmref{thm:tonelli}{Tonelli 定理}，可得前两个条件等价。 dyadic 条件与整数层集条件互推：若
+\(2^{j-1}\le k<2^j\)，则
+\[
+  \{f\ge2^j\}\subset \{f\ge k\}\subset \{f\ge2^{j-1}\}.
+\]
+按 dyadic 块求和即可得到两级数只差常数因子。 \(\square\)
+
+\thmlabel{thm:l1-translation}\textbf{\(L^1\) 平移连续性。}\impA
+若 \(f\in L^1(\mathbb R)\)，则
+\[
+  \int_{\mathbb R}|f(x+h)-f(x)|\,dx\to0
+  \qquad (h\to0).
+\]
+
+\textbf{证明。} 先对 \(g\in C_c(\mathbb R)\) 成立：\(g\) 一致连续且有紧支集，故
+\(\|g(\cdot+h)-g\|_1\to0\)。对一般 \(f\)，由
+\thmref{thm:lp-density}{\(L^p\) 稠密性}中 \(C_c\) 的 \(L^1\) 稠密性，取 \(g\in C_c\) 使
+\(\|f-g\|_1<\varepsilon\)。平移保持 \(L^1\) 范数，所以
+\[
+  \|f(\cdot+h)-f\|_1
+  \le2\|f-g\|_1+\|g(\cdot+h)-g\|_1.
+\]
+先令 \(h\to0\)，再令 \(\varepsilon\to0\)。有限区间版本用稍大区间上的同样近似。 \(\square\)
+
+\thmlabel{thm:graph-zero}\textbf{图像为零测集。}\impB
+若 \(f:[a,b]\to\mathbb R\) 可测且有限 a.e.，则其图像
+\[
+  \Gamma_f=\{(x,f(x)):x\in[a,b]\}
+\]
+在 \(\mathbb R^2\) 中是零测集。
+
+\textbf{证明。} 对每个 \(x\)，垂直截面
+\[
+  (\Gamma_f)_x=\{y:(x,y)\in\Gamma_f\}
+\]
+至多一个点，故一维测度为 \(0\)。图像的可测性可由可测函数的图像作为
+\(\{(x,y):y=f(x)\}\) 处理，或先对截断可测函数用逼近得到。由
+\thmref{thm:fubini}{Fubini 定理}，
+\[
+  m_2(\Gamma_f)=\int_a^b m_1((\Gamma_f)_x)\,dx=0.
+\]
+\(\square\)
+
+\thmlabel{thm:interval-average-pointwise}\textbf{由区间平均不等式推出点态结论。}\impA
+若 \(f\in L^1[a,b]\)，\(g\) 单调递增，且对任意区间 \([u,v]\subset[a,b]\)，
+\[
+  \left(\int_u^v f\right)^2\le (g(v)-g(u))(v-u),
+\]
+则 \(f^2\in L^1[a,b]\)。
+
+\textbf{证明。} 两边除以 \((v-u)^2\)，得
+\[
+  \left(\frac1{v-u}\int_u^v f\right)^2
+  \le \frac{g(v)-g(u)}{v-u}.
+\]
+令 \(v,u\to x\)。由 \thmref{thm:lebesgue-diff}{Lebesgue 微分定理}左侧趋于
+\(f(x)^2\)，由 \thmref{thm:monotone-diff}{单调函数 a.e. 可导且导数可积}右侧趋于
+\(g'(x)\)，故 \(f(x)^2\le g'(x)\) a.e.。又
+\[
+  \int_a^b g'\le g(b)-g(a)<\infty,
+\]
+所以 \(f^2\in L^1\)。 \(\square\)
+
+\thmlabel{thm:derivative-bv-continuous}\textbf{导数有界变差则连续。}\impC
+若 \(f\) 可微且 \(f'\in BV[a,b]\)，则 \(f'\) 连续。
+
+\textbf{证明。} 由 \thmref{thm:jordan}{Jordan 分解定理}，BV 函数可写成两个单调函数之差，因此只可能有第一类跳跃间断。另一方面，导函数具有
+Darboux 性质：对任意 \(x<y\)，\(f'\) 在 \([x,y]\) 上取遍
+\((f(y)-f(x))/(y-x)\) 两侧的中间值，这由 Rolle 定理推出。跳跃间断会破坏介值性质，故
+\(f'\) 无间断点。 \(\square\)
+
+\thmlabel{thm:abs-power-ac}\textbf{\(|f|^p\) 保持绝对连续。}\impB
+若 \(f\in AC[a,b]\)、\(p\ge1\)，则 \(|f|^p\in AC[a,b]\)。
+
+\textbf{证明。} 绝对连续函数在紧区间上有界，设 \(|f|\le M\)。函数
+\(\phi(t)=|t|^p\) 在 \([-M,M]\) 上 Lipschitz，因为
+\[
+  |\phi(s)-\phi(t)|\le pM^{p-1}|s-t|.
+\]
+对任意互不相交区间 \((a_i,b_i)\)，
+\[
+  \sum_i||f(b_i)|^p-|f(a_i)|^p|
+  \le pM^{p-1}\sum_i|f(b_i)-f(a_i)|.
+\]
+由 \(f\) 的绝对连续性得到结论。 \(0<p<1\) 不成立，例如
+\(f(x)=x^2\sin^2(1/x)\)，\(f(0)=0\)，则 \(f\in AC[0,1]\)，但
+\(|f|^{1/2}=x|\sin(1/x)|\) 的变差无穷，不绝对连续。 \(\square\)
+
+\thmlabel{thm:oscillatory-ac}\textbf{\(x^\alpha\sin x^{-\beta}\) 的 AC 判别。}\impB
+设
+\[
+  f(x)=x^\alpha\sin x^{-\beta},\quad 0<x\le1,\qquad f(0)=0,
+\]
+其中 \(\alpha,\beta>0\)。则 \(f\in AC[0,1]\) 当且仅当
+\(\alpha>\beta\)。
+
+\textbf{证明。} 若 \(\alpha>\beta\)，则
+\[
+  f'(x)=\alpha x^{\alpha-1}\sin x^{-\beta}
+  -\beta x^{\alpha-\beta-1}\cos x^{-\beta}.
+\]
+两项分别由 \(x^{\alpha-1}\) 和 \(x^{\alpha-\beta-1}\) 控制，指数均大于
+\(-1\)，故 \(f'\in L^1[0,1]\)。又 \(f(x)=\int_0^x f'(t)\,dt\)，故由
+\thmref{thm:ac-characterization}{绝对连续函数的等价刻画}
+\(f\) 绝对连续。若 \(\alpha\le\beta\)，取
+\[
+  x_n=\left(\frac{\pi}{2}+n\pi\right)^{-1/\beta}.
+\]
+则 \(x_n\downarrow0\)，且 \(f(x_n)=(-1)^n x_n^\alpha\)。分割
+\(\{x_n\}\) 给出变差下界
+\[
+  V_0^1(f)\ge \sum_n\bigl(x_n^\alpha+x_{n+1}^\alpha\bigr).
+\]
+而 \(x_n^\alpha\asymp n^{-\alpha/\beta}\)，当 \(\alpha/\beta\le1\) 时级数发散，所以
+\(f\notin BV\)，更不可能绝对连续；这里用到
+\thmref{thm:ac-characterization}{绝对连续函数的等价刻画}推出 \(AC\subset BV\)。 \(\square\)
+
+\thmlabel{thm:lp-tail}\textbf{\(L^p\) 尾部估计。}\impC
+若 \(f\in L^p(\mathbb R)\)，\(1\le p<\infty\)，则
+\[
+  \int_{\{|f|>\lambda\}}|f|^p\to0,\qquad
+  \int_{\{|x|>\lambda\}}|f|^p\to0
+  \qquad (\lambda\to\infty).
+\]
+
+\textbf{证明。} 因 \(|f|^p\in L^1\)，且
+\(\chi_{\{|f|>\lambda\}}\to0\)、\(\chi_{\{|x|>\lambda\}}\to0\) a.e.，两式均由
+\thmref{thm:dct}{Lebesgue 控制收敛定理}得到。 \(\square\)
+
+\thmlabel{thm:lambda-tail}\textbf{\(\lambda^pm(\{|f|>\lambda\})\) 的两端极限。}\impC
+若 \(f\in L^p(\mathbb R)\)，则
+\[
+  \lambda^pm(\{|f|>\lambda\})\to0
+  \quad(\lambda\to\infty),
+\qquad
+  \lambda^pm(\{|f|>\lambda\})\to0
+  \quad(\lambda\downarrow0).
+\]
+
+\textbf{证明。} 当 \(\lambda\to\infty\) 时，
+\[
+  \lambda^pm(\{|f|>\lambda\})\le\int_{\{|f|>\lambda\}}|f|^p\to0.
+\]
+当 \(\lambda\downarrow0\) 时，给定 \(\varepsilon>0\)，取 \(A\) 使
+\(\int_{\{|x|>A\}}|f|^p<\varepsilon\)。则
+\[
+  \lambda^pm(\{|f|>\lambda\})
+  \le \lambda^pm([-A,A])
+  +\int_{\{|x|>A\}}|f|^p.
+\]
+令 \(\lambda\downarrow0\) 后上极限不超过 \(\varepsilon\)，再令
+\(\varepsilon\downarrow0\)。 \(\square\)
+
+\thmlabel{thm:general-holder}\textbf{广义 Hölder 不等式。}\impC
+若 \(p_k>1\) 且 \(\sum_{k=1}^n1/p_k=1\)，则
+\[
+  \int_E\prod_{k=1}^n|f_k|
+  \le\prod_{k=1}^n\|f_k\|_{p_k}.
+\]
+
+\textbf{证明。} 对 \(n\) 归纳。\(n=2\) 是 \thmref{thm:holder}{Hölder 不等式}。设结论对 \(n-1\) 成立，令
+\[
+  \frac1q=\sum_{k=1}^{n-1}\frac1{p_k}=1-\frac1{p_n}.
+\]
+则 \(q\) 与 \(p_n\) 共轭。由归纳假设作用于 \(|f_k|^q\) 和指数 \(p_k/q\)，得
+\[
+  \left\|\prod_{k=1}^{n-1}|f_k|\right\|_q
+  \le\prod_{k=1}^{n-1}\|f_k\|_{p_k}.
+\]
+再与 \(|f_n|\) 用二元 \thmref{thm:holder}{Hölder 不等式}，即得。 \(\square\)
+
+\thmlabel{thm:weighted-holder}\textbf{带权 Hölder/Jensen 型不等式。}\impC
+若 \(f,g\ge0\)，\(g\in L^1[a,b]\)，\(1\le p<\infty\)，则
+\[
+  \left(\int_a^b fg\right)^p
+  \le \left(\int_a^b g\right)^{p-1}\int_a^b f^pg.
+\]
+
+\textbf{证明。} \(p=1\) 平凡。\(p>1\) 时，令 \(q=p/(p-1)\)，写
+\[
+  fg=(fg^{1/p})g^{1/q}.
+\]
+由 \thmref{thm:holder}{Hölder 不等式}，
+\[
+  \int fg\le\left(\int f^pg\right)^{1/p}
+  \left(\int g\right)^{1/q}.
+\]
+两边取 \(p\) 次方即得。 \(\square\)
+
+\thmlabel{thm:weak-pairing}\textbf{弱配对收敛引理。}\impA
+设 \(1<p<\infty\)，\(f_k\to f\) a.e.，且
+\(\sup_k\|f_k\|_p<\infty\)。则对任意 \(g\in L^q\)，
+\[
+  \int f_kg\to\int fg.
+\]
+
+\textbf{证明。} \thmref{thm:fatou}{Fatou 引理}给出 \(f\in L^p\)，并且
+\(\sup_k\|f_k-f\|_p<\infty\)。先对有界且支集测度有限的
+\(\varphi\) 证明。由 \thmref{thm:egorov}{Egorov 定理}，去掉任意小测度集合后
+\(f_k-f\) 一致趋零；小集合上的积分由
+\thmref{thm:holder}{Hölder 不等式}控制：
+\[
+  \int_B|f_k-f||\varphi|
+  \le \|\varphi\|_\infty \|f_k-f\|_p m(B)^{1/q}.
+\]
+故 \(\int(f_k-f)\varphi\to0\)。一般 \(g\in L^q\) 用这类
+\(\varphi\) 在 \(L^q\) 中逼近，并用 \thmref{thm:holder}{Hölder 不等式}控制误差。 \(\square\)
+
+\thmlabel{thm:norm-strong}\textbf{由下极限和范数收敛推出强收敛。}\impC
+若 \(f_k,f\ge0\)，\(1\le p<\infty\)，
+\[
+  \liminf_{k\to\infty}f_k\ge f\quad\text{a.e.},\qquad
+  \|f_k\|_p\to\|f\|_p,
+\]
+则 \(\|f_k-f\|_p\to0\)。
+
+\textbf{证明。} 令
+\[
+  h_k=\min(f_k,f),\qquad r_k=f_k-h_k=(f_k-f)^+.
+\]
+由条件 \(h_k\to f\) a.e.，且 \(0\le h_k\le f\)，故
+\thmref{thm:dct}{Lebesgue 控制收敛定理}给出
+\[
+  \|h_k-f\|_p\to0,\qquad \|h_k\|_p^p\to\|f\|_p^p.
+\]
+又 \(f_k=h_k+r_k\)，且二者非负，所以
+\[
+  f_k^p=(h_k+r_k)^p\ge h_k^p+r_k^p.
+\]
+因此
+\[
+  0\le\|r_k\|_p^p\le\|f_k\|_p^p-\|h_k\|_p^p\to0.
+\]
+最后
+\[
+  \|f_k-f\|_p\le\|r_k\|_p+\|h_k-f\|_p\to0.
+\]
+\(\square\)
+
+\end{document}

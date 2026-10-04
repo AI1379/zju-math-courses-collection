@@ -1,0 +1,372 @@
+\documentclass{article}
+\usepackage{geometry}
+\geometry{margin=1.5cm, vmargin={0pt,1cm}}
+\setlength{\topmargin}{-1cm}
+\setlength{\headheight}{12.5pt}
+\setlength{\paperheight}{29.7cm}
+\setlength{\textheight}{25.3cm}
+
+% useful packages.
+\usepackage[UTF8]{ctex}
+\usepackage{fancyhdr}
+\usepackage{layout}
+\usepackage{luacode}
+\usepackage{tikz}
+
+% import common macros
+\input{../../common/macros.tex}
+
+\usepackage{listings}
+\usepackage{xcolor}
+
+% C++ 源码的挂载配置
+\lstset{
+  language=C++,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\bfseries\color{blue},
+  commentstyle=\color{gray},
+  stringstyle=\color{red},
+  breaklines=true,
+  showstringspaces=false,
+  tabsize=4,
+  frame=single,
+  framesep=5pt,
+  rulecolor=\color{gray},
+  captionpos=b,
+  numberstyle=\tiny\color{gray},
+  numbers=left,
+}
+
+\newcommand{\fl}{\operatorname{fl}}
+\newcommand{\UFL}{\operatorname{UFL}}
+\newcommand{\OFL}{\operatorname{OFL}}
+\newcommand{\F}{\mathbb{F}}
+
+% Name and uID
+\newcommand{\name}{\getEnv{NAME}{NAME}}
+\newcommand{\uid}{\getEnv{UID}{UID}}
+\newcommand{\course}{数值分析}
+\newcommand{\hwNum}{1}
+
+\begin{document}
+
+\pagestyle{fancy}
+\fancyhead{}
+\lhead{\name (\uid)}
+\chead{\course \#\hwNum}
+\rhead{\today}
+
+\section{习题 1.6}
+
+\subsection*{I}
+
+把十进制整数 477 化为 $\beta = 2$ 的规格化 FPN。
+
+\begin{solution}
+  除 2 取余得
+  \[
+    477 = (111011101)_2 = 1.11011101 \times 2^{8}.
+  \]
+\end{solution}
+
+\subsection*{II}
+
+把十进制分数 $3/5$ 化为 $\beta = 2$ 的规格化 FPN。
+
+\begin{solution}
+  乘 2 取整，小数部分以 4 为周期：
+  \[
+    \frac{3}{5} = (0.\overline{1001})_2 = 1.\overline{1001} \times 2^{-1}.
+  \]
+\end{solution}
+
+\subsection*{III}
+
+设 $x = \beta^{e}$ 为规格化 FPN，其中 $e \in \Z$ 且 $L < e < U$，$x_L, x_R \in \F$
+为与 $x$ 相邻的两个规格化 FPN 且 $x_L < x < x_R$。证明
+$x_R - x = \beta(x - x_L)$。
+
+\begin{proof}
+  $x = \beta^{e}$ 是 binade $[\beta^{e}, \beta^{e+1})$ 的左端点，故 $x_L$ 是前一个
+  binade 中尾数最大的元素，$x_R$ 是本文 binade 中尾数为 $1 + \beta^{1-p}$ 的元素：
+  \[
+    x_L = (\beta - \beta^{1-p})\beta^{e-1}, \qquad
+    x_R = (1 + \beta^{1-p})\beta^{e}.
+  \]
+  于是
+  \[
+    x - x_L = \beta^{e} - (\beta - \beta^{1-p})\beta^{e-1} = \beta^{e-p},
+  \]
+  \[
+    x_R - x = (1 + \beta^{1-p})\beta^{e} - \beta^{e} = \beta^{e+1-p} = \beta(x - x_L).
+  \]
+\end{proof}
+
+\subsection*{IV}
+
+利用 II 的结果求 IEEE 754 单精度下 $x = 3/5$ 的两个相邻规格化 FPN，并给出 $\fl(x)$
+与相对舍入误差。
+
+\begin{solution}
+  单精度 $p = 24$，尾数取 23 位小数。由 II，$x$ 的第 24 位尾数及其后不全为零，
+  两个相邻的 FPN 为
+  \[
+    x_L = (1.\underbrace{00110011001100110011001}_{23})_2 \times 2^{-1}
+        \approx 0.5999999642372131,
+  \]
+  \[
+    x_R = (1.\underbrace{00110011001100110011010}_{23})_2 \times 2^{-1}
+        \approx 0.6000000238418579.
+  \]
+  二者相距一个 ulp，即 $x_R - x_L = 2^{-24}$。第 24 位尾数之后余下的部分为
+  $(0.\overline{1001})_2 = 3/5$，故
+  \[
+    x - x_L = \frac{3}{5} \cdot 2^{-24}, \qquad
+    x_R - x = \frac{2}{5} \cdot 2^{-24},
+  \]
+  $x$ 距 $x_R$ 更近，所以
+  \[
+    \fl(x) = x_R = 1.00110011001100110011010 \times 2^{-1}.
+  \]
+  相对舍入误差为
+  \[
+    \left| \frac{\fl(x) - x}{x} \right|
+    = \frac{(2/5)2^{-24}}{3/5}
+    = \frac{2}{3} \cdot 2^{-24}
+    \approx 3.97 \times 10^{-8}
+    = \frac{2}{3}\epsilon_u.
+  \]
+\end{solution}
+
+\subsection*{V}
+
+若 IEEE 754 单精度协议不采用就近舍入，而是直接截断多余位，单位舍入误差是多少？
+
+\begin{solution}
+  截断时误差不超过一个 ulp，故
+  \[
+    |\fl(x) - x| < \epsilon_M |x| = \beta^{1-p} |x|.
+  \]
+  而 Definition 1.28 中 $\epsilon_u = \tfrac{1}{2}\epsilon_M$，所以截断下的单位舍入
+  误差为
+  \[
+    \epsilon_u = \epsilon_M = 2^{1-24} = 2^{-23},
+  \]
+  是就近舍入的两倍。
+\end{solution}
+
+\subsection*{VI}
+
+对 Example 1.34 重做，取 $b = 8.769 \times 10^{4}$、$b = -5.678 \times 10^{0}$、
+$b = -5.678 \times 10^{3}$。
+
+\begin{solution}
+  $F: (10, 4, -7, 8)$，$a = 1.234 \times 10^{4}$，$\epsilon_u(p) = 0.5 \times 10^{-3}$。
+
+  \textbf{$b = 8.769 \times 10^{4}$。} $|b| > |a|$，先交换两个操作数使 $|a| \ge |b|$。
+  此时 $e_a - e_b = 0$，对齐后 $M_c = 8.769 + 1.234 = 10.003$，$e_c = 4$。
+  因 $|M_c| \in (10, 100)$，执行 (iii) 中的正规化：$M_c \leftarrow 1.0003$，
+  $e_c \leftarrow 5$。舍入到 4 位有效数字，第 5 位为 3 故舍去，得
+  \[
+    \fl(a + b) = 1.000 \times 10^{5}.
+  \]
+
+  \textbf{$b = -5.678 \times 10^{0}$。} $e_a - e_b = 4 \le p + 1$，对齐得
+  $M_b = -0.0005678$，于是
+  \[
+    M_c = 1.234 - 0.0005678 = 1.2334322 \in [1, 10),
+  \]
+  无需正规化。舍入到 4 位有效数字，第 5 位为 4 故舍去，得
+  \[
+    \fl(a + b) = 1.233 \times 10^{4}.
+  \]
+
+  \textbf{$b = -5.678 \times 10^{3}$。} 对齐得 $M_b = -0.5678$，于是
+  \[
+    M_c = 1.234 - 0.5678 = 0.6662 \in (0, \beta - \epsilon_u(p)),
+  \]
+  触发 (iii) 中的左移正规化：$M_c \leftarrow 6.662$，$e_c \leftarrow 3$。
+  舍入到 4 位不变，得
+  \[
+    \fl(a + b) = 6.662 \times 10^{3}.
+  \]
+\end{solution}
+
+\subsection*{VII}
+
+设两个 FPN 的除法在精度为 $2p$ 的寄存器中完成，举一例说明机器算术模型的结论不再成立。
+
+\begin{solution}
+  取 $F(2, 3, -1, 1)$ 中的
+  \[
+    a = 1.00 \times 2^{0} = 1, \qquad b = 1.11 \times 2^{0} = \frac{7}{4},
+    \qquad \epsilon_u = \frac{1}{8}.
+  \]
+  真值 $a/b = 4/7 = (0.100100100\ldots)_2$。商小于 1，故按 Definition 1.40 的顺序，
+  寄存器先按第 (ii) 步做除法，再按第 (iii) 步正规化。商的小数点前那个 0 占去一个
+  数位，$2p = 6$ 位的寄存器只剩 $2^{-5}$ 可用：
+  \[
+    \frac{4}{7} = (0.100100100\ldots)_2 \longrightarrow (0.10010)_2 = \frac{9}{16},
+  \]
+  余下的位不足半个 ulp，故向下舍入。左移正规化得
+  $M_c = 2 \times \frac{9}{16} = \frac{9}{8} = (1.001)_2$，$e_c = -1$。
+  第 (v) 步舍入到 $p = 3$ 位：$\frac{9}{8}$ 与 $1.00$、$1.01$ 的距离都是 $0.125$，
+  恰好平局，按 round to even 取 $1.00$，于是
+  \[
+    \fl\left(\frac{a}{b}\right) = 1.00 \times 2^{-1} = \frac{1}{2},
+    \qquad
+    |\delta| = \left| \frac{1/2}{4/7} - 1 \right| = \frac{1}{8} = \epsilon_u.
+  \]
+  Theorem 1.42 要求 $|\delta| < \epsilon_u$，此处取到等号，模型不成立。
+
+  若寄存器取 $2p + 1 = 7$ 位，$4/7$ 舍入到最近的格点得
+  $(0.100101)_2 = \frac{37}{64}$，正规化后 $M_c = 1.15625$，舍入到 3 位得
+  $1.01 \times 2^{-1} = 5/8$，$|\delta| = \frac{3}{32} < \epsilon_u$，模型重新成立。
+\end{solution}
+
+\subsection*{VIII}
+
+把正数 $a_i > 0$ 按大小升序相加可以减小 Theorem 1.43 中的误差项 $\delta$，举两例。
+
+\begin{solution}
+  当 $a_{k+1} \ll s_k$ 时，对齐后 $a_{k+1}$ 的各位落在大数的 ulp 之下而被整个舍掉。
+  升序时小数先聚成较大的部分和，再加到大数上就不会被吞掉。以下两例都在
+  $F(10, 4, -7, 8)$ 中计算，每步部分和舍入到 4 位有效数字。
+
+  \textbf{例 1.} 计算 $10^{4} + \underbrace{1 + \cdots + 1}_{10}$。
+
+  降序：每次加 1 都因对齐被舍去，最终得 $1.000 \times 10^{4}$，误差 10。
+
+  升序：十个 1 先累加得 10，再算 $10^{4} + 10 = 10010$，保留 4 位得
+  $1.001 \times 10^{4}$，即精确值。
+
+  \textbf{例 2.} 计算 $10^{4} + \underbrace{6 + \cdots + 6}_{8}$，精确值为 10048。
+
+  降序：每步 $+6$ 都舍入到最近的 10 的倍数，最终得 $1.008 \times 10^{4}$，
+  误差 $+32$。
+
+  升序：八个 6 先累加得 48，再算 $10048$，舍入得 $1.005 \times 10^{4}$，误差 $+2$。
+\end{solution}
+
+\subsection*{IX}
+
+设 $a_i, b_i \in \F$，推导 $\fl(a_1 b_1 + a_2 b_2 + a_3 b_3)$，并讨论
+$\fl(\sum_i \prod_j a_{i,j})$ 相应的推导。
+
+\begin{solution}
+  记 $p_i := \fl(a_i b_i)$。由 Lemma 1.39，乘积在 $2p$ 位寄存器中精确，舍入只在末尾：
+  \[
+    p_i = a_i b_i (1 + \delta_i), \qquad |\delta_i| < \epsilon_u.
+  \]
+  两次加法各引入一个误差因子，由 Lemma 1.36
+  \[
+    \fl(p_1 + p_2) = (p_1 + p_2)(1 + \eta_1), \qquad
+    \fl\big(\fl(p_1 + p_2) + p_3\big) = \big(\fl(p_1 + p_2) + p_3\big)(1 + \eta_2),
+  \]
+  $|\eta_1|, |\eta_2| < \epsilon_u$。代入 $p_i$ 得
+  \[
+    \fl(a_1b_1 + a_2b_2 + a_3b_3)
+    = \sum_{i=1}^{3} a_i b_i (1 + \theta_i),
+    \qquad |\theta_i| \le 3\epsilon_u + 9\epsilon_u^{2} = 3\epsilon_u + O(\epsilon_u^2),
+  \]
+  其中前两项含 3 个因子、末项含 2 个。每个项最多经历 3 次舍入：乘积一次，两次加法
+  各一次。误差阶为 $3\epsilon_u$。
+
+  对一般的 $\fl(\sum_i \prod_j a_{i,j})$，设外层求和有 $m$ 项、每个内积含 $k$ 个因子，
+  则内积要 $k - 1$ 次舍入、外层对每项要至多 $m - 1$ 次，误差最大的项含 $k + m - 2$ 个
+  $(1 + \epsilon)$ 因子，
+  \[
+    |\theta_i| \lesssim (k + m - 2)\epsilon_u,
+  \]
+  舍入误差随运算总数线性累积，与 Theorem 1.43 的
+  $|\delta_n| < (1 + \epsilon_u)^n - 1 \approx n\epsilon_u$ 一致。
+\end{solution}
+
+\subsection*{X}
+
+计算 $x = \frac{1}{4}$ 时减法 $1 - \cos x$ 损失多少位精度。
+
+\begin{solution}
+  $\cos(1/4) \approx 0.9689124217$，故
+  \[
+    1 - \cos\frac{1}{4} \approx 0.0310875783 \in [2^{-6}, 2^{-5}).
+  \]
+  对 Theorem 1.46 的条件 (1.24) 取 $x = 1$、$y = \cos(1/4)$、$\beta = 2$，由
+  \[
+    2^{-6} \le 1 - \frac{y}{x} \le 2^{-5}
+  \]
+  得 $s = 5$、$t = 6$，即损失的最高有效位至少 5 位、至多 6 位。
+\end{solution}
+
+\subsection*{XI}
+
+给出至少两种计算 $1 - \cos x$ 以避免灾难性抵消的方法。
+
+\begin{solution}
+  \textbf{方法一。} 用半角公式
+  \[
+    1 - \cos x = 2 \sin^{2} \frac{x}{2},
+  \]
+  当 $x$ 小时 $\sin(x/2)$ 与 $x/2$ 同量级，不再有相近数相减。
+
+  \textbf{方法二。} 分子有理化
+  \[
+    1 - \cos x = \frac{\sin^{2} x}{1 + \cos x},
+  \]
+  分母 $1 + \cos x$ 接近 2，而分子是乘积不是减法。
+
+  \textbf{方法三。} 对小的 $x$ 用 Taylor 展开
+  \[
+    1 - \cos x = \frac{x^{2}}{2!} - \frac{x^{4}}{4!} + \frac{x^{6}}{6!} - \cdots
+  \]
+\end{solution}
+
+\section{习题 1.7}
+
+考虑特征为 $\beta = 2$、$p = 3$、$L = -1$、$U = +1$ 的规格化 FPN 系统 $F$。
+
+\begin{solution}
+  \textbf{UFL 与 OFL。} 由 Definition 1.19，
+  $\UFL(F) = \beta^{L} = 2^{-1} = 0.5$，
+  $\OFL(F) = \beta^{U}(\beta - \beta^{1-p}) = 2(2 - 2^{-2}) = 3.5$，
+  单位舍入误差 $\epsilon_u = 2^{-2}/2 = 0.125$。
+
+  \textbf{$F$ 的全部元素。} 枚举得正的规格化元素如下：
+  \begin{center}
+    \input{out/elements.tex}
+  \end{center}
+  共 12 个；计入相反数与 0，$F$ 共 25 个元素。Corollary 1.21 给出
+  \[
+    \#F = 2^{p}(U - L + 1) + 1 = 2^{3}\bigl(1 - (-1) + 1\bigr) + 1 = 25,
+  \]
+  与枚举一致。
+
+  $F$ 在实轴上的位置：
+  \begin{center}
+    \input{out/plot_F.tex}
+  \end{center}
+
+  \textbf{次正规数。} 由 Definition 1.15，次正规数是 $e = L$ 且尾数 $m \in (0,1)$
+  的 FPN，共 $\beta^{p-1} - 1 = 3$ 个：
+  \begin{center}
+    \input{out/subnormal.tex}
+  \end{center}
+
+  \textbf{扩充后的 $F$。}
+  \begin{center}
+    \input{out/plot_extended.tex}
+  \end{center}
+  红色刻度是 $F$ 的规格化元素，蓝色刻度是次正规数。它们与 $\UFL = 0.5$ 的间距都是
+  最小间距 $2^{-3}$，即 Definition 1.27 所说的 gradual underflow。
+  扩充后 $F$ 共有 $25 + 2 \times 3 = 31$ 个元素。
+\end{solution}
+
+程序的执行结果即上文各表格与插图。核心源码如下：\texttt{fpn.hpp} 与
+\texttt{fpn.cpp} 是 FPN 系统的实现，\texttt{main.cpp} 是本题的程序。
+表格打印等辅助函数位于 \texttt{common/} 下，与本题算法无关，不再列出。
+
+\lstinputlisting[language=C++, caption={作业程序 main.cpp}]{main.cpp}
+\lstinputlisting[language=C++, caption={FPN 系统 fpn.hpp}]{../common/include/na/fpn.hpp}
+\lstinputlisting[language=C++, caption={FPN 系统 fpn.cpp}]{../common/src/fpn.cpp}
+
+\end{document}

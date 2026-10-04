@@ -20,6 +20,21 @@
 
 2026 春夏数值代数
 
+## Numerical Analysis
+
+2026 秋冬数值分析。作业用 C++ 实现，目录下带 CMake 构建和 clangd 配置，
+详见 [numerical_analysis/README.md](numerical_analysis/README.md)。
+
 ## Complex Analysis
 
 2026 春夏复变函数
+
+## Probability
+
+2026 秋冬概率论。第一章作业见 [probability/chapter1.tex](probability/chapter1.tex)。
+
+## Statistics and Big Data Analysis
+
+2026 秋冬统计与大数据分析。第一次作业（Jupyter + matplotlib 绘图）见
+[statistics_big_data/hw1.ipynb](statistics_big_data/hw1.ipynb)，
+第二次作业（条件概率与 Monte Carlo）见 [statistics_big_data/hw2.ipynb](statistics_big_data/hw2.ipynb)。

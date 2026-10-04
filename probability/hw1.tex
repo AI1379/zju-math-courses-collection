@@ -1,0 +1,165 @@
+\documentclass{article}
+\usepackage[UTF8]{ctex}
+\usepackage[a4paper,margin=2.2cm]{geometry}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{lmodern}
+
+\hypersetup{
+  pdftitle={概率论 HW1},
+  colorlinks=true,
+  linkcolor=blue,
+  urlcolor=blue
+}
+
+\input{../common/macros.tex}
+\newcommand{\name}{\getEnv{NAME}{NAME}}
+\newcommand{\uid}{\getEnv{UID}{UID}}
+\newcommand{\combin}[2]{\binom{#1}{#2}}
+
+\newenvironment{problem}{\par\medskip\noindent\textbf{题目.}\ }{\par\smallskip}
+
+\title{概率论 HW1}
+\author{\name \uid}
+\date{2026-09-20}
+
+\begin{document}
+\maketitle
+
+\section*{第 5 题\quad 有放回摸球的次序}
+
+\begin{problem}
+  从盛有号码为 $1,2,\dots,N$ 的球的箱子中有放回地摸了 $n$ 次球，依次记其号码，求这些号码按严格上升次序排列的概率.
+\end{problem}
+
+\begin{solution}
+  记第 $i$ 次摸到的号码为 $a_i$，则样本空间是 $\{1,\dots,N\}^n$，共有 $N^n$ 个样本点。所求事件为
+  \[
+    A=\{a_1<a_2<\cdots<a_n\}.
+  \]
+  $n>N$ 时 $n$ 个号码不可能互不相同，$P(A)=0$。设 $n\le N$。
+
+  $A$ 中每个样本点的 $n$ 个号码互不相同；反过来，任取 $\{1,\dots,N\}$ 中的 $n$ 个号码，按从小到大排列就得到 $A$ 中一个样本点。所以 $A$ 与 $n$ 元子集一一对应，
+  \[
+    |A|=\binom Nn,
+    \qquad
+    P(A)=\frac{\binom Nn}{N^n}
+    =\frac{N(N-1)\cdots(N-n+1)}{n!\,N^n}.
+  \]
+
+\end{solution}
+
+\section*{第 9 题\quad 取鞋问题}
+
+\begin{problem}
+  从 $n$ 双不同的鞋子中任取 $2r$ ($2r\le n$) 只，求下列事件的概率:
+  (1) 没有成双的鞋子; (2) 只有一双鞋子; (3) 恰有两双鞋子; (4) 有 $r$ 双鞋子.
+\end{problem}
+
+\begin{solution}
+  总取法为 $\binom{2n}{2r}$。
+
+  \begin{enumerate}[(1)]
+    \item 没有成双：取到的鞋来自 $2r$ 双不同的鞋，每双取一只，共 $\binom{n}{2r}2^{2r}$ 种，
+      \[
+        P_1=\frac{\binom{n}{2r}2^{2r}}{\binom{2n}{2r}} .
+      \]
+
+    \item 只有一双：先定下整双取出的那一双，其余 $2r-2$ 只从另外 $n-1$ 双中取，每双取一只，共
+      $\binom n1\binom{n-1}{2r-2}2^{2r-2}$ 种，
+      \[
+        P_2=\frac{\binom n1\binom{n-1}{2r-2}2^{2r-2}}{\binom{2n}{2r}} .
+      \]
+
+    \item 恰有两双：同理，
+      \[
+        P_3=\frac{\binom n2\binom{n-2}{2r-4}2^{2r-4}}{\binom{2n}{2r}} .
+      \]
+
+    \item 有 $r$ 双：$2r$ 只恰好配成 $r$ 双，就是取出的鞋来自某 $r$ 双且每双两只都取到，只需选出这 $r$ 双，
+      \[
+        P_4=\frac{\binom nr}{\binom{2n}{2r}} .
+      \]
+  \end{enumerate}
+
+  这里约定 $\binom nk=0$（$k>n$ 或 $k<0$），$r=1$ 时 (3) 式即为 $0$。
+\end{solution}
+
+\section*{第 10 题\quad 电梯问题}
+
+\begin{problem}
+  10 层楼的一架电梯在底层登上 7 位乘客，从第二层起乘客可离开电梯，求每层至多一位乘客离开的概率（乘客在各层离开是等可能的）.
+\end{problem}
+
+\begin{solution}
+  从第二层到第十层共 $9$ 层，7 位乘客各选一层离开，共有 $9^7$ 种等可能的选法。
+
+  每层至多一人离开，就是 7 人选的楼层互不相同：先选出 $7$ 层，再把 7 人分派到这 $7$ 层，共有
+  \[
+    9\cdot8\cdot7\cdot6\cdot5\cdot4\cdot3=181440
+  \]
+  种，故
+  \[
+    P=\frac{9\cdot8\cdot7\cdot6\cdot5\cdot4\cdot3}{9^7}
+    =\frac{2240}{59049}\approx 0.0379 .
+  \]
+\end{solution}
+
+\section*{第 15 题\quad 船靠码头（会面问题）}
+
+\begin{problem}
+  某码头只能容纳一只船. 现知某日将独立来到两只船，且在 $24$ h 内来到的可能性均相等. 如果它们停靠的时间分别为 $3$ h 和
+  $4$ h，求有一船要在江中等待的概率.
+\end{problem}
+
+\begin{solution}
+  记停靠 $3$ h 的船在时刻 $X$ 到达，停靠 $4$ h 的船在时刻 $Y$ 到达，则 $(X,Y)$ 在正方形 $[0,24]^2$ 上均匀分布，面积为
+  $576$。两只船都要靠码头，一只要等待当且仅当停留时段 $[X,X+3]$ 与 $[Y,Y+4]$ 相交，即
+  \[
+    X<Y+4,\qquad Y<X+3 .
+  \]
+
+  取对立事件。两船不相遇只有两种情形：$X\ge Y+3$，即 $3$ h 的船到得晚，$4$ h 的船已经走了；或 $Y\ge X+4$，即 $4$ h
+  的船到得晚，$3$ h 的船已经走了。它们分别是正方形右下角（由直线 $x-y=3$ 截出，直角边长 $21$）和左上角（由
+  $y-x=4$ 截出，直角边长 $20$）的三角形，面积为
+  \[
+    \frac{21^2}{2}=220.5,\qquad \frac{20^2}{2}=200,
+  \]
+  两区域不相交，故
+  \[
+    P\left(\text{有一船等待}\right)
+    =\frac{576-220.5-200}{576}
+    =\frac{155.5}{576}=\frac{311}{1152}\approx 0.270 .
+  \]
+
+\end{solution}
+
+\section*{第 19 题\quad 投硬币与格线}
+
+\begin{problem}
+  在一张打方格子的纸上投一枚直径为 $1$ 的硬币，问方格要多小才能使硬币与线不相交的概率小于 $1\%$？
+\end{problem}
+
+\begin{solution}
+  设方格边长为 $a$，硬币半径为 $\dfrac12$。固定一个方格来看，圆心在其中均匀分布，面积为 $a^2$。硬币不与格线相交，当且仅当圆心到方格四条边的距离都大于
+  $\dfrac12$，即圆心落在方格中央边长为 $a-1$ 的小正方形内，所以
+  \[
+    p(a)=\frac{(a-1)^2}{a^2},\qquad a>1 .
+  \]
+
+  要求 $p(a)<0.01$，即
+  \[
+    \frac{a-1}{a}<0.1
+    \iff 1-\frac1a<0.1
+    \iff a<\frac{10}{9}\approx 1.111 .
+  \]
+  故所求非平凡范围为
+  \[
+    1<a<\frac{10}{9} .
+  \]
+  $a\le1$ 时硬币必与格线相交，不相交的概率为 $0$，属平凡情形。
+
+\end{solution}
+
+\end{document}

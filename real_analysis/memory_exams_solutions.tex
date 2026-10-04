@@ -1,0 +1,1037 @@
+\documentclass[UTF8]{ctexart}
+\usepackage[a4paper,margin=2.2cm]{geometry}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{fontspec}
+\usepackage{lmodern}
+
+\hypersetup{
+  pdftitle={实变函数回忆卷题目整理与解答},
+  colorlinks=true,
+  linkcolor=blue,
+  urlcolor=blue
+}
+
+\setlist[enumerate]{leftmargin=2em,itemsep=0.25em}
+\setlist[itemize]{leftmargin=2em,itemsep=0.25em}
+\newcommand{\R}{\mathbb R}
+\newcommand{\N}{\mathbb N}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\M}{\mathcal M}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\indicator}{\chi}
+\DeclareMathOperator{\esssup}{ess\,sup}
+
+\newenvironment{problem}[1]{\par\medskip\noindent\textbf{#1}\par\smallskip}{\par}
+\newenvironment{solution}{\par\noindent\textbf{解答.}\ }{\hfill$\square$\par\medskip}
+\newenvironment{noteenv}{\par\noindent\textcolor{Maroon}{\textbf{题面说明.}}\ }{\par\smallskip}
+
+\title{实变函数回忆卷题目整理与解答}
+\author{}
+\date{2026-07-02}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+\section*{整理说明}
+\addcontentsline{toc}{section}{整理说明}
+
+资料来自 \texttt{real\_analysis/memory\_exams/} 下的四份回忆卷 PDF。回忆卷中有少数题目存在缺字、公式缺失或量词疑似漏写；本文尽量保持原题含义，并在相应位置注明合理补全或反例。
+
+\section{2020 春夏期末回忆卷}
+
+\begin{problem}{2020-1}
+设 \(\mathcal F\) 是 \(\R\) 上连续函数全体构成的集合，证明 \(\mathcal F\) 具有连续统势。
+\end{problem}
+\begin{solution}
+下界：常值函数族 \(\{f_c(x)\equiv c:c\in\R\}\subset\mathcal F\)，故
+\(|\mathcal F|\ge|\R|=\mathfrak c\)。
+
+上界：连续函数由其在稠密集 \(\Q\) 上的取值唯一决定，因此映射
+\[
+  T:\mathcal F\to\R^\Q,\qquad T(f)=f|_\Q
+\]
+是单射。于是
+\[
+  |\mathcal F|\le |\R^\Q|=\mathfrak c^{\aleph_0}=(2^{\aleph_0})^{\aleph_0}
+  =2^{\aleph_0}=\mathfrak c.
+\]
+由 Cantor-Bernstein 定理，\(|\mathcal F|=\mathfrak c\)。
+\end{solution}
+
+\begin{problem}{2020-2}
+设可测集 \(E\) 满足 \(0<m(E)<\infty\)，且
+\[
+  1\le p_1<p_2<\infty.
+\]
+证明
+\[
+  L^\infty(E)\subset L^{p_2}(E)\subset L^{p_1}(E).
+\]
+\end{problem}
+\begin{solution}
+若 \(f\in L^\infty(E)\)，则
+\[
+  \int_E |f|^{p_2}\le \|f\|_\infty^{p_2}m(E)<\infty,
+\]
+故 \(f\in L^{p_2}(E)\)。
+
+若 \(f\in L^{p_2}(E)\)，令 \(r=p_2/p_1>1\)，\(r'=p_2/(p_2-p_1)\)。由 Hölder 不等式，
+\[
+  \int_E |f|^{p_1}
+  \le \left(\int_E |f|^{p_1r}\right)^{1/r}
+       \left(\int_E 1^{r'}\right)^{1/r'}
+  = \|f\|_{p_2}^{p_1}m(E)^{1-p_1/p_2}<\infty.
+\]
+故 \(f\in L^{p_1}(E)\)。
+\end{solution}
+
+\begin{problem}{2020-3}
+\begin{enumerate}[label=(\arabic*)]
+  \item 设可测集 \(E\subset\R\)，\(m(E)>0\)，\(0<\alpha<1\)。证明：存在开区间 \(I\) 使
+  \[
+    m(I\cap E)>\alpha m(I).
+  \]
+  \item 设可测集 \(E\subset[0,1]\)。若存在 \(\delta>0\)，使得对 \([0,1]\) 中任意开区间
+  \((a,b)\) 有
+  \[
+    m(E\cap(a,b))\ge \delta(b-a),
+  \]
+  证明 \(m(E)=1\)。
+\end{enumerate}
+\end{problem}
+\begin{solution}
+(1) 先取 \(N\) 使 \(F=E\cap[-N,N]\) 满足 \(m(F)>0\)。由外正则性，取开集
+\(G\supset F\)，使
+\[
+  m(G)<\frac{m(F)}{\alpha}.
+\]
+若每个构成区间 \(I_j\) 都满足 \(m(I_j\cap E)\le \alpha m(I_j)\)，则
+\[
+  m(F)\le m(G\cap E)\le \sum_j m(I_j\cap E)
+  \le \alpha\sum_j m(I_j)=\alpha m(G)<m(F),
+\]
+矛盾。因此某个 \(I_j\) 满足所需不等式。
+
+(2) 反设 \(m([0,1]\setminus E)>0\)。对 \(E^c\) 应用 (1)，取
+\(\alpha\in(1-\delta,1)\)，存在开区间 \(I\subset[0,1]\) 使
+\[
+  m(I\cap E^c)>\alpha m(I).
+\]
+于是
+\[
+  m(I\cap E)<(1-\alpha)m(I)<\delta m(I),
+\]
+与题设矛盾。故 \(m(E^c)=0\)，即 \(m(E)=1\)。
+\end{solution}
+
+\begin{problem}{2020-4}
+叙述 Lusin 定理，并证明：设 \(\{f_k\}_{k\ge1}\) 是 \([a,b]\) 上一列实值可测函数，则存在正数列
+\(\{a_k\}_{k\ge1}\)，使
+\[
+  a_k f_k(x)\to0,\qquad \text{a.e. }x\in[a,b].
+\]
+\end{problem}
+\begin{solution}
+Lusin 定理：若 \(f\) 在有限测度可测集 \(E\) 上可测且有限 a.e.，则对任意
+\(\eps>0\)，存在闭集 \(F\subset E\)，使 \(m(E\setminus F)<\eps\)，且 \(f|_F\) 连续。
+
+对每个 \(k\)，因为 \(f_k\) 实值可测，存在 \(M_k>0\) 使
+\[
+  m(\{|f_k|>M_k\})<2^{-k}.
+\]
+令
+\[
+  a_k=\frac1{kM_k}.
+\]
+则
+\[
+  \{|a_kf_k|>1/k\}\subset\{|f_k|>M_k\},
+\]
+故
+\[
+  \sum_{k=1}^\infty m(\{|a_kf_k|>1/k\})<\infty.
+\]
+由 Borel-Cantelli 引理，除一零测集外，\(|a_kf_k(x)|>1/k\) 只发生有限多次。因此
+\(a_kf_k(x)\to0\) a.e.。
+\end{solution}
+
+\begin{problem}{2020-5}
+\begin{enumerate}[label=(\arabic*)]
+  \item 尽可能多地写出判断一个函数不是绝对连续函数的方法。
+  \item 若
+  \[
+    f(x)=
+    \begin{cases}
+      x^2\sin\frac1{x^2}, & x\in(0,1],\\
+      0, & x=0,
+    \end{cases}
+  \]
+  证明 \(f\) 不是绝对连续函数。
+\end{enumerate}
+\end{problem}
+\begin{solution}
+(1) 常用判别方法：
+\begin{itemize}
+  \item 绝对连续函数必连续；若不连续，则不绝对连续。
+  \item 绝对连续函数必有界变差；若全变差无穷，则不绝对连续。
+  \item 若 \(f\in AC[a,b]\)，则 \(f'\in L^1[a,b]\) 且
+  \[
+    f(x)=f(a)+\int_a^x f'(t)\,dt.
+  \]
+  若该表示不成立，则不绝对连续。
+  \item 绝对连续函数满足 Luzin \(N\) 性质：零测集的像仍是零测集。
+  \item 若 \(f'=0\) a.e. 但 \(f\) 非常数，则 \(f\) 不绝对连续。
+\end{itemize}
+
+(2) 取
+\[
+  x_n=\left(\frac{\pi}{2}+2n\pi\right)^{-1/2},\qquad
+  y_n=\left(\frac{3\pi}{2}+2n\pi\right)^{-1/2}.
+\]
+则 \(x_n,y_n\to0\)，且
+\[
+  f(x_n)=x_n^2\asymp \frac1n,\qquad f(y_n)=-y_n^2\asymp-\frac1n.
+\]
+在交错分割点上计算变差，得到
+\[
+  V_0^1(f)\ge \sum_n |f(x_n)-f(y_n)|\gtrsim \sum_n\frac1n=\infty.
+\]
+故 \(f\notin BV[0,1]\)，从而不绝对连续。
+\end{solution}
+
+\begin{problem}{2020-6}
+设 \(\{f_k\}_{k\ge1}\) 是可测集 \(E\) 上的非负可测函数列，若 \(f_k\to f\) 依测度，证明
+\[
+  \int_E f(x)\,dx\le \liminf_{k\to\infty}\int_E f_k(x)\,dx.
+\]
+\end{problem}
+\begin{solution}
+取子列 \(f_{k_j}\)，使
+\[
+  \int_E f_{k_j}\to \liminf_{k\to\infty}\int_E f_k.
+\]
+由 Riesz 子列定理，存在进一步子列 \(f_{k_{j_i}}\to f\) a.e.。对该子列用 Fatou 引理：
+\[
+  \int_E f\le \liminf_{i\to\infty}\int_E f_{k_{j_i}}
+  =\liminf_{k\to\infty}\int_E f_k.
+\]
+\end{solution}
+
+\begin{problem}{2020-7}
+设 \(f\in L([0,+\infty))\)。若
+\[
+  F(x)=\int_0^x f(t)\,dt
+\]
+在 \([0,+\infty)\) 上单调递增，证明
+\[
+  f(x)\ge0,\qquad \text{a.e. }x\in[0,+\infty).
+\]
+\end{problem}
+\begin{solution}
+由 Lebesgue 微分定理，\(F'(x)=f(x)\) 对 a.e. \(x\) 成立。单调递增函数在可导点的导数非负，因此在这些点
+\[
+  f(x)=F'(x)\ge0.
+\]
+故 \(f\ge0\) a.e.。
+\end{solution}
+
+\section{2023 春夏回忆卷}
+
+\begin{problem}{2023-1}
+写出下列概念或定理：
+Lebesgue 可测集的定义、Egorov 定理、依测度收敛定义、有界变差函数的定义。
+\end{problem}
+\begin{solution}
+\begin{enumerate}[label=(\arabic*)]
+  \item \(E\subset\R^n\) 可测：对任意 \(A\subset\R^n\)，
+  \[
+    m^*(A)=m^*(A\cap E)+m^*(A\cap E^c).
+  \]
+  \item Egorov 定理：若 \(m(E)<\infty\)，且 \(f_n\to f\) a.e. 于 \(E\)，则对任意
+  \(\eps>0\)，存在 \(F\subset E\)，\(m(E\setminus F)<\eps\)，使 \(f_n\to f\) 在 \(F\) 上一致。
+  \item \(f_n\to f\) 依测度：对任意 \(\eps>0\)，
+  \[
+    m(\{|f_n-f|>\eps\})\to0.
+  \]
+  \item \(f\in BV[a,b]\)：存在常数 \(M\)，使任意分割
+  \(a=x_0<\cdots<x_N=b\) 都满足
+  \[
+    \sum_{i=1}^N |f(x_i)-f(x_{i-1})|\le M.
+  \]
+  全变差为这些和的上确界。
+\end{enumerate}
+\end{solution}
+
+\begin{problem}{2023-2}
+设 \(E\subset\R\) 可测，\(m(E)<\infty\)。证明存在单增的闭集列 \(\{F_k\}\)，使
+\[
+  m(E\setminus F_k)\to0.
+\]
+\end{problem}
+\begin{solution}
+由内正则性，对每个 \(k\) 可取闭集 \(K_k\subset E\)，使
+\[
+  m(E\setminus K_k)<\frac1k.
+\]
+令
+\[
+  F_k=\bigcup_{j=1}^k K_j.
+\]
+则 \(F_k\) 是闭集，\(F_k\subset E\)，且 \(F_k\uparrow\)。又 \(F_k\supset K_k\)，故
+\[
+  m(E\setminus F_k)\le m(E\setminus K_k)<\frac1k\to0.
+\]
+\end{solution}
+
+\begin{problem}{2023-3}
+回忆卷中第二大题第 2、3 小题题面缺失。
+\end{problem}
+\begin{solution}
+原 PDF 仅写“忘了”“忘了（都不难）”，无法可靠还原题目。本文不伪造题面；复习时可用同类基础题替代，例如外正则性、测度连续性、可测函数阈值刻画等。
+\end{solution}
+
+\begin{problem}{2023-4}
+若 \(f\) 在 \([a,b]\) 的不连续点至多可数，问 \(f\) 是否 Riemann 可积，\(|f|\) 是否 Lebesgue 可积。
+\end{problem}
+\begin{solution}
+若未假设 \(f\) 有界，则两者都不一定成立。例如在 \([0,1]\) 上令
+\[
+  f(x)=
+  \begin{cases}
+    1/x, & x\in(0,1],\\
+    0, & x=0.
+  \end{cases}
+\]
+它只有 \(0\) 一个不连续点，但无界，故不是 Riemann 可积；且
+\(\int_0^1 |f|\,dx=\infty\)，所以 \(|f|\) 也不 Lebesgue 可积。
+
+若额外假设 \(f\) 有界，则不连续点集至多可数，测度为 \(0\)，由 Riemann 可积判别，\(f\) Riemann 可积；同时 \(|f|\) 有界可测，故 Lebesgue 可积。
+\end{solution}
+
+\begin{problem}{2023-5}
+设 \(f\in L([0,1])\)，且对任意 \(c\in[0,1]\)，
+\[
+  \int_0^c f(x)\,dx=0.
+\]
+证明 \(f(x)=0\) a.e. 于 \([0,1]\)。
+\end{problem}
+\begin{solution}
+令
+\[
+  F(c)=\int_0^c f(x)\,dx.
+\]
+题设给出 \(F\equiv0\)。由 Lebesgue 微分定理或不定积分的微分定理，\(F'(x)=f(x)\) a.e.。但
+\(F'\equiv0\)，故 \(f=0\) a.e.。
+\end{solution}
+
+\begin{problem}{2023-6}
+回忆卷题面为：\(E\subset\R\)，\(\{E_n\}\) 是可测集列，\(f\in L(E)\)，且
+\[
+  m(E_n)\to m(E).
+\]
+\begin{enumerate}[label=(\arabic*)]
+  \item 若 \(m(E)<\infty\)，证明
+  \[
+    \int_{E_n}f\to\int_E f.
+  \]
+  \item \(m(E)<\infty\) 是否必不可少？若是，请举出范例。
+\end{enumerate}
+\end{problem}
+\begin{noteenv}
+照 PDF 字面，仅有 \(m(E_n)\to m(E)\) 不足以推出积分收敛，且 \(f\in L(E)\) 时
+\(\int_{E_n}f\) 也需要说明 \(f\) 如何定义在 \(E_n\) 上。常见合理补全是
+\[
+  E_n\subset E,\qquad m(E\setminus E_n)\to0.
+\]
+下面先给补全后的证明，再说明原字面命题的反例。
+\end{noteenv}
+\begin{solution}
+若 \(E_n\subset E\) 且 \(m(E\setminus E_n)\to0\)，则
+\[
+  \left|\int_{E_n}f-\int_E f\right|
+  =\left|\int_{E\setminus E_n}f\right|
+  \le \int_{E\setminus E_n}|f|.
+\]
+由 \(f\in L(E)\) 的积分绝对连续性，右端趋于 \(0\)。
+
+若只假设 \(m(E_n)\to m(E)\)，命题为假。取
+\[
+  E=[0,1],\qquad f=\chi_E,\qquad E_n=[1,2].
+\]
+则 \(m(E_n)=m(E)=1\)，但若把 \(f\) 按零延拓到 \(\R\)，有
+\[
+  \int_{E_n}f=0\ne1=\int_E f.
+\]
+若 \(m(E)=\infty\)，即使 \(m(E_n)\to\infty\)，结论也可失败：取 \(E=\R\)，
+\(f=\chi_{[0,1]}\)，\(E_n=[n,n+n]\)，则 \(m(E_n)=n\to\infty\)，但
+\(\int_{E_n}f=0\ne1=\int_Ef\)。
+\end{solution}
+
+\begin{problem}{2023-7}
+设 \(m(E)<\infty\)，\(\{f_k\}\) 是 \(E\) 上一列 a.e. 收敛于 \(0\) 的可测函数。若
+\(\{f_k\}\) 的积分具有一致绝对连续性，即对任意 \(\eps>0\)，存在 \(\delta>0\)，使对所有
+k 和所有可测 \(A\subset E\)，只要 \(m(A)<\delta\)，就有
+\[
+  \int_A |f_k|<\eps,
+\]
+证明
+\[
+  \int_E |f_k|\to0.
+\]
+\end{problem}
+\begin{noteenv}
+PDF 中量词写法疑似少了“对所有 \(k\)”的统一性。若 \(\delta\) 可以依赖 \(k\)，结论不成立，例如
+\(f_k=k\chi_{(0,1/k)}\) 在 \((0,1)\) 上 a.e. 收敛于 \(0\)，但 \(\int f_k=1\)。
+\end{noteenv}
+\begin{solution}
+给定 \(\eps>0\)，由一致绝对连续性取 \(\delta>0\)，使 \(m(A)<\delta\) 时
+\(\int_A|f_k|<\eps\) 对所有 \(k\) 成立。由 Egorov 定理，存在 \(F\subset E\)，
+\[
+  m(E\setminus F)<\delta,
+\]
+且 \(f_k\to0\) 在 \(F\) 上一致。于是当 \(k\) 足够大时，
+\[
+  \int_F |f_k|<\eps.
+\]
+同时
+\[
+  \int_{E\setminus F}|f_k|<\eps.
+\]
+故 \(k\) 大时
+\[
+  \int_E |f_k|\le 2\eps.
+\]
+令 \(\eps\downarrow0\)，得结论。
+\end{solution}
+
+\begin{problem}{2023-8}
+若 \(f\in AC[a,b]\)，证明 \(f\in BV[a,b]\)，且
+\[
+  V_a^b(f)=\int_a^b |f'(x)|\,dx.
+\]
+\end{problem}
+\begin{solution}
+由绝对连续函数的表示定理，
+\[
+  f(y)-f(x)=\int_x^y f'(t)\,dt.
+\]
+对任意分割 \(P:a=x_0<\cdots<x_N=b\)，
+\[
+  \sum_i|f(x_i)-f(x_{i-1})|
+  \le \sum_i\int_{x_{i-1}}^{x_i}|f'|
+  =\int_a^b|f'|.
+\]
+故 \(f\in BV\)，且 \(V_a^b(f)\le\int_a^b|f'|\)。
+
+另一方面，BV 函数满足
+\[
+  \int_a^b|f'|\le V_a^b(f).
+\]
+合并即得等号。
+\end{solution}
+
+\begin{problem}{2023-9}
+设 \(f\in L^1(\R)\)。证明对 \(\R\) 上任意区间 \([a,b]\)，有
+\[
+  \lim_{h\to0}\int_a^b |f(x+h)-f(x)|\,dx=0.
+\]
+\end{problem}
+\begin{solution}
+\(L^1\) 平移连续性给出
+\[
+  \int_\R |f(x+h)-f(x)|\,dx\to0.
+\]
+因此
+\[
+  \int_a^b |f(x+h)-f(x)|\,dx
+  \le \int_\R |f(x+h)-f(x)|\,dx\to0.
+\]
+\end{solution}
+
+\begin{problem}{2023-10}
+设 \(f_n\) 和 \(f\) 是 \(\R\) 上几乎处处有限的可测函数，且
+\[
+  M=\sup_n\int_\R |f_n(x)|^2\,dx<\infty.
+\]
+若 \(f_n\to f\) 依测度，证明：
+\begin{enumerate}[label=(\arabic*)]
+  \item \(f\in L^2(\R)\)；
+  \item 对任意 \(g\in L^2(\R)\)，
+  \[
+    \int_\R f_n(x)g(x)\,dx\to \int_\R f(x)g(x)\,dx.
+  \]
+\end{enumerate}
+\end{problem}
+\begin{solution}
+(1) 由 Riesz 子列定理，存在子列 \(f_{n_j}\to f\) a.e.。Fatou 引理给出
+\[
+  \int |f|^2\le \liminf_{j\to\infty}\int |f_{n_j}|^2\le M,
+\]
+故 \(f\in L^2\)。
+
+(2) 先考虑 \(f_n\to f\) a.e. 的情形。由 \(\sup_n\|f_n-f\|_2<\infty\)，对有界且支集测度有限的
+\(\varphi\)，用 Egorov 定理和 Hölder 不等式可得
+\[
+  \int (f_n-f)\varphi\to0.
+\]
+再用这类 \(\varphi\) 在 \(L^2\) 中逼近任意 \(g\in L^2\)，得到结论。
+
+若只有依测度收敛，反设存在 \(g\in L^2\) 和子列使配对积分不收敛到 \(0\)。该子列仍依测度收敛，故存在进一步子列 a.e. 收敛到 \(f\)，由上一段其配对积分必须收敛，矛盾。因此全列成立。
+\end{solution}
+
+\section{2024 春夏期末回忆卷}
+
+\begin{problem}{2024-1}
+设 \(E\subset\R\)。
+\begin{enumerate}[label=(\arabic*)]
+  \item 叙述可测集的定义；
+  \item 证明外测度为 \(0\) 的集必是可测集；
+  \item 证明零测集若是开集，则必为空集。
+\end{enumerate}
+\end{problem}
+\begin{solution}
+(1) \(E\) 可测是指对任意 \(A\subset\R\)，
+\[
+  m^*(A)=m^*(A\cap E)+m^*(A\cap E^c).
+\]
+(2) 若 \(m^*(E)=0\)，则对任意 \(A\)，
+\[
+  m^*(A\cap E)=0,\qquad A\cap E^c\subset A.
+\]
+于是
+\[
+  m^*(A\cap E)+m^*(A\cap E^c)\le m^*(A).
+\]
+反向不等式由外测度次可加性得到，因此 \(E\) 可测。
+
+(3) 若开集 \(G\ne\varnothing\)，则存在开区间 \(I\subset G\)，且 \(m(I)>0\)。由单调性
+\[
+  m(G)\ge m(I)>0.
+\]
+故零测开集只能为空集。
+\end{solution}
+
+\begin{problem}{2024-2}
+\begin{enumerate}[label=(\arabic*)]
+  \item 叙述 Lebesgue 控制收敛定理；
+  \item 求
+  \[
+    \lim_{k\to\infty}\int_0^\infty e^{-x^k}\,dx;
+  \]
+  \item 设 \(f_k\) 是 \(E\) 上非负可积函数，且
+  \[
+    \int_E f_k(x)\,dx\to0.
+  \]
+  证明 \(f_k\to0\) 依测度。
+\end{enumerate}
+\end{problem}
+\begin{noteenv}
+PDF 中第 (3) 小题文字有轻微缺失，按页面公式和括注“这是 \(L^p\) 收敛蕴含依测度收敛的特例”，整理为上面的序列形式。
+\end{noteenv}
+\begin{solution}
+(1) 若 \(f_k\to f\) a.e. 且存在 \(g\in L^1\) 使 \(|f_k|\le g\) a.e.，则
+\[
+  \int |f_k-f|\to0,\qquad \int f_k\to\int f.
+\]
+
+(2) 对 \(0\le x<1\)，\(x^k\to0\)，故 \(e^{-x^k}\to1\)；对 \(x>1\)，
+\(x^k\to\infty\)，故 \(e^{-x^k}\to0\)。点 \(x=1\) 不影响积分。且
+\[
+  e^{-x^k}\le \chi_{[0,1]}(x)+e^{-x}\chi_{(1,\infty)}(x),
+\]
+右侧可积。由控制收敛定理，
+\[
+  \lim_{k\to\infty}\int_0^\infty e^{-x^k}\,dx
+  =\int_0^1 1\,dx=1.
+\]
+
+(3) 对任意 \(\eps>0\)，由 Markov 不等式，
+\[
+  m(\{f_k>\eps\})\le \frac1\eps\int_E f_k\to0.
+\]
+故 \(f_k\to0\) 依测度。
+\end{solution}
+
+\begin{problem}{2024-3}
+设 \(f\) 是 \([a,b]\) 上的实值函数。
+\begin{enumerate}[label=(\arabic*)]
+  \item 叙述有界变差函数的定义；
+  \item 举出连续但不是有界变差的函数；
+  \item 设 \(f\) 可微，且 \(x_1<\cdots<x_n\) 是 \(f'\) 在 \((a,b)\) 中的全部零点，求
+  \(V_a^b(f)\)，并据此求 \(V_0^{4\pi}(\cos x)\)。
+\end{enumerate}
+\end{problem}
+\begin{solution}
+(1) 同 2023-1(4)。
+
+(2) 例如
+\[
+  f(x)=
+  \begin{cases}
+    x\sin(1/x),&x\in(0,1],\\
+    0,&x=0.
+  \end{cases}
+\]
+它连续，但在趋于 \(0\) 的振荡极值点上可构造变差和发散，因此不属于 \(BV[0,1]\)。
+
+(3) 若 \(x_1,\dots,x_n\) 是全部临界点，且 \(f'\) 在各小区间上不变号，则 \(f\) 在
+\[
+  [a,x_1], [x_1,x_2],\dots,[x_n,b]
+\]
+上分别单调，因此
+\[
+  V_a^b(f)
+  =|f(x_1)-f(a)|+\sum_{i=1}^{n-1}|f(x_{i+1})-f(x_i)|+|f(b)-f(x_n)|.
+\]
+对 \(f(x)=\cos x\) 于 \([0,4\pi]\)，临界点为
+\[
+  0,\pi,2\pi,3\pi,4\pi.
+\]
+函数值依次为 \(1,-1,1,-1,1\)，所以
+\[
+  V_0^{4\pi}(\cos x)=2+2+2+2=8.
+\]
+\end{solution}
+
+\begin{problem}{2024-4}
+设 \(E=[0,+\infty)\)，\(f_k=\chi_{[0,k]}\)。判断 \(f_k\) 是否
+\begin{enumerate}[label=(\arabic*)]
+  \item 几乎处处收敛；
+  \item 近一致收敛；
+  \item 依测度收敛。
+\end{enumerate}
+\end{problem}
+\begin{solution}
+对每个 \(x\in[0,+\infty)\)，当 \(k\ge x\) 时 \(f_k(x)=1\)，故
+\[
+  f_k(x)\to1
+\]
+处处成立。
+
+它不近一致收敛到 \(1\)。若在 \(F\subset E\) 上一致收敛到 \(1\)，则存在 \(K\)，使
+\(k\ge K\) 时 \(F\subset[0,k]\)。故 \(F\) 必有界，从而
+\[
+  m(E\setminus F)=\infty,
+\]
+不可能小于任意给定 \(\eps>0\)。
+
+它也不依测度收敛到 \(1\)，因为
+\[
+  \{|f_k-1|>1/2\}=(k,\infty),
+\]
+测度恒为 \(+\infty\)。因此不依测度收敛。
+\end{solution}
+
+\begin{problem}{2024-5}
+设 \(E\in\M(\R)\)，\(f\) 是 \(E\) 上的非负可测函数，
+\[
+  G(f)=\{(x,y)\in\R^2:x\in E,\ y=f(x)\}.
+\]
+证明 \(G(f)\) 是 \(\R^2\) 中的可测集，且 \(m_2(G(f))=0\)。
+\end{problem}
+\begin{solution}
+函数 \((x,y)\mapsto y-f(x)\) 在 \(E\times\R\) 上可测，因此
+\[
+  G(f)= (E\times\R)\cap\{(x,y):y-f(x)=0\}
+\]
+可测。对每个 \(x\)，垂直截面
+\[
+  G(f)_x=\{y:(x,y)\in G(f)\}
+\]
+若 \(x\in E\) 则为单点 \(\{f(x)\}\)，否则为空集，故一维测度为 \(0\)。由 Fubini 定理，
+\[
+  m_2(G(f))=\int_\R m_1(G(f)_x)\,dx=0.
+\]
+\end{solution}
+
+\begin{problem}{2024-6}
+设 \(f\in AC[0,1]\)，\(f(0)=0\)。证明
+\[
+  \int_0^1 |f(x)f'(x)|\,dx\le \int_0^1 |f'(x)|^2\,dx.
+\]
+\end{problem}
+\begin{solution}
+由 \(f(0)=0\) 和绝对连续性，
+\[
+  f(x)=\int_0^x f'(t)\,dt.
+\]
+Cauchy-Schwarz 不等式给出
+\[
+  |f(x)|^2\le x\int_0^x |f'(t)|^2\,dt.
+\]
+积分并换序：
+\[
+  \int_0^1 |f(x)|^2\,dx
+  \le \int_0^1 x\int_0^x |f'(t)|^2\,dt\,dx
+  =\int_0^1 |f'(t)|^2\frac{1-t^2}{2}\,dt
+  \le \frac12\int_0^1|f'|^2.
+\]
+因此
+\[
+  \int_0^1 |ff'|
+  \le \|f\|_2\|f'\|_2
+  \le \frac1{\sqrt2}\|f'\|_2^2
+  \le \|f'\|_2^2.
+\]
+\end{solution}
+
+\begin{problem}{2024-7}
+证明单调实值函数列逐项求导的 Fubini 型定理：设 \(f_n\) 是 \([a,b]\) 上的单调递增实值函数，且
+\[
+  \sum_{n=1}^\infty f_n(x)
+\]
+在 \([a,b]\) 上点态收敛于 \(f\)。证明 \(f\) 在 \([a,b]\) 上几乎处处可导，且
+\[
+  f'(x)=\sum_{n=1}^\infty f_n'(x),\qquad \text{a.e. }x\in[a,b].
+\]
+\end{problem}
+\begin{solution}
+每个单调函数 \(f_n\) 诱导一个有限正 Borel 测度 \(\mu_n\)，使
+\[
+  \mu_n((s,t])=f_n(t)-f_n(s).
+\]
+由于级数在 \(a,b\) 两点都收敛，
+\[
+  \sum_{n=1}^\infty \mu_n((a,b])=\sum_{n=1}^\infty (f_n(b)-f_n(a))<\infty.
+\]
+令
+\[
+  \mu=\sum_{n=1}^\infty \mu_n.
+\]
+则 \(\mu\) 是有限正测度，并且它对应的分布函数正是
+\[
+  f(x)-f(a)=\sum_{n=1}^\infty (f_n(x)-f_n(a)).
+\]
+把每个 \(\mu_n\) 对 Lebesgue 测度作 Lebesgue 分解，其绝对连续部分密度为 \(f_n'\)。测度可数可加性给出
+\[
+  \frac{d\mu_{\mathrm{ac}}}{dx}=\sum_{n=1}^\infty f_n'
+\]
+a.e.。另一方面，单调函数 \(f\) 的导数 a.e. 存在，且等于其诱导测度绝对连续部分的密度。因此
+\[
+  f'=\sum_{n=1}^\infty f_n'\quad \text{a.e.}
+\]
+\end{solution}
+
+\begin{problem}{2024-8}
+证明依测度收敛情形的有界收敛定理：设 \(0<m(E)<\infty\)，\(f_n,f\) 是 \(E\) 上的可测函数，
+\[
+  f_n\to f \quad\text{依测度},
+\]
+且存在 \(M>0\)，使 \(|f_n(x)|\le M\) 对所有 \(n\) 和 \(x\in E\) 成立。证明
+\[
+  f,f_n\in L(E),\qquad \int_E f_n\to\int_E f.
+\]
+\end{problem}
+\begin{solution}
+由依测度收敛可取子列 a.e. 收敛到 \(f\)，故 \(|f|\le M\) a.e.，于是 \(f,f_n\in L(E)\)。
+
+若积分不收敛，则存在子列 \(f_{n_j}\) 和 \(\eps_0>0\)，使
+\[
+  \left|\int_E f_{n_j}-\int_E f\right|\ge\eps_0.
+\]
+但 \(f_{n_j}\to f\) 仍依测度，故可再取子列 \(f_{n_{j_i}}\to f\) a.e.。由通常的有界收敛定理，
+\[
+  \int_E f_{n_{j_i}}\to\int_E f,
+\]
+矛盾。因此原积分序列收敛。
+\end{solution}
+
+\section{2025 春夏期末回忆卷}
+
+\begin{problem}{2025-1}
+写出下面概念：
+Lebesgue 可测集的定义、\(E\) 上可测函数的定义、依测度收敛定义、\([a,b]\) 上绝对连续函数的定义。
+\end{problem}
+\begin{solution}
+前三个见 2023-1。绝对连续定义：\(f:[a,b]\to\R\) 绝对连续，是指对任意
+\(\eps>0\)，存在 \(\delta>0\)，使任意有限个互不相交开区间
+\((a_k,b_k)\subset[a,b]\) 满足
+\[
+  \sum_k(b_k-a_k)<\delta
+\]
+时，都有
+\[
+  \sum_k |f(b_k)-f(a_k)|<\eps.
+\]
+\end{solution}
+
+\begin{problem}{2025-2}
+\begin{enumerate}[label=(\arabic*)]
+  \item 若 \(E\subset[0,1]\)，且 \(m(E)=1\)，设 \(\overline E\) 为 \(E\) 的闭包，证明
+  \(m(\overline E)=1\)。
+  \item 若 \(f\) 几乎处处连续，问是否存在连续函数 \(f^*\)，使 \(f=f^*\) a.e.？
+  \item 若 \(f\) 可积，证明 \(f\) 几乎处处有限。
+  \item 证明若 \(f\in BV\)，则 \(|f|\in BV\)，反之不成立。
+  \item 设 \(\{r_k\}\) 为 \([0,1]\cap\Q\) 的一个排列，证明
+  \[
+    \sum_{k=1}^\infty \frac1{k^2\sqrt{|x-r_k|}}
+  \]
+  在 \([0,1]\) 上几乎处处有限。
+\end{enumerate}
+\end{problem}
+\begin{solution}
+(1) 因 \(E\subset\overline E\subset[0,1]\)，
+\[
+  1=m(E)\le m(\overline E)\le1.
+\]
+故 \(m(\overline E)=1\)。
+
+(2) 不一定。取
+\[
+  f=\chi_{[0,1/2]}.
+\]
+它仅在 \(1/2\) 处不连续，故 a.e. 连续。若存在连续 \(f^*=f\) a.e.，则 \(f^*=1\) 在
+\([0,1/2]\) 中稠密点集上成立，故由连续性 \(f^*\equiv1\) 于 \([0,1/2]\)；同理
+\(f^*\equiv0\) 于 \((1/2,1]\)，矛盾。
+
+(3) 若 \(\{|f|=\infty\}\) 有正测度，则
+\[
+  \int |f|=\infty,
+\]
+与可积矛盾。故 \(f\) a.e. 有限。
+
+(4) 对任意分割，
+\[
+  ||f(x_i)|-|f(x_{i-1})||\le |f(x_i)-f(x_{i-1})|.
+\]
+取和并取上确界，得 \(V(|f|)\le V(f)\)。反之不成立：令
+\[
+  f=\chi_{\Q\cap[0,1]}-\chi_{[0,1]\setminus\Q}.
+\]
+则 \(|f|\equiv1\in BV[0,1]\)，但 \(f\) 在任意区间振荡，变差无穷，不属于 \(BV\)。
+
+(5) 由 Tonelli 定理，
+\[
+  \int_0^1\sum_{k=1}^\infty \frac1{k^2\sqrt{|x-r_k|}}\,dx
+  =\sum_{k=1}^\infty\frac1{k^2}\int_0^1\frac{dx}{\sqrt{|x-r_k|}}.
+\]
+对 \(r_k\in[0,1]\)，
+\[
+  \int_0^1\frac{dx}{\sqrt{|x-r_k|}}
+  =2\sqrt{r_k}+2\sqrt{1-r_k}\le4.
+\]
+故总积分不超过
+\[
+  4\sum_{k=1}^\infty\frac1{k^2}<\infty.
+\]
+因此该非负级数 a.e. 有限。
+\end{solution}
+
+\begin{problem}{2025-3}
+设 \(R(x)\) 是 Riemann 函数（Thomae 函数）：
+\[
+  R(x)=
+  \begin{cases}
+    0, & x\notin\Q,\\
+    1/q, & x=p/q\in\Q,\ (p,q)=1,\ q>0.
+  \end{cases}
+\]
+\begin{enumerate}[label=(\arabic*)]
+  \item 证明 \(R\) 在 \([0,1]\) 上可测；
+  \item 证明 \(R\) 在 \([0,1]\) 上可积，并求积分；
+  \item 问 \(R\) 在 \([0,1]\) 上是否绝对连续。
+\end{enumerate}
+\end{problem}
+\begin{solution}
+(1) \(R\) 在无理点连续、在有理点不连续；也可直接看出
+\[
+  \{R>a\}
+\]
+对每个 \(a>0\) 只含有限多个有理数，对 \(a\le0\) 为整个区间或空集，因此可测。
+
+(2) \(R=0\) 于无理数集，而有理数集测度为 \(0\)，故 \(R=0\) a.e.。所以
+\[
+  \int_0^1 R(x)\,dx=0.
+\]
+
+(3) 不绝对连续。绝对连续函数必连续，而 \(R\) 在每个有理点不连续。
+\end{solution}
+
+\begin{problem}{2025-4}
+设 \(E_k\) 为 \(\R^n\) 上的可测集列，\(f_k=\chi_{E_k}\)。证明：
+\begin{enumerate}[label=(\arabic*)]
+  \item \(f_k\to0\) 依测度当且仅当 \(m(E_k)\to0\)；
+  \item \(f_k\to0\) a.e. 当且仅当
+  \[
+    m(\limsup_{k\to\infty}E_k)=0.
+  \]
+  \item \(f_k\) 是测度基本列当且仅当
+  \[
+    \lim_{k,j\to\infty}m(E_k\Delta E_j)=0.
+  \]
+\end{enumerate}
+\end{problem}
+\begin{solution}
+(1) 先注意 \(f_k=\chi_{E_k}\) 只取 \(0,1\) 两个值。对 \(0<\eps<1\)，
+\[
+  \{|f_k|>\eps\}=E_k.
+\]
+而对 \(\eps\ge1\)，\(\{|f_k|>\eps\}=\varnothing\)。若 \(f_k\to0\) 依测度，取
+\(\eps=1/2\)，得
+\[
+  m(E_k)=m(\{|f_k|>1/2\})\to0.
+\]
+反过来，若 \(m(E_k)\to0\)，则任意 \(\eps>0\) 下，若 \(0<\eps<1\)，有
+\[
+  m(\{|f_k|>\eps\})=m(E_k)\to0;
+\]
+若 \(\eps\ge1\)，该测度恒为 \(0\)。故 \(f_k\to0\) 依测度。
+
+(2) 对每个 \(x\)，\(\chi_{E_k}(x)\to0\) 当且仅当 \(x\) 只属于有限多个 \(E_k\)，也就是
+\[
+  x\notin \limsup_{k\to\infty}E_k.
+\]
+因此 \(f_k\to0\) a.e. 当且仅当
+\[
+  m(\limsup E_k)=0.
+\]
+
+(3) 测度基本列的定义是：对任意 \(\eps>0\)，
+\[
+  m(\{|f_k-f_j|>\eps\})\to0\qquad (k,j\to\infty).
+\]
+对 \(0<\eps<1\)，由于 \(\chi_{E_k}-\chi_{E_j}\) 只可能取 \(-1,0,1\)，且非零点正是
+\(E_k\Delta E_j\)，故
+\[
+  \{|f_k-f_j|>\eps\}=E_k\Delta E_j.
+\]
+对 \(\eps\ge1\)，左侧为空集。因此 \(f_k\) 是测度基本列当且仅当
+\[
+  m(E_k\Delta E_j)\to0\qquad (k,j\to\infty).
+\]
+\end{solution}
+
+\begin{problem}{2025-5}
+设 \(f_n\) 为 \([a,b]\) 上的绝对连续函数列，\(F\in L^1[a,b]\)，且
+\[
+  |f_n'(x)|\le |F(x)|,\qquad f_n(x)\to f(x),\qquad f_n'(x)\to\varphi(x)\quad\text{a.e.}
+\]
+证明 \(\varphi=f'\) a.e.，且 \(f\in AC[a,b]\)。
+\end{problem}
+\begin{noteenv}
+PDF 中此题写作 ``\(F\) 是可测函数''。按结论需要 \(F\in L^1[a,b]\) 作为控制函数；若只要求可测，命题不真。例如
+\(f_n(x)=\min\{nx,1\}\) 在 \([0,1]\) 上绝对连续，\(f_n'\le 1/x\) a.e.，且
+\(f_n\to\chi_{(0,1]}\)、\(f_n'\to0\) a.e.，极限函数并不绝对连续。
+\end{noteenv}
+\begin{solution}
+由 \(|f_n'|\le |F|\in L^1[a,b]\) 和 \(f_n'\to\varphi\) a.e.，得 \(|\varphi|\le |F|\)，所以
+\(\varphi\in L^1[a,b]\)。对每个 \(x\in[a,b]\)，绝对连续函数满足
+\[
+  f_n(x)=f_n(a)+\int_a^x f_n'(t)\,dt.
+\]
+令 \(n\to\infty\)。左侧趋于 \(f(x)\)，且 \(f_n(a)\to f(a)\)。对积分项，由控制收敛定理，
+\[
+  \int_a^x f_n'(t)\,dt\to \int_a^x \varphi(t)\,dt.
+\]
+于是
+\[
+  f(x)=f(a)+\int_a^x\varphi(t)\,dt.
+\]
+因此 \(f\in AC[a,b]\)，并由绝对连续函数的基本定理得到
+\[
+  f'(x)=\varphi(x)\quad\text{a.e.}
+\]
+\end{solution}
+
+\begin{problem}{2025-6}
+设 \(f\in L^1(\R^n)\)、\(g\in L^p(\R^n)\)，定义卷积
+\[
+  f*g(x)=\int_{\R^n}f(x-t)g(t)\,dt.
+\]
+证明
+\[
+  \|f*g\|_p\le \|f\|_1\|g\|_p.
+\]
+\end{problem}
+\begin{solution}
+只需证明 \(1\le p\le\infty\)。若 \(p=\infty\)，则
+\[
+  |f*g(x)|
+  \le\int_{\R^n}|f(x-t)|\,|g(t)|\,dt
+  \le \|g\|_\infty\|f\|_1.
+\]
+故 \(\|f*g\|_\infty\le\|f\|_1\|g\|_\infty\)。
+
+设 \(1\le p<\infty\)。若 \(f=0\) 平凡。由 Jensen 不等式，令
+\[
+  d\mu_t=\frac{|f(x-t)|}{\|f\|_1}\,dt,
+\]
+则对每个 \(x\)，
+\[
+  |f*g(x)|^p
+  \le \left(\int |f(x-t)|\,|g(t)|\,dt\right)^p
+  \le \|f\|_1^{p-1}\int |f(x-t)|\,|g(t)|^p\,dt.
+\]
+积分并用 Tonelli 定理换序：
+\[
+  \|f*g\|_p^p
+  \le \|f\|_1^{p-1}
+  \int_{\R^n}\int_{\R^n}|f(x-t)|\,|g(t)|^p\,dx\,dt.
+\]
+对内层 \(x\) 积分作平移变量替换，\(\int |f(x-t)|\,dx=\|f\|_1\)，故
+\[
+  \|f*g\|_p^p\le \|f\|_1^p\|g\|_p^p.
+\]
+开 \(p\) 次方即得结论。
+\end{solution}
+
+\begin{problem}{2025-7}
+设 \(f\in L^1(\R)\)，令
+\[
+  \varphi(x)=\int_{\R}e^{-itx}f(t)\,dt.
+\]
+证明 \(\varphi\) 连续，并且
+\[
+  \varphi(x)=\frac{d}{dx}\int_{\R}\frac{1-e^{-itx}}{it}f(t)\,dt.
+\]
+\end{problem}
+\begin{solution}
+先证连续性。若 \(x_m\to x\)，则对每个 \(t\)，
+\[
+  e^{-itx_m}f(t)\to e^{-itx}f(t),
+\]
+且
+\[
+  |e^{-itx_m}f(t)|\le |f(t)|\in L^1(\R).
+\]
+由控制收敛定理，
+\[
+  \varphi(x_m)\to\varphi(x).
+\]
+
+令
+\[
+  H(x)=\int_{\R}K(x,t)f(t)\,dt,\qquad
+  K(x,t)=
+  \begin{cases}
+    \dfrac{1-e^{-itx}}{it}, & t\ne0,\\
+    x, & t=0.
+  \end{cases}
+\]
+由于
+\[
+  |K(x,t)|\le |x|,
+\]
+故 \(H(x)\) 对每个 \(x\) 有定义。计算差商：
+\[
+  \frac{K(x+h,t)-K(x,t)}{h}
+  =e^{-itx}\frac{1-e^{-ith}}{ith},
+\]
+其中 \(t=0\) 时按极限理解为 \(1\)。当 \(h\to0\) 时，该差商趋于 \(e^{-itx}\)。又
+\[
+  \left|e^{-itx}\frac{1-e^{-ith}}{ith}\right|\le1,
+\]
+因为 \(|1-e^{-iu}|\le |u|\)。于是差商乘以 \(f(t)\) 被 \(|f(t)|\) 控制。由控制收敛定理，
+\[
+  H'(x)=\int_{\R}e^{-itx}f(t)\,dt=\varphi(x).
+\]
+即得所证。
+\end{solution}
+
+\end{document}

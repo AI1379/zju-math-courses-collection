@@ -1,0 +1,15 @@
+# clangd flags come from the CMake compilation database.
+#
+# Configure once before opening any C++ file in an editor:
+#
+#   cmake -S . -B build -G Ninja -DCMAKE_CXX_COMPILER=clang++
+#
+# The database path below is relative to this file, so it resolves to
+# numerical_analysis/build/compile_commands.json.
+CompileFlags:
+  CompilationDatabase: build
+
+# Report #include lines that are unused or missing.
+Diagnostics:
+  UnusedIncludes: Strict
+  MissingIncludes: Strict
